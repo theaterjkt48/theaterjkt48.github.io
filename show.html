@@ -194,10 +194,15 @@ body.dark .stat-label{color:#9ca3af}
     background:#f9fafb;
     border-bottom:1px solid #e5e7eb;
     display:flex;
-    flex-wrap:wrap;
+    flex-wrap:nowrap;
+    overflow-x:auto;
+    overflow-y:hidden;
     gap:6px;
     margin-top:8px;
+    -webkit-overflow-scrolling:touch;
+    scrollbar-width:none;
 }
+.filter-section::-webkit-scrollbar{display:none}
 body.dark .filter-section{
     background:#1f2937;
     border-bottom-color:#374151;
@@ -890,6 +895,7 @@ function renderPage() {
   document.documentElement.style.setProperty('--gen-color-dark', colorDark);
   
   const realShows = showsData.filter(s => !s.is_non_show);
+  const nonShows = showsData.filter(s => s.is_non_show);
   const setlists = [...new Set(realShows.map(s => s.setlist_name))];
   const filterButtons = getFilterButtonsHTML();
   
@@ -914,11 +920,15 @@ function renderPage() {
       <div class="member-name">${memberData.name}</div>
       ${graduationInfo}
       <div class="member-stats">
-        <div class="stat-item">
+        <div class="stat-item ${currentFilter === 'show' || (currentFilter !== 'event' && currentFilter !== 'all') ? 'stat-active' : ''}" onclick="filterShows('show')" title="Filter show biasa">
           <div class="stat-number">${realShows.length}</div>
           <div class="stat-label">TOTAL SHOW</div>
         </div>
-        <div class="stat-item">
+        <div class="stat-item ${currentFilter === 'event' ? 'stat-active' : ''}" onclick="filterShows('event')" title="Filter event">
+          <div class="stat-number">${nonShows.length}</div>
+          <div class="stat-label">EVENT</div>
+        </div>
+        <div class="stat-item" style="cursor:default">
           <div class="stat-number">${setlists.length}</div>
           <div class="stat-label">JENIS SETLIST</div>
         </div>
@@ -946,6 +956,8 @@ function renderShowList() {
   
   if (currentFilter === 'event') {
     filtered = showsData.filter(s => s.is_non_show);
+  } else if (currentFilter === 'show') {
+    filtered = showsData.filter(s => !s.is_non_show);
   } else if (currentFilter !== 'all') {
     filtered = showsData.filter(s => s.setlist_name === currentFilter);
   }
@@ -1063,14 +1075,22 @@ function filterShows(filter) {
   currentFilter = filter;
   sessionStorage.setItem('jkt48_show_filter_' + MEMBER_NAME, filter);
 
-  // Hapus class active dari semua tombol filter
+  // Update filter-btn active
   document.querySelectorAll('.filter-btn').forEach(btn => {
     btn.classList.remove('active');
   });
-
-  // Aktifkan tombol yang sesuai dengan filter
   const activeBtn = document.querySelector(`.filter-btn[data-filter="${filter}"]`);
   if (activeBtn) activeBtn.classList.add('active');
+
+  // Update stat-item active (hanya TOTAL SHOW dan EVENT yang clickable)
+  document.querySelectorAll('.stat-item[onclick]').forEach(el => {
+    el.classList.remove('stat-active');
+  });
+  if (filter === 'show') {
+    document.querySelector('.stat-item[onclick*="show"]')?.classList.add('stat-active');
+  } else if (filter === 'event') {
+    document.querySelector('.stat-item[onclick*="event"]')?.classList.add('stat-active');
+  }
 
   // Render ulang daftar show
   document.getElementById('showListContainer').innerHTML = renderShowList();
