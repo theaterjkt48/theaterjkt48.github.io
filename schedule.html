@@ -105,13 +105,7 @@ body.dark .show-card-members strong{color:#e5e7eb}
     color: #fff;
     animation: birthday-glow 2s ease-in-out infinite;
 }
-
-.birthday-badge svg {
-    width: 12px;
-    height: 12px;
-    fill: currentColor;
-}
-
+.birthday-badge svg { width: 12px; height: 12px; fill: currentColor; }
 @keyframes birthday-glow {
     0%, 100% { box-shadow: 0 0 8px rgba(255,255,255,0.3); }
     50% { box-shadow: 0 0 12px rgba(255,255,255,0.5); }
@@ -131,22 +125,10 @@ body.dark .show-card-members strong{color:#e5e7eb}
     animation: graduation-glow 2s ease-in-out infinite;
     border: 1px solid rgba(59, 130, 246, 0.5);
 }
-
-.graduation-badge svg {
-    width: 12px;
-    height: 12px;
-    fill: currentColor;
-}
-
+.graduation-badge svg { width: 12px; height: 12px; fill: currentColor; }
 @keyframes graduation-glow {
-    0%, 100% { 
-        box-shadow: 0 0 8px rgba(59, 130, 246, 0.4); 
-        background: rgba(30, 64, 175, 0.4);
-    }
-    50% { 
-        box-shadow: 0 0 12px rgba(59, 130, 246, 0.6);
-        background: rgba(30, 64, 175, 0.6);
-    }
+    0%, 100% { box-shadow: 0 0 8px rgba(59, 130, 246, 0.4); background: rgba(30, 64, 175, 0.4); }
+    50% { box-shadow: 0 0 12px rgba(59, 130, 246, 0.6); background: rgba(30, 64, 175, 0.6); }
 }
 
 /* Loading & No Shows */
@@ -166,239 +148,81 @@ body.dark .no-shows-message{color:#9ca3af}
 body.dark .detail-footer{color:#9ca3af;border-top-color:#374151}
 
 /* Responsive Breakpoints */
-@media (max-width:1024px){
-    .container{max-width:90%;margin:130px auto 25px}
-}
-
+@media (max-width:1024px){ .container{max-width:90%;margin:130px auto 25px} }
 @media (max-width:768px){
     .container{max-width:95%;margin:120px auto 20px;border-radius:16px}
-    .calendar-section{padding:20px}
-    .shows-section{padding:20px}
-    .show-card-header{padding:15px}
-    .show-card-title{font-size:14px}
+    .calendar-section{padding:20px} .shows-section{padding:20px}
+    .show-card-header{padding:15px} .show-card-title{font-size:14px}
     .show-status-badge{font-size:11px;padding:5px 10px}
-    .show-card-time{font-size:12px}
-    .show-card-time svg{width:12px;height:12px}
+    .show-card-time{font-size:12px} .show-card-time svg{width:12px;height:12px}
     .show-card-members{padding:12px}
     .calendar-day-header{padding:10px 0;font-size:11px}
     .calendar-day{padding:10px 0;font-size:14px;min-height:40px}
 }
-
 @media (max-width:480px){
     .main-header{position:sticky}
     .container{margin:0 auto 15px;border-radius:0;box-shadow:none;width:100%;max-width:100%}
     body.dark .container{box-shadow:none}
-    .calendar-section{padding:15px}
-    .shows-section{padding:15px}
+    .calendar-section{padding:15px} .shows-section{padding:15px}
     .calendar-title{font-size:16px}
     .calendar-nav button{width:32px;height:32px}
     .calendar-nav button svg{width:16px;height:16px}
     .calendar-day-header{padding:8px 0;font-size:10px}
     .calendar-day{padding:8px 0;font-size:13px;min-height:35px}
     .calendar-indicator{width:5px;height:5px}
-    .show-card-header{padding:12px}
-    .show-card-title{font-size:13px;margin-bottom:8px}
+    .show-card-header{padding:12px} .show-card-title{font-size:13px;margin-bottom:8px}
     .show-status-badge{font-size:10px;padding:4px 8px;margin-bottom:8px}
     .show-live-dot,.show-upcoming-dot{width:6px;height:6px}
     .show-card-time{font-size:11px;flex-direction:column;align-items:flex-start;gap:5px}
-    .show-card-time div{gap:4px}
-    .show-card-time svg{width:11px;height:11px}
-    .show-card-members{padding:10px}
-    .show-card-members p{font-size:12px}
-    .detail-header{padding:10px 15px}
-    .back-btn{font-size:14px;gap:4px}
-    .back-btn svg{width:14px;height:14px}
-    .detail-title{font-size:14px;margin:0 5px}
-    .theme-toggle-detail{width:36px;height:36px}
-    .theater-header{font-size:13px;padding:8px 15px}
-    .birthday-badge,
-    .graduation-badge{font-size:10px;padding:3px 8px}
+    .show-card-time div{gap:4px} .show-card-time svg{width:11px;height:11px}
+    .show-card-members{padding:10px} .show-card-members p{font-size:12px}
+    .detail-header{padding:10px 15px} .back-btn{font-size:14px;gap:4px}
+    .back-btn svg{width:14px;height:14px} .detail-title{font-size:14px;margin:0 5px}
+    .theme-toggle-detail{width:36px;height:36px} .theater-header{font-size:13px;padding:8px 15px}
+    .birthday-badge, .graduation-badge{font-size:10px;padding:3px 8px}
 }
-
 @media (max-width:360px){
-    .calendar-grid{gap:5px}
-    .calendar-day{padding:6px 0;font-size:12px;min-height:30px}
-    .show-card-title{font-size:12px}
-    .show-card-time{font-size:10px}
-    .show-card-members p{font-size:11px}
-    .section-title{font-size:14px}
+    .calendar-grid{gap:5px} .calendar-day{padding:6px 0;font-size:12px;min-height:30px}
+    .show-card-title{font-size:12px} .show-card-time{font-size:10px}
+    .show-card-members p{font-size:11px} .section-title{font-size:14px}
 }
 
 /* ============= DESKTOP LAYOUT ============= */
 @media (min-width: 1025px) {
-    body {
-        padding: 0;
-        display: flex;
-        flex-direction: column;
-        min-height: 100vh;
-    }
-    
-    .main-header {
-        position: relative;
-        background: #fff;
-        border-bottom: 1px solid #ddd;
-        width: 100%;
-    }
-    
-    .theater-header {
-        color: #333;
-        font-size: 16px;
-        padding: 12px 20px;
-        letter-spacing: 1px;
-    }
-    
-    .detail-header {
-        background: #fff;
-        border-top: none;
-        border-bottom: 1px solid #ddd;
-    }
-    
-    body.dark .main-header {
-        background: #111827;
-        border-color: #1f2937;
-    }
-    
-    body.dark .theater-header {
-        color: #e5e7eb;
-    }
-    
-    body.dark .detail-header {
-        background: #111827;
-        border-color: #1f2937;
-    }
-    
-    .container {
-        display: flex;
-        flex: 1;
-        max-width: 1200px;
-        width: 100%;
-        margin: 20px auto;
-        border-radius: 20px;
-        overflow: hidden;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    }
-    
-    .calendar-section {
-        flex: 0 0 350px;
-        border-right: 1px solid #e5e7eb;
-        border-bottom: none;
-        padding: 30px;
-    }
-    
-    body.dark .calendar-section {
-        border-color: #374151;
-    }
-    
-    .shows-section {
-        flex: 1;
-        min-width: 0;
-        padding: 30px;
-    }
-    
-    .calendar-title {
-        font-size: 20px;
-    }
-    
-    .calendar-grid {
-        gap: 10px;
-    }
-    
-    .calendar-day {
-        padding: 15px 0;
-        min-height: 50px;
-        font-size: 16px;
-    }
-    
-    .calendar-day-header {
-        padding: 15px 0;
-        font-size: 13px;
-    }
-    
-    .calendar-indicator {
-        width: 8px;
-        height: 8px;
-    }
-    
-    .section-title {
-        font-size: 20px;
-        margin-bottom: 25px;
-    }
-    
-    .shows-count {
-        font-size: 12px;
-        padding: 4px 10px;
-        min-width: 30px;
-    }
-    
-    .shows-list {
-        gap: 20px;
-    }
-    
-    .show-card-title {
-        font-size: 18px;
-    }
-    
-    .show-status-badge {
-        font-size: 13px;
-        padding: 8px 14px;
-        margin-bottom: 12px;
-    }
-    
-    .show-live-dot, .show-upcoming-dot {
-        width: 10px;
-        height: 10px;
-    }
-    
-    .show-card-time {
-        font-size: 14px;
-        gap: 20px;
-    }
-    
-    .show-card-time svg {
-        width: 16px;
-        height: 16px;
-    }
-    
-    .show-card-members {
-        padding: 18px;
-    }
-    
-    .show-card-members p {
-        font-size: 14px;
-    }
-    
-    .birthday-badge,
-    .graduation-badge {
-        font-size: 12px;
-        padding: 5px 12px;
-    }
-    
-    .detail-footer {
-        padding: 15px;
-        font-size: 11px;
-        width: 100%;
-        margin-top: auto;
-        border: none;
-        border-top: 1px solid #e5e7eb;
-        background: #fff;
-    }
-    
-    body.dark .detail-footer {
-        border-top-color: #374151;
-        background: #111827;
-        color: #9ca3af;
-    }
+    body { padding: 0; display: flex; flex-direction: column; min-height: 100vh; }
+    .main-header { position: relative; background: #fff; border-bottom: 1px solid #ddd; width: 100%; }
+    .theater-header { color: #333; font-size: 16px; padding: 12px 20px; letter-spacing: 1px; }
+    .detail-header { background: #fff; border-top: none; border-bottom: 1px solid #ddd; }
+    body.dark .main-header { background: #111827; border-color: #1f2937; }
+    body.dark .theater-header { color: #e5e7eb; }
+    body.dark .detail-header { background: #111827; border-color: #1f2937; }
+    .container { display: flex; flex: 1; max-width: 1200px; width: 100%; margin: 20px auto; border-radius: 20px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+    .calendar-section { flex: 0 0 350px; border-right: 1px solid #e5e7eb; border-bottom: none; padding: 30px; }
+    body.dark .calendar-section { border-color: #374151; }
+    .shows-section { flex: 1; min-width: 0; padding: 30px; }
+    .calendar-title { font-size: 20px; }
+    .calendar-grid { gap: 10px; }
+    .calendar-day { padding: 15px 0; min-height: 50px; font-size: 16px; }
+    .calendar-day-header { padding: 15px 0; font-size: 13px; }
+    .calendar-indicator { width: 8px; height: 8px; }
+    .section-title { font-size: 20px; margin-bottom: 25px; }
+    .shows-count { font-size: 12px; padding: 4px 10px; min-width: 30px; }
+    .shows-list { gap: 20px; }
+    .show-card-title { font-size: 18px; }
+    .show-status-badge { font-size: 13px; padding: 8px 14px; margin-bottom: 12px; }
+    .show-live-dot, .show-upcoming-dot { width: 10px; height: 10px; }
+    .show-card-time { font-size: 14px; gap: 20px; }
+    .show-card-time svg { width: 16px; height: 16px; }
+    .show-card-members { padding: 18px; }
+    .show-card-members p { font-size: 14px; }
+    .birthday-badge, .graduation-badge { font-size: 12px; padding: 5px 12px; }
+    .detail-footer { padding: 15px; font-size: 11px; width: 100%; margin-top: auto; border: none; border-top: 1px solid #e5e7eb; background: #fff; }
+    body.dark .detail-footer { border-top-color: #374151; background: #111827; color: #9ca3af; }
 }
-
-@media (max-height: 700px) {
-    .container {
-        margin: 10px auto;
-    }
-}
+@media (max-height: 700px) { .container { margin: 10px auto; } }
 </style>
 </head>
 <body>
-<!-- ============= HEADER SAMA DENGAN LIVESHOW ============= -->
 <header class="main-header">
   <div class="theater-header" onclick="window.location.replace('index.html')" style="cursor:pointer">JKT48 SHOW THEATER</div>
   <div class="detail-header">
@@ -446,7 +270,6 @@ body.dark .detail-footer{color:#9ca3af;border-top-color:#374151}
       <span>Daftar Show</span>
       <span class="shows-count" id="showsCount">0</span>
     </div>
-    
     <div id="showList">
       <div class="loading">
         <div class="spinner"></div>
@@ -456,7 +279,6 @@ body.dark .detail-footer{color:#9ca3af;border-top-color:#374151}
   </div>
 </div>
 
-<!-- ============= FOOTER SAMA DENGAN LIVESHOW ============= -->
 <footer class="detail-footer">
   <p>© 2026 Show Theater. Data diperbarui secara real-time</p>
 </footer>
@@ -466,9 +288,14 @@ const SUPABASE_URL = "https://pprxfopqkvpeajeoxzig.supabase.co";
 const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBwcnhmb3Bxa3ZwZWFqZW94emlnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjYyNTI4MTIsImV4cCI6MjA4MTgyODgxMn0.iXRO_dAHhtVHRLqGTresG_63RD2zIaopNXtXYNfthdg";
 const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-const SHOW_DURATION_MINUTES = 150;       // Durasi show biasa
-const EVENT_DURATION_MINUTES = 150;      // Durasi event (non-show)
-const PRE_SHOW_BUFFER_MINUTES = 15; // Live mulai 15 menit sebelum jam tayang
+const SHOW_DURATION_MINUTES = 150;
+const EVENT_DURATION_MINUTES = 150;
+const PRE_SHOW_BUFFER_MINUTES = 15;
+
+// ============= HELPER: Selalu gunakan WIB (UTC+7) =============
+function getTodayWIB() {
+    return moment().utcOffset(7 * 60).format('YYYY-MM-DD');
+}
 
 function getDurationMinutes(isNonShow) {
     return isNonShow ? EVENT_DURATION_MINUTES : SHOW_DURATION_MINUTES;
@@ -479,22 +306,16 @@ function getDurationMinutes(isNonShow) {
   const savedTheme = localStorage.getItem('jkt48_theme') || 'light';
   const html = document.documentElement;
   const body = document.body;
-  
   if (savedTheme === 'dark') {
-    html.classList.add('dark');
-    body.classList.add('dark');
-    updateThemeIcon('dark');
+    html.classList.add('dark'); body.classList.add('dark'); updateThemeIcon('dark');
   } else {
-    html.classList.remove('dark');
-    body.classList.remove('dark');
-    updateThemeIcon('light');
+    html.classList.remove('dark'); body.classList.remove('dark'); updateThemeIcon('light');
   }
 })();
 
 function updateThemeIcon(theme) {
   const icon = document.getElementById('themeIconDetail');
   if (!icon) return;
-  
   if (theme === 'dark') {
     icon.innerHTML = '<path d="M12,17a5,5,0,1,1,5-5A5,5,0,0,1,12,17Zm0-8a3,3,0,1,0,3,3A3,3,0,0,0,12,9Zm0-4a1,1,0,0,0,1-1V3a1,1,0,0,0-2,0V4A1,1,0,0,0,12,5ZM5.64,7.05a1,1,0,0,0,.7.29,1,1,0,0,0,.71-.29,1,1,0,0,0,0-1.41L6.34,5A1,1,0,0,0,4.93,6.34ZM5,12a1,1,0,0,0-1-1H3a1,1,0,0,0,0,2H4A1,1,0,0,0,5,12Zm.64,5.66a1,1,0,0,0,0,1.41,1,1,0,0,0,1.41,0l.71-.71a1,1,0,0,0-1.41-1.41ZM12,19a1,1,0,0,0-1,1v1a1,1,0,0,0,2,0V20A1,1,0,0,0,12,19Zm6.36-2.34a1,1,0,0,0-1.41,1.41l.71.71a1,1,0,0,0,1.41,0,1,1,0,0,0,0-1.41ZM21,11H20a1,1,0,0,0,0,2h1a1,1,0,0,0,0-2Zm-3.64-3.95a1,1,0,0,0,.7.29,1,1,0,0,0,.71-1.7l-.71-.71a1,1,0,0,0-1.41,1.41Z"/>';
   } else {
@@ -505,93 +326,66 @@ function updateThemeIcon(theme) {
 function toggleTheme() {
   const html = document.documentElement;
   const body = document.body;
-  
   const isDark = body.classList.contains('dark');
-  
   if (isDark) {
-    html.classList.remove('dark');
-    body.classList.remove('dark');
-    localStorage.setItem('jkt48_theme', 'light');
-    updateThemeIcon('light');
+    html.classList.remove('dark'); body.classList.remove('dark');
+    localStorage.setItem('jkt48_theme', 'light'); updateThemeIcon('light');
   } else {
-    html.classList.add('dark');
-    body.classList.add('dark');
-    localStorage.setItem('jkt48_theme', 'dark');
-    updateThemeIcon('dark');
+    html.classList.add('dark'); body.classList.add('dark');
+    localStorage.setItem('jkt48_theme', 'dark'); updateThemeIcon('dark');
   }
 }
 
 // ============= LIVE STATUS =============
 function getLiveStatus(showDate, showTime, isNonShow = false) {
     if (!showDate || !showTime) return 'FINISHED';
-    
     const now = new Date();
     const showDateTime = new Date(`${showDate}T${showTime}`);
     const liveStart = new Date(showDateTime.getTime() - PRE_SHOW_BUFFER_MINUTES * 60000);
     const liveEnd = new Date(showDateTime.getTime() + getDurationMinutes(isNonShow) * 60000);
-    
     if (now < liveStart) return 'UPCOMING';
     if (now >= liveStart && now <= liveEnd) return 'LIVE';
     return 'FINISHED';
 }
 
-// ============= MAIN FUNCTIONS =============
+// ============= STATE: Gunakan WIB sejak inisialisasi =============
 let allShows = [];
-let currentDate = new Date().toISOString().split('T')[0];
-let currentMonth = moment(currentDate);
+let currentDate = getTodayWIB();
+let currentMonth = moment().utcOffset(7 * 60);
 
-function goBack() {
-  window.location.replace('index.html');
-}
-
-function saveSelectedDate(dateStr) {
-    localStorage.setItem('jkt48_selected_date', dateStr);
-}
-
-function loadSelectedDate() {
-    const savedDate = localStorage.getItem('jkt48_selected_date');
-    return savedDate || new Date().toISOString().split('T')[0];
-}
+function goBack() { window.location.replace('index.html'); }
+function saveSelectedDate(dateStr) { localStorage.setItem('jkt48_selected_date', dateStr); }
+function loadSelectedDate() { return localStorage.getItem('jkt48_selected_date') || getTodayWIB(); }
 
 async function loadSchedule() {
     try {
         console.log('Loading schedule...');
-        
-        const today = new Date();
-        const startDate = new Date(today.getFullYear(), today.getMonth() - 1, 1);
-        const endDate = new Date(today.getFullYear(), today.getMonth() + 2, 0);
-        const startStr = startDate.toISOString().split('T')[0];
-        const endStr = endDate.toISOString().split('T')[0];
 
-        // JOIN dengan members untuk mendapatkan nama
+        // Range query berdasarkan WIB
+        const todayWIB = moment().utcOffset(7 * 60);
+        const startStr = todayWIB.clone().subtract(1, 'month').startOf('month').format('YYYY-MM-DD');
+        const endStr = todayWIB.clone().add(2, 'month').endOf('month').format('YYYY-MM-DD');
+
         const { data, error } = await db
             .from('setlist_performance')
-            .select(`
-                *,
-                members(name)
-            `)
+            .select(`*, members(name)`)
             .gte('show_date', startStr)
             .lte('show_date', endStr)
             .order('show_date', { ascending: true })
             .order('show_time', { ascending: true });
 
         if (error) throw error;
-        
-        // Transform data untuk menambahkan memberName
-        allShows = (data || []).map(show => ({
-            ...show,
-            memberName: show.members?.name
-        }));
-        
+
+        allShows = (data || []).map(show => ({ ...show, memberName: show.members?.name }));
         console.log('Shows loaded:', allShows.length);
-        
-        // Selalu reset ke hari ini saat refresh
-        currentDate = new Date().toISOString().split('T')[0];
-        currentMonth = moment(currentDate);
-        
+
+        // Reset ke hari ini dalam WIB
+        currentDate = getTodayWIB();
+        currentMonth = moment().utcOffset(7 * 60);
+
         renderCalendar();
         renderShows(currentDate);
-        
+
     } catch (err) {
         console.error('Error:', err);
         document.getElementById('showList').innerHTML = `
@@ -605,8 +399,7 @@ async function loadSchedule() {
                 </div>
                 <div class="no-shows-title">Gagal Memuat Jadwal</div>
                 <div class="no-shows-desc">Silakan coba refresh halaman atau cek koneksi internet Anda.</div>
-            </div>
-        `;
+            </div>`;
     }
 }
 
@@ -626,14 +419,9 @@ const SETLIST_COLORS = {
 };
 
 function getSetlistGradient(setlistName, isNonShow) {
-  if (isNonShow) {
-    const col = SETLIST_COLORS['non_show'];
-    return `linear-gradient(135deg, ${col.from} 0%, ${col.to} 100%)`;
-  }
-  // Exact match
+  if (isNonShow) { const col = SETLIST_COLORS['non_show']; return `linear-gradient(135deg, ${col.from} 0%, ${col.to} 100%)`; }
   const col = SETLIST_COLORS[setlistName];
   if (col) return `linear-gradient(135deg, ${col.from} 0%, ${col.to} 100%)`;
-  // Fallback partial match
   const lower = (setlistName || '').toLowerCase();
   if (lower.includes('tsunaginagara') || lower.includes('tewo')) return `linear-gradient(135deg, #FF69B4 0%, #c0407a 100%)`;
   if (lower.includes('ramune')) return `linear-gradient(135deg, #00CED1 0%, #008b8d 100%)`;
@@ -644,168 +432,116 @@ function getSetlistGradient(setlistName, isNonShow) {
 
 function getSetlistColor(setlistName) {
     if (!setlistName) return '#e60012';
-    const setlistLower = setlistName.toLowerCase().trim();
-    
-    if (setlistLower.includes('non_show') || setlistLower === 'non_show') {
-        return '#22c55e'; // hijau
-    } else if (setlistLower.includes('te wo tsunaginagara') || 
-        setlistLower.includes('tewo') ||
-        setlistLower.includes('tsunaginagara')) {
-        return '#FF69B4';
-    } else if (setlistLower.includes('ramune')) {
-        return '#00CED1';
-    } else if (setlistLower.includes('pertaruhan')) {
-        return '#D30000';
-    } else if (setlistLower.includes('pajama')) {
-        return '#00006d';
-    } else {
-        return '#e60012';
-    }
+    const l = setlistName.toLowerCase().trim();
+    if (l.includes('non_show') || l === 'non_show') return '#22c55e';
+    if (l.includes('te wo tsunaginagara') || l.includes('tewo') || l.includes('tsunaginagara')) return '#FF69B4';
+    if (l.includes('ramune')) return '#00CED1';
+    if (l.includes('pertaruhan')) return '#D30000';
+    if (l.includes('pajama')) return '#00006d';
+    return '#e60012';
 }
 
 function getSetlistsForDate(dateStr) {
     const showsOnDate = allShows.filter(s => s.show_date === dateStr);
     if (showsOnDate.length === 0) return [];
-    
     const uniqueShows = [];
     const seen = new Set();
-    
     showsOnDate.forEach(show => {
         const key = `${show.setlist_name}_${show.show_time}`;
         if (!seen.has(key)) {
             seen.add(key);
             const color = show.is_non_show ? '#22c55e' : getSetlistColor(show.setlist_name);
-            uniqueShows.push({ 
-                color, 
-                name: show.setlist_name, 
-                time: show.show_time,
-                isBirthday: show.is_birthday_show,
-                birthdayMember: show.birthday_member,
-                isGraduation: show.is_graduation_show,
-                graduationMember: show.graduation_member
-            });
+            uniqueShows.push({ color, name: show.setlist_name, time: show.show_time,
+                isBirthday: show.is_birthday_show, birthdayMember: show.birthday_member,
+                isGraduation: show.is_graduation_show, graduationMember: show.graduation_member });
         }
     });
-    
     return uniqueShows;
 }
 
 function createIndicatorsHTML(dateStr) {
     const setlists = getSetlistsForDate(dateStr);
     if (setlists.length === 0) return '';
-    
-    const limitedSetlists = setlists.slice(0, 3);
-    
-    let indicatorsHTML = '<div class="calendar-indicators">';
-    limitedSetlists.forEach(setlist => {
-        const indicatorColor = setlist.color;
-        
-        let tooltip = `${setlist.name} (${setlist.time.slice(0,5)})`;
-        if (setlist.isGraduation) {
-            tooltip += ' - Last Show';
-        } else if (setlist.isBirthday) {
-            tooltip += ' - STS';
-        }
-        
-        indicatorsHTML += `<span class="calendar-indicator" style="background:${indicatorColor}" title="${tooltip}"></span>`;
+    const limited = setlists.slice(0, 3);
+    let html = '<div class="calendar-indicators">';
+    limited.forEach(s => {
+        let tooltip = `${s.name} (${s.time.slice(0,5)})`;
+        if (s.isGraduation) tooltip += ' - Last Show';
+        else if (s.isBirthday) tooltip += ' - STS';
+        html += `<span class="calendar-indicator" style="background:${s.color}" title="${tooltip}"></span>`;
     });
-    
     if (setlists.length > 3) {
-        indicatorsHTML += `<span class="calendar-indicator" style="background:#6b7280; width:8px; height:8px; font-size:6px; line-height:8px; text-align:center;" title="+${setlists.length - 3} show lagi">+</span>`;
+        html += `<span class="calendar-indicator" style="background:#6b7280;width:8px;height:8px;font-size:6px;line-height:8px;text-align:center;" title="+${setlists.length - 3} show lagi">+</span>`;
     }
-    
-    indicatorsHTML += '</div>';
-    return indicatorsHTML;
+    html += '</div>';
+    return html;
 }
 
 function renderCalendar() {
     const calendarEl = document.getElementById('calendar');
     const monthYearEl = document.getElementById('currentMonth');
-    
-    const monthNames = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 
-                       'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
-    const dayNames = ['Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab'];
-    
+    const monthNames = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+    const dayNames = ['Min','Sen','Sel','Rab','Kam','Jum','Sab'];
+
     const month = currentMonth.month();
     const year = currentMonth.year();
-    
     monthYearEl.textContent = `${monthNames[month]} ${year}`;
-    
+
     const startOfMonth = currentMonth.clone().startOf('month');
     const endOfMonth = currentMonth.clone().endOf('month');
     const startDate = startOfMonth.clone().startOf('week');
     const endDate = endOfMonth.clone().endOf('week');
-    
+
     let html = '';
-    
-    for (let i = 0; i < 7; i++) {
-        html += `<div class="calendar-day-header">${dayNames[i]}</div>`;
-    }
-    
-    const currentDay = moment();
-    const todayStr = currentDay.format('YYYY-MM-DD');
+    for (let i = 0; i < 7; i++) html += `<div class="calendar-day-header">${dayNames[i]}</div>`;
+
+    // ✅ PERBAIKAN UTAMA: Selalu gunakan WIB untuk menentukan "hari ini"
+    const todayStr = getTodayWIB();
     let date = startDate.clone();
-    
+
     while (date.isBefore(endDate) || date.isSame(endDate, 'day')) {
         const dateStr = date.format('YYYY-MM-DD');
         const isToday = dateStr === todayStr;
         const isCurrentMonth = date.month() === month;
         const isActive = dateStr === currentDate;
         const hasShow = allShows.some(show => show.show_date === dateStr);
-        
+
         let dayClass = 'calendar-day';
         if (!isCurrentMonth) dayClass += ' other-month';
         if (isToday) dayClass += ' today';
         if (isActive) dayClass += ' active';
-        
+
         const indicatorsHTML = hasShow ? createIndicatorsHTML(dateStr) : '';
-        
         html += `<div class="${dayClass}" data-date="${dateStr}" onclick="selectDate('${dateStr}')">
-                    <div>${date.date()}</div>
-                    ${indicatorsHTML}
+                    <div>${date.date()}</div>${indicatorsHTML}
                  </div>`;
         date.add(1, 'day');
     }
-    
     calendarEl.innerHTML = html;
 }
 
 function changeMonth(direction) {
     currentMonth.add(direction, 'month');
     renderCalendar();
-    
-    const firstDay = currentMonth.clone().startOf('month');
-    const firstDayStr = firstDay.format('YYYY-MM-DD');
-    
+    const firstDayStr = currentMonth.clone().startOf('month').format('YYYY-MM-DD');
     if (allShows.some(show => show.show_date >= firstDayStr)) {
         selectDate(firstDayStr);
     } else {
         const showsThisMonth = allShows.filter(show => {
-            const showDate = moment(show.show_date);
-            return showDate.month() === currentMonth.month() && 
-                   showDate.year() === currentMonth.year();
+            const sd = moment(show.show_date);
+            return sd.month() === currentMonth.month() && sd.year() === currentMonth.year();
         });
-        
-        if (showsThisMonth.length > 0) {
-            const firstShowDate = showsThisMonth[0].show_date;
-            selectDate(firstShowDate);
-        } else {
-            selectDate(firstDayStr);
-        }
+        selectDate(showsThisMonth.length > 0 ? showsThisMonth[0].show_date : firstDayStr);
     }
 }
 
 function selectDate(date) {
     currentDate = date;
     saveSelectedDate(date);
-    
-    const selectedMoment = moment(date);
-    
-    if (selectedMoment.month() !== currentMonth.month() || 
-        selectedMoment.year() !== currentMonth.year()) {
-        currentMonth = selectedMoment.clone();
+    const sel = moment(date);
+    if (sel.month() !== currentMonth.month() || sel.year() !== currentMonth.year()) {
+        currentMonth = sel.clone();
     }
-    
     renderCalendar();
     renderShows(date);
 }
@@ -814,7 +550,7 @@ function renderShows(date) {
     const filtered = allShows.filter(s => s.show_date === date);
     const container = document.getElementById('showList');
     const showsCount = document.getElementById('showsCount');
-    
+
     if (filtered.length === 0) {
         showsCount.textContent = '0';
         container.innerHTML = `
@@ -828,113 +564,80 @@ function renderShows(date) {
                 </div>
                 <div class="no-shows-title">Tidak Ada Show</div>
                 <div class="no-shows-desc">Tidak ada show yang dijadwalkan pada tanggal ini.</div>
-            </div>
-        `;
+            </div>`;
         return;
     }
-    
+
     const grouped = {};
     filtered.forEach(show => {
         const key = `${show.setlist_name}_${show.show_time}`;
         if (!grouped[key]) {
             grouped[key] = {
-                setlist: show.setlist_name,
-                time: show.show_time,
-                date: show.show_date,
-                members: [],
-                isBirthday: show.is_birthday_show,
-                birthdayMember: show.birthday_member,
-                isGraduation: show.is_graduation_show,
-                graduationMember: show.graduation_member,
+                setlist: show.setlist_name, time: show.show_time, date: show.show_date, members: [],
+                isBirthday: show.is_birthday_show, birthdayMember: show.birthday_member,
+                isGraduation: show.is_graduation_show, graduationMember: show.graduation_member,
                 is_non_show: show.is_non_show || false
             };
         }
-        // Gunakan memberName dari JOIN
-        if (show.memberName) {
-            grouped[key].members.push(show.memberName);
-        }
+        if (show.memberName) grouped[key].members.push(show.memberName);
     });
-    
-    const sortedShows = Object.values(grouped).sort((a, b) => {
-        return a.time.localeCompare(b.time);
-    });
-    
+
+    const sortedShows = Object.values(grouped).sort((a, b) => a.time.localeCompare(b.time));
     showsCount.textContent = sortedShows.length;
-    
+
+    const dayNames = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
+    const monthNames = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+
     let showsHTML = '<div class="shows-list">';
-    
     sortedShows.forEach(show => {
         const status = getLiveStatus(show.date, show.time, show.is_non_show);
-        
-        let headerClass = '';
-        let statusBadge = '';
-        
+        let headerClass = '', statusBadge = '';
         if (status === 'LIVE') {
             headerClass = 'live-now';
-            statusBadge = `
-                <div class="show-status-badge">
-                    <span class="show-live-dot"></span>
-                    LIVE
-                </div>
-            `;
+            statusBadge = `<div class="show-status-badge"><span class="show-live-dot"></span>LIVE</div>`;
         } else if (status === 'UPCOMING') {
             headerClass = 'upcoming';
-            statusBadge = `
-                <div class="show-status-badge">
-                    <span class="show-upcoming-dot"></span>
-                    UPCOMING
-                </div>
-            `;
+            statusBadge = `<div class="show-status-badge"><span class="show-upcoming-dot"></span>UPCOMING</div>`;
         } else {
             headerClass = 'finished';
-            statusBadge = '<div class="show-status-badge">SHOW ENDED</div>';
+            statusBadge = `<div class="show-status-badge">SHOW ENDED</div>`;
         }
-        
-        const dayNames = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
-        const monthNames = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 
-                           'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
-        const d = new Date(show.date);
+
+        // ✅ Parse tanggal sebagai WIB agar nama hari tidak geser
+        const d = new Date(show.date + 'T00:00:00+07:00');
         const dayName = dayNames[d.getDay()];
         const dayNumber = d.getDate();
         const monthName = monthNames[d.getMonth()];
         const year = d.getFullYear();
-        
+
         let specialBadges = '';
-        
         if (show.isBirthday && show.birthdayMember) {
-            specialBadges += `
-                <div class="birthday-badge">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" viewBox="0 0 16 16">
-                        <path d="m7.994.013-.595.79a.747.747 0 0 0 .101 1.01V4H5a2 2 0 0 0-2 2v3H2a2 2 0 0 0-2 2v4a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-4a2 2 0 0 0-2-2h-1V6a2 2 0 0 0-2-2H8.5V1.806A.747.747 0 0 0 8.592.802zM4 6a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v.414a.9.9 0 0 1-.646-.268 1.914 1.914 0 0 0-2.708 0 .914.914 0 0 1-1.292 0 1.914 1.914 0 0 0-2.708 0A.9.9 0 0 1 4 6.414zm0 1.414c.49 0 .98-.187 1.354-.56a.914.914 0 0 1 1.292 0c.748.747 1.96.747 2.708 0a.914.914 0 0 1 1.292 0c.374.373.864.56 1.354.56V9H4zM1 11a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v.793l-.354.354a.914.914 0 0 1-1.293 0 1.914 1.914 0 0 0-2.707 0 .914.914 0 0 1-1.292 0 1.914 1.914 0 0 0-2.708 0 .914.914 0 0 1-1.292 0L1 11.793zm11.646 1.854a1.915 1.915 0 0 0 2.354.279V15H1v-1.867c.737.452 1.715.36 2.354-.28a.914.914 0 0 1 1.292 0c.748.748 1.96.748 2.708 0a.914.914 0 0 1 1.292 0c.748.748 1.96.748 2.707 0a.914.914 0 0 1 1.293 0Z"/>
-                    </svg>
-                    STS ${show.birthdayMember}
-                </div>
-            `;
+            specialBadges += `<div class="birthday-badge">
+                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="m7.994.013-.595.79a.747.747 0 0 0 .101 1.01V4H5a2 2 0 0 0-2 2v3H2a2 2 0 0 0-2 2v4a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-4a2 2 0 0 0-2-2h-1V6a2 2 0 0 0-2-2H8.5V1.806A.747.747 0 0 0 8.592.802zM4 6a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v.414a.9.9 0 0 1-.646-.268 1.914 1.914 0 0 0-2.708 0 .914.914 0 0 1-1.292 0 1.914 1.914 0 0 0-2.708 0A.9.9 0 0 1 4 6.414zm0 1.414c.49 0 .98-.187 1.354-.56a.914.914 0 0 1 1.292 0c.748.747 1.96.747 2.708 0a.914.914 0 0 1 1.292 0c.374.373.864.56 1.354.56V9H4zM1 11a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v.793l-.354.354a.914.914 0 0 1-1.293 0 1.914 1.914 0 0 0-2.707 0 .914.914 0 0 1-1.292 0 1.914 1.914 0 0 0-2.708 0 .914.914 0 0 1-1.292 0L1 11.793zm11.646 1.854a1.915 1.915 0 0 0 2.354.279V15H1v-1.867c.737.452 1.715.36 2.354-.28a.914.914 0 0 1 1.292 0c.748.748 1.96.748 2.708 0a.914.914 0 0 1 1.292 0c.748.748 1.96.748 2.707 0a.914.914 0 0 1 1.293 0Z"/>
+                </svg>STS ${show.birthdayMember}</div>`;
         }
-        
         if (show.isGraduation && show.graduationMember) {
-            specialBadges += `
-                <div class="graduation-badge">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" viewBox="0 0 16 16">
-                        <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zM4.5 6.5a.5.5 0 0 1 0-1h5.793L8.146 4.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 7.5H4.5z"/>
-                    </svg>
-                    Last Show ${show.graduationMember}
-                </div>
-            `;
+            specialBadges += `<div class="graduation-badge">
+                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zM4.5 6.5a.5.5 0 0 1 0-1h5.793L8.146 4.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 7.5H4.5z"/>
+                </svg>Last Show ${show.graduationMember}</div>`;
         }
-        
+
         const setlistParam = encodeURIComponent(show.setlist);
         const dateParam = encodeURIComponent(show.date);
         const timeParam = encodeURIComponent(show.time);
-        
+        const bgStyle = status === 'LIVE'
+            ? 'linear-gradient(135deg, #e60012 0%, #a00010 100%)'
+            : status === 'FINISHED'
+                ? 'linear-gradient(135deg, #6b7280 0%, #4b5563 100%)'
+                : (getSetlistGradient(show.setlist, show.is_non_show) || 'linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)');
+
         showsHTML += `
             <div class="show-card" data-setlist="${setlistParam}" data-date="${dateParam}" data-time="${timeParam}" onclick="openShowDetail(this)">
-                <div class="show-card-header ${headerClass}" style="background:${status === 'LIVE' ? 'linear-gradient(135deg, #e60012 0%, #a00010 100%)' : status === 'FINISHED' ? 'linear-gradient(135deg, #6b7280 0%, #4b5563 100%)' : (getSetlistGradient(show.setlist, show.is_non_show) || 'linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)')};">
+                <div class="show-card-header ${headerClass}" style="background:${bgStyle};">
                     ${statusBadge}
-                    <div class="show-card-title">
-                        <span>${show.setlist}</span>
-                        ${specialBadges}
-                    </div>
+                    <div class="show-card-title"><span>${show.setlist}</span>${specialBadges}</div>
                     <div class="show-card-time">
                         <div>
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -957,10 +660,8 @@ function renderShows(date) {
                 <div class="show-card-members">
                     <p><strong>Member yang tampil:</strong> ${show.members.length > 0 ? show.members.sort().join(', ') : '<em>Member Belum Diumumkan</em>'}</p>
                 </div>
-            </div>
-        `;
+            </div>`;
     });
-    
     showsHTML += '</div>';
     container.innerHTML = showsHTML;
 }
@@ -969,69 +670,55 @@ function openShowDetail(element) {
     const setlist = element.getAttribute('data-setlist');
     const date = element.getAttribute('data-date');
     const time = element.getAttribute('data-time');
-    
     localStorage.setItem('jkt48_selected_setlist', setlist);
     localStorage.setItem('jkt48_selected_date', date);
     localStorage.setItem('jkt48_selected_time', time);
-    
-    const url = `liveshow.html?setlist=${setlist}&date=${date}&time=${time}`;
-    window.location.href = url;
+    window.location.href = `liveshow.html?setlist=${setlist}&date=${date}&time=${time}`;
 }
 
 // Auto-update status show setiap 30 detik
-setInterval(() => {
-    if (allShows.length > 0) {
-        renderShows(currentDate);
-    }
-}, 30000);
+setInterval(() => { if (allShows.length > 0) renderShows(currentDate); }, 30000);
 
-// Cek pergantian hari setiap 1 menit
-let lastCheckedDate = new Date().toISOString().split('T')[0];
+// ============= CEK PERGANTIAN HARI DALAM WIB =============
+let lastCheckedDate = getTodayWIB();
 
 function checkDayChange() {
-    const todayStr = new Date().toISOString().split('T')[0];
-    
-    // Jika hari berubah (sudah lewat tengah malam)
+    const todayStr = getTodayWIB(); // ✅ Cek berdasarkan WIB
     if (lastCheckedDate !== todayStr) {
-        console.log('Hari berganti dari', lastCheckedDate, 'ke', todayStr);
+        console.log('Hari berganti (WIB) dari', lastCheckedDate, 'ke', todayStr);
         lastCheckedDate = todayStr;
         currentDate = todayStr;
-        currentMonth = moment(currentDate);
-        
-        // Reload data dan update tampilan
+        currentMonth = moment().utcOffset(7 * 60);
         renderCalendar();
         renderShows(currentDate);
     }
 }
 
-setInterval(checkDayChange, 60000); // Cek setiap 1 menit
+setInterval(checkDayChange, 60000);
 
-// Fungsi untuk schedule exact midnight update
+// ============= SCHEDULE TEPAT TENGAH MALAM WIB =============
 function scheduleMidnightUpdate() {
-    const now = new Date();
-    const tomorrow = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 0, 0, 0);
-    const msUntilMidnight = tomorrow - now;
-    
-    console.log('Next midnight update in', Math.round(msUntilMidnight / 1000 / 60), 'minutes');
-    
+    const nowWIB = moment().utcOffset(7 * 60);
+    const midnightWIB = nowWIB.clone().add(1, 'day').startOf('day');
+    const msUntilMidnight = midnightWIB.diff(nowWIB);
+
+    console.log('Next midnight WIB in', Math.round(msUntilMidnight / 1000 / 60), 'menit');
+
     setTimeout(() => {
-        console.log('Midnight reached! Updating to new day...');
-        const todayStr = new Date().toISOString().split('T')[0];
+        console.log('Tengah malam WIB! Update ke hari baru...');
+        const todayStr = getTodayWIB();
         lastCheckedDate = todayStr;
         currentDate = todayStr;
-        currentMonth = moment(currentDate);
-        
+        currentMonth = moment().utcOffset(7 * 60);
         renderCalendar();
         renderShows(currentDate);
-        
-        // Schedule next midnight
-        scheduleMidnightUpdate();
+        scheduleMidnightUpdate(); // Schedule tengah malam berikutnya
     }, msUntilMidnight);
 }
 
 document.addEventListener('DOMContentLoaded', () => {
     loadSchedule();
-    scheduleMidnightUpdate(); // Start midnight scheduler
+    scheduleMidnightUpdate();
 });
 </script>
 </body>
