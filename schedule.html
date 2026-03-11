@@ -113,7 +113,7 @@ body.dark .show-card-members strong{color:#e5e7eb}
 
 /* Graduation Badge */
 .graduation-badge {
-    background: rgba(30, 64, 175, 0.4);
+    background: rgba(255,255,255,0.2);
     display: inline-flex;
     align-items: center;
     gap: 6px;
@@ -123,12 +123,11 @@ body.dark .show-card-members strong{color:#e5e7eb}
     font-weight: bold;
     color: #fff;
     animation: graduation-glow 2s ease-in-out infinite;
-    border: 1px solid rgba(59, 130, 246, 0.5);
 }
 .graduation-badge svg { width: 12px; height: 12px; fill: currentColor; }
 @keyframes graduation-glow {
-    0%, 100% { box-shadow: 0 0 8px rgba(59, 130, 246, 0.4); background: rgba(30, 64, 175, 0.4); }
-    50% { box-shadow: 0 0 12px rgba(59, 130, 246, 0.6); background: rgba(30, 64, 175, 0.6); }
+    0%, 100% { box-shadow: 0 0 8px rgba(255,255,255,0.3); }
+    50% { box-shadow: 0 0 12px rgba(255,255,255,0.5); }
 }
 
 /* Loading & No Shows */
@@ -620,8 +619,9 @@ function renderShows(date) {
         if (show.isGraduation && show.graduationMember) {
             specialBadges += `<div class="graduation-badge">
                 <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" viewBox="0 0 16 16">
-                    <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zM4.5 6.5a.5.5 0 0 1 0-1h5.793L8.146 4.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 7.5H4.5z"/>
-                </svg>Last Show ${show.graduationMember}</div>`;
+                    <path d="M8.211 2.047a.5.5 0 0 0-.422 0l-7.5 3.5a.5.5 0 0 0 .025.917l7.5 3a.5.5 0 0 0 .372 0L14 7.14V13a1 1 0 0 0-1 1v2h3v-2a1 1 0 0 0-1-1V6.739l.686-.275a.5.5 0 0 0 .025-.917l-7.5-3.5Z"/>
+                    <path d="M4.176 9.032a.5.5 0 0 0-.656.327l-.5 1.7a.5.5 0 0 0 .294.605l4.5 1.8a.5.5 0 0 0 .372 0l4.5-1.8a.5.5 0 0 0 .294-.605l-.5-1.7a.5.5 0 0 0-.656-.327L8 10.466 4.176 9.032Z"/>
+                </svg>Graduation Show ${show.graduationMember}</div>`;
         }
 
         const setlistParam = encodeURIComponent(show.setlist);

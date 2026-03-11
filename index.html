@@ -23,6 +23,7 @@ header{background:#e60012;padding:15px 20px;font-size:20px;font-weight:bold;colo
 body.dark .schedule-button,body.dark .theme-toggle{background:rgba(0,0,0,0.2)}
 .live-show-banner{color:white;padding:14px 20px;margin:0;border-bottom:3px solid #f59e0b;cursor:pointer;transition:all 0.3s;display:none;position:relative;overflow:hidden;background:linear-gradient(135deg,#ef4444 0%,#dc2626 100%)}
 .live-show-banner.finished{background:linear-gradient(135deg,#6b7280 0%,#4b5563 100%)}
+.live-show-banner.graduation{background:linear-gradient(135deg,#1e3a8a 0%,#1e40af 40%,#7c3aed 80%,#4c1d95 100%);border-bottom-color:#a78bfa}
 .live-show-banner:hover{transform:translateY(-1px);opacity:0.95}
 .live-show-banner::before{content:'';position:absolute;top:0;left:0;right:0;bottom:0;background:linear-gradient(90deg,transparent 0%,rgba(255,255,255,0.1) 50%,transparent 100%);animation:shimmer 3s infinite;pointer-events:none}
 @keyframes shimmer{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
@@ -255,6 +256,10 @@ body.dark .detail-footer{background:#0a0e1a;color:#9ca3af;border-top-color:#3741
             </div>
             <div class="live-show-info">
                 <h3 class="live-show-title" id="liveShowTitle">Loading...</h3>
+                <div id="liveGraduationBadge" style="display:none;align-items:center;gap:6px;background:rgba(255,255,255,0.2);padding:3px 10px;border-radius:12px;font-size:11px;font-weight:bold;color:#fff;margin-top:4px;width:fit-content">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" fill="currentColor" viewBox="0 0 16 16"><path d="M8.211 2.047a.5.5 0 0 0-.422 0l-7.5 3.5a.5.5 0 0 0 .025.917l7.5 3a.5.5 0 0 0 .372 0L14 7.14V13a1 1 0 0 0-1 1v2h3v-2a1 1 0 0 0-1-1V6.739l.686-.275a.5.5 0 0 0 .025-.917l-7.5-3.5Z"/><path d="M4.176 9.032a.5.5 0 0 0-.656.327l-.5 1.7a.5.5 0 0 0 .294.605l4.5 1.8a.5.5 0 0 0 .372 0l4.5-1.8a.5.5 0 0 0 .294-.605l-.5-1.7a.5.5 0 0 0-.656-.327L8 10.466 4.176 9.032Z"/></svg>
+                    <span id="liveGraduationText"></span>
+                </div>
                 <div class="live-show-time" id="liveShowTime">-</div>
             </div>
         </div>
@@ -545,7 +550,19 @@ async function updateLiveShowBanner() {
         if (showData.isGraduationShow && showData.graduationMember) displayTitle += ` (Graduation ${showData.graduationMember})`;
         title.textContent = displayTitle;
         banner.className = 'live-show-banner';
+        if (showData.isGraduationShow) banner.classList.add('graduation');
         badge.className = 'live-badge';
+
+        // Graduation badge
+        const graduationBadgeEl = document.getElementById('liveGraduationBadge');
+        const graduationTextEl = document.getElementById('liveGraduationText');
+        if (showData.isGraduationShow && showData.graduationMember) {
+            graduationBadgeEl.style.display = 'flex';
+            graduationTextEl.textContent = 'Graduation Show ' + showData.graduationMember;
+        } else {
+            graduationBadgeEl.style.display = 'none';
+        }
+
         if (showData.status === 'LIVE') {
             banner.classList.add('live-now');
             badge.innerHTML = '<span class="live-dot"></span><span>LIVE</span>';

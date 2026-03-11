@@ -63,9 +63,9 @@ body.dark .container{background:#111827;box-shadow:0 2px 8px rgba(0,0,0,0.4)}
 .birthday-badge-header svg{width:12px;height:12px;fill:currentColor}
 @keyframes birthday-glow-header{0%,100%{box-shadow:0 0 8px rgba(255,255,255,0.3)}50%{box-shadow:0 0 12px rgba(255,255,255,0.5)}}
 
-.graduation-badge-header{background:rgba(30,64,175,0.4);display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:12px;font-size:11px;font-weight:bold;margin-top:8px;color:#fff;animation:graduation-glow-header 2s ease-in-out infinite;border:1px solid rgba(59,130,246,0.5)}
+.graduation-badge-header{background:rgba(255,255,255,0.2);display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:12px;font-size:11px;font-weight:bold;margin-top:8px;color:#fff;animation:graduation-glow-header 2s ease-in-out infinite}
 .graduation-badge-header svg{width:12px;height:12px;fill:currentColor}
-@keyframes graduation-glow-header{0%,100%{box-shadow:0 0 8px rgba(59,130,246,0.4);background:rgba(30,64,175,0.4)}50%{box-shadow:0 0 12px rgba(59,130,246,0.6);background:rgba(30,64,175,0.6)}}
+@keyframes graduation-glow-header{0%,100%{box-shadow:0 0 8px rgba(255,255,255,0.3)}50%{box-shadow:0 0 12px rgba(255,255,255,0.5)}}
 
 .live-show-header h1{font-size:20px;font-weight:bold;color:#fff;margin:0 0 12px 0;line-height:1.3;padding:0 10px}
 .live-show-date-time{display:flex;align-items:center;justify-content:center;gap:20px;color:rgba(255,255,255,0.9);font-size:13px;flex-wrap:wrap}
@@ -112,11 +112,11 @@ body.dark .member-gen{color:#9ca3af}
 .birthday-member-card .member-avatar::before{content:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='white' viewBox='0 0 16 16'%3E%3Cpath d='m7.994.013-.595.79a.747.747 0 0 0 .101 1.01V4H5a2 2 0 0 0-2 2v3H2a2 2 0 0 0-2 2v4a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-4a2 2 0 0 0-2-2h-1V6a2 2 0 0 0-2-2H8.5V1.806A.747.747 0 0 0 8.592.802zM4 6a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v.414a.9.9 0 0 1-.646-.268 1.914 1.914 0 0 0-2.708 0 .914.914 0 0 1-1.292 0 1.914 1.914 0 0 0-2.708 0A.9.9 0 0 1 4 6.414zm0 1.414c.49 0 .98-.187 1.354-.56a.914.914 0 0 1 1.292 0c.748.747 1.96.747 2.708 0a.914.914 0 0 1 1.292 0c.374.373.864.56 1.354.56V9H4zM1 11a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v.793l-.354.354a.914.914 0 0 1-1.293 0 1.914 1.914 0 0 0-2.707 0 .914.914 0 0 1-1.292 0 1.914 1.914 0 0 0-2.708 0 .914.914 0 0 1-1.292 0L1 11.793zm11.646 1.854a1.915 1.915 0 0 0 2.354.279V15H1v-1.867c.737.452 1.715.36 2.354-.28a.914.914 0 0 1 1.292 0c.748.748 1.96.748 2.708 0a.914.914 0 0 1 1.292 0c.748.748 1.96.748 2.707 0a.914.914 0 0 1 1.293 0Z'/%3E%3C/svg%3E");position:absolute;top:4px;right:4px;width:24px;height:24px;display:flex;align-items:center;justify-content:center;z-index:3}
 .birthday-member-card .member-info{border-top:2px solid #f59e0b}
 
-.graduation-member-card{border:2px solid #1e40af;position:relative}
+.graduation-member-card{border:2px solid #7c3aed;position:relative}
 .graduation-member-card .member-avatar{position:relative}
-.graduation-member-card .member-avatar::after{content:'';position:absolute;top:4px;right:4px;background:#1e40af;width:24px;height:24px;border-radius:50%;z-index:2;box-shadow:0 2px 6px rgba(30,64,175,0.6)}
-.graduation-member-card .member-avatar::before{content:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='white' viewBox='0 0 16 16'%3E%3Cpath d='M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zM4.5 6.5a.5.5 0 0 1 0-1h5.793L8.146 4.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 7.5H4.5z'/%3E%3C/svg%3E");position:absolute;top:4px;right:4px;width:24px;height:24px;display:flex;align-items:center;justify-content:center;z-index:3}
-.graduation-member-card .member-info{border-top:2px solid #1e40af}
+.graduation-member-card .member-avatar::after{content:'';position:absolute;top:4px;right:4px;background:linear-gradient(135deg,#1e40af,#7c3aed);width:24px;height:24px;border-radius:50%;z-index:2;box-shadow:0 2px 6px rgba(124,58,237,0.6)}
+.graduation-member-card .member-avatar::before{content:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='white' viewBox='0 0 16 16'%3E%3Cpath d='M8.211 2.047a.5.5 0 0 0-.422 0l-7.5 3.5a.5.5 0 0 0 .025.917l7.5 3a.5.5 0 0 0 .372 0L14 7.14V13a1 1 0 0 0-1 1v2h3v-2a1 1 0 0 0-1-1V6.739l.686-.275a.5.5 0 0 0 .025-.917l-7.5-3.5Z'/%3E%3Cpath d='M4.176 9.032a.5.5 0 0 0-.656.327l-.5 1.7a.5.5 0 0 0 .294.605l4.5 1.8a.5.5 0 0 0 .372 0l4.5-1.8a.5.5 0 0 0 .294-.605l-.5-1.7a.5.5 0 0 0-.656-.327L8 10.466 4.176 9.032Z'/%3E%3C/svg%3E");position:absolute;top:4px;right:4px;width:24px;height:24px;display:flex;align-items:center;justify-content:center;z-index:3}
+.graduation-member-card .member-info{border-top:2px solid #7c3aed}
 
 .no-shows-message{text-align:center;padding:60px 20px;color:#6b7280}
 body.dark .no-shows-message{color:#9ca3af}
@@ -692,8 +692,8 @@ function renderPage(showData, showTime, isBirthdayShow, birthdayMember, isGradua
   }
   
   if (isGraduationShow && graduationMember) {
-    displayTitle += ` (Last Show ${graduationMember})`;
-    specialBadges += `<div class="graduation-badge-header"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zM4.5 6.5a.5.5 0 0 1 0-1h5.793L8.146 4.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 7.5H4.5z"/></svg>Last Show ${graduationMember}</div>`;
+    displayTitle += ` (Graduation ${graduationMember})`;
+    specialBadges += `<div class="graduation-badge-header"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M8.211 2.047a.5.5 0 0 0-.422 0l-7.5 3.5a.5.5 0 0 0 .025.917l7.5 3a.5.5 0 0 0 .372 0L14 7.14V13a1 1 0 0 0-1 1v2h3v-2a1 1 0 0 0-1-1V6.739l.686-.275a.5.5 0 0 0 .025-.917l-7.5-3.5Z"/><path d="M4.176 9.032a.5.5 0 0 0-.656.327l-.5 1.7a.5.5 0 0 0 .294.605l4.5 1.8a.5.5 0 0 0 .372 0l4.5-1.8a.5.5 0 0 0 .294-.605l-.5-1.7a.5.5 0 0 0-.656-.327L8 10.466 4.176 9.032Z"/></svg>Graduation Show ${graduationMember}</div>`;
   }
   
   const bannerUrl = getSetlistBannerUrl(SETLIST_NAME);
@@ -764,7 +764,7 @@ function renderMembersGrid(membersData, birthdayMember, graduationMember) {
     
     let borderColor = GEN_COLORS[member.gen] || '#6366f1';
     if (isBirthdayStar) borderColor = '#f59e0b';
-    if (isGraduationStar) borderColor = '#1e40af';
+    if (isGraduationStar) borderColor = '#7c3aed';
     
     const clickAttr = SOURCE_PAGE === 'show' ? '' : `onclick="openMemberPage('${member.name}')"`;
     const cardStyle = SOURCE_PAGE === 'show' ? ' style="cursor:default"' : '';
