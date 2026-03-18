@@ -18,17 +18,15 @@ body.dark{background:#0a0e1a;color:#e5e7eb}
 body.dark .main-header{background:#111827;border-color:#1f2937}
 .theater-header{text-align:center;padding:8px 20px;font-size:14px;font-weight:bold;color:#fff;letter-spacing:1px;background:#e60012;}
 body.dark .theater-header{color:#fff;background:#e60012;}
-.detail-header{display:flex;align-items:center;justify-content:space-between;padding:12px 20px;background:#fff;border-top:1px solid #eee;border-bottom:1px solid #ddd;transition:background 0.3s,border-color 0.3s}
+.detail-header{display:flex;align-items:center;justify-content:space-between;padding:12px 20px;background:#fff;border-top:1px solid #eee;border-bottom:1px solid #ddd;transition:background 0.3s,border-color 0.3s;position:relative}
 body.dark .detail-header{background:#111827;border-color:#1f2937}
-.back-btn{background:transparent;border:none;color:#333;font-size:16px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:6px;padding:8px 0;transition:all 0.3s}
+.back-btn{background:transparent;border:none;color:#333;font-size:16px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:6px;padding:8px 0;transition:all 0.3s;position:relative;z-index:1}
 body.dark .back-btn{color:#e5e7eb}
 .back-btn:hover{opacity:0.7}
-.detail-title{font-size:16px;font-weight:bold;color:#333;text-align:center;flex:1;margin:0 10px}
+.detail-title{font-size:16px;font-weight:bold;color:#333;text-align:center;position:absolute;left:50%;transform:translateX(-50%);white-space:nowrap}
 body.dark .detail-title{color:#e5e7eb}
 .header-controls{display:flex;align-items:center;gap:10px}
-.theme-toggle-detail{background:#e60012;border:none;width:40px;height:40px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:8px;transition:all 0.3s}
-.theme-toggle-detail:hover{background:#d5000f;transform:scale(1.1)}
-.theme-toggle-detail svg{width:100%;height:100%;color:#fff}
+
 
 /* Container utama */
 .container{max-width:800px;width:100%;margin:140px auto 30px;background:#fff;border-radius:20px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.1);transition:background 0.3s,box-shadow 0.3s}
@@ -166,7 +164,6 @@ body.dark .detail-footer{color:#9ca3af;border-top-color:#374151}
     .back-btn{font-size:14px;gap:4px}
     .back-btn svg{width:14px;height:14px}
     .detail-title{font-size:14px;margin:0 5px}
-    .theme-toggle-detail{width:36px;height:36px}
     .theater-header{font-size:13px;padding:8px 15px}
     .birthday-badge-header,.graduation-badge-header{font-size:10px;padding:3px 8px;margin-top:6px}
     .birthday-member-card .member-avatar::after,
@@ -347,13 +344,7 @@ body.dark .detail-footer{color:#9ca3af;border-top-color:#374151}
       Kembali
     </button>
     <div class="detail-title">Live Show Detail</div>
-    <div class="header-controls">
-      <button class="theme-toggle-detail" onclick="toggleTheme()" aria-label="Toggle tema gelap/terang">
-        <svg id="themeIconDetail" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-          <path d="M21.64,13a1,1,0,0,0-1.05-.14,8.05,8.05,0,0,1-3.37.73A8.15,8.15,0,0,1,9.08,5.49a8.59,8.59,0,0,1,.25-2A1,1,0,0,0,8,2.36,10.14,10.14,0,1,0,22,14.05,1,1,0,0,0,21.64,13Zm-9.5,6.69A8.14,8.14,0,0,1,7.08,5.22v.27A10.15,10.15,0,0,0,17.22,15.63a9.79,9.79,0,0,0,2.1-.22A8.11,8.11,0,0,1,12.14,19.73Z"/>
-        </svg>
-      </button>
-    </div>
+
   </div>
 </header>
 
@@ -449,40 +440,11 @@ function getLiveStatus(show_date, show_time, isNonShow = false) {
   if (savedTheme === 'dark') {
     html.classList.add('dark');
     body.classList.add('dark');
-    updateThemeIcon('dark');
   } else {
     html.classList.remove('dark');
     body.classList.remove('dark');
-    updateThemeIcon('light');
   }
 })();
-
-function updateThemeIcon(theme) {
-  const icon = document.getElementById('themeIconDetail');
-  if (!icon) return;
-  if (theme === 'dark') {
-    icon.innerHTML = '<path d="M12,17a5,5,0,1,1,5-5A5,5,0,0,1,12,17Zm0-8a3,3,0,1,0,3,3A3,3,0,0,0,12,9Zm0-4a1,1,0,0,0,1-1V3a1,1,0,0,0-2,0V4A1,1,0,0,0,12,5ZM5.64,7.05a1,1,0,0,0,.7.29,1,1,0,0,0,.71-.29,1,1,0,0,0,0-1.41L6.34,5A1,1,0,0,0,4.93,6.34ZM5,12a1,1,0,0,0-1-1H3a1,1,0,0,0,0,2H4A1,1,0,0,0,5,12Zm.64,5.66a1,1,0,0,0,0,1.41,1,1,0,0,0,1.41,0l.71-.71a1,1,0,0,0-1.41-1.41ZM12,19a1,1,0,0,0-1,1v1a1,1,0,0,0,2,0V20A1,1,0,0,0,12,19Zm6.36-2.34a1,1,0,0,0-1.41,1.41l.71.71a1,1,0,0,0,1.41,0,1,1,0,0,0,0-1.41ZM21,11H20a1,1,0,0,0,0,2h1a1,1,0,0,0,0-2Zm-3.64-3.95a1,1,0,0,0,.7.29,1,1,0,0,0,.71-1.7l-.71-.71a1,1,0,0,0-1.41,1.41Z"/>';
-  } else {
-    icon.innerHTML = '<path d="M21.64,13a1,1,0,0,0-1.05-.14,8.05,8.05,0,0,1-3.37.73A8.15,8.15,0,0,1,9.08,5.49a8.59,8.59,0,0,1,.25-2A1,1,0,0,0,8,2.36,10.14,10.14,0,1,0,22,14.05,1,1,0,0,0,21.64,13Zm-9.5,6.69A8.14,8.14,0,0,1,7.08,5.22v.27A10.15,10.15,0,0,0,17.22,15.63a9.79,9.79,0,0,0,2.1-.22A8.11,8.11,0,0,1,12.14,19.73Z"/>';
-  }
-}
-
-function toggleTheme() {
-  const html = document.documentElement;
-  const body = document.body;
-  const isDark = body.classList.contains('dark');
-  if (isDark) {
-    html.classList.remove('dark');
-    body.classList.remove('dark');
-    localStorage.setItem('jkt48_theme', 'light');
-    updateThemeIcon('light');
-  } else {
-    html.classList.add('dark');
-    body.classList.add('dark');
-    localStorage.setItem('jkt48_theme', 'dark');
-    updateThemeIcon('dark');
-  }
-}
 
 function getSetlistBannerUrl(setlistName) {
   const bannerMap = {
