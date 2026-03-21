@@ -3504,17 +3504,7 @@ async function updateShow(id, change){
             return;
         }
         
-        // Cek apakah tanggal + jam show sudah lewat
-        if (change < 0 && lastSetlist.show_date) {
-            var showTime = lastSetlist.show_time || '00:00:00';
-            if (showTime.length === 5) showTime = showTime + ':00';
-            var showDateTime = new Date(lastSetlist.show_date + 'T' + showTime);
-            var now = new Date();
-            if (showDateTime < now) {
-                showNotification('error', 'Sudah Lewat', 'Show ' + formatDate(lastSetlist.show_date) + ' ' + formatTime(lastSetlist.show_time) + ' sudah lewat, tidak bisa dikurangi');
-                return;
-            }
-        }
+        // Catatan: show yang sudah lewat tetap bisa dihapus oleh admin
     }
     
     if (change < 0) {
@@ -3620,9 +3610,18 @@ function dismissConfirmToast() { closeConfirmDeleteModal(); }
 async function doRemoveShow(member, lastSetlist) {
     try {
         if (lastSetlist) {
-            await db.from('setlist_performance')
+            var delResult = await db.from('setlist_performance')
                 .delete()
                 .eq('id', lastSetlist.id);
+
+            if (delResult.error) {
+                if (delResult.error.code === '42501' || (delResult.error.message && delResult.error.message.toLowerCase().includes('permission'))) {
+                    showNotification('error', 'Akses Ditolak', 'Tidak ada izin hapus. Aktifkan DELETE policy di Supabase untuk tabel setlist_performance.');
+                } else {
+                    showNotification('error', 'Gagal Hapus', delResult.error.message);
+                }
+                return;
+            }
             console.log('🗑️ Record dihapus (ID: '+lastSetlist.id+')');
 
             // Kurangi -1 show di tabel members (kalau bukan non-show)
@@ -3664,15 +3663,6 @@ async function openEditShow(showId) {
         }
         
         currentEditShowData = result.data;
-        
-        // Cek apakah show sudah lewat
-        var showDateTime = new Date(currentEditShowData.show_date + 'T' + currentEditShowData.show_time);
-        var now = new Date();
-        
-        if (now > showDateTime) {
-            showNotification('warning', 'Sudah Lewat', 'Show ini tidak bisa diedit');
-            return;
-        }
         
         // Tampilkan info original
         var originalInfo = 'Mengedit show untuk ' + 
@@ -3851,15 +3841,6 @@ async function saveEditShow() {
         return;
     }
     
-    // Validasi tanggal show tidak boleh diubah ke waktu yang sudah lewat
-    var newShowDateTime = new Date(showDate + 'T' + (showTime.length === 5 ? showTime + ':00' : showTime));
-    var now = new Date();
-    
-    if (newShowDateTime < now) {
-        showNotification('warning', 'Validasi', 'Tidak bisa ubah ke waktu yang sudah lewat');
-        return;
-    }
-    
     try {
         var updateData = {
             member_id: memberId,
@@ -3884,7 +3865,12 @@ async function saveEditShow() {
             .select();
         
         if (updateResult.error) {
-            throw updateResult.error;
+            if (updateResult.error.code === '42501' || (updateResult.error.message && updateResult.error.message.toLowerCase().includes('permission'))) {
+                showNotification('error', 'Akses Ditolak', 'Tidak ada izin edit. Aktifkan UPDATE policy di Supabase untuk tabel setlist_performance.');
+            } else {
+                throw updateResult.error;
+            }
+            return;
         }
 
         // Kalau member berubah dan bukan non-show, +1 member baru, -1 member lama
@@ -4069,23 +4055,16 @@ async function openMemberShowList(memberId) {
 
     try {
         var now = new Date();
-        var todayStr = now.toISOString().split('T')[0];
 
         var result = await db.from('setlist_performance')
             .select('id, setlist_name, show_date, show_time')
             .eq('member_id', memberId)
-            .gte('show_date', todayStr)
-            .order('show_date', { ascending: true })
-            .order('show_time', { ascending: true });
+            .order('show_date', { ascending: false })
+            .order('show_time', { ascending: false });
 
         if (result.error) throw result.error;
 
-        // Filter lebih ketat: buang show yang jamnya sudah lewat hari ini
-        var shows = (result.data || []).filter(function(s) {
-            var time = s.show_time || '23:59:59';
-            var dt = new Date(s.show_date + 'T' + time);
-            return dt > now;
-        });
+        var shows = result.data || [];
 
         if (shows.length === 0) {
             document.getElementById('mslList').innerHTML = '<div class="msl-empty">Belum ada show untuk member ini.</div>';
@@ -4096,9 +4075,11 @@ async function openMemberShowList(memberId) {
             var dateStr = formatDate(s.show_date);
             var timeStr = s.show_time ? formatTime(s.show_time) : '';
             var meta = dateStr + (timeStr ? ' · ' + timeStr : '');
+            var isPast = new Date(s.show_date + 'T' + (s.show_time || '23:59:59')) < now;
+            var pastLabel = isPast ? '<span style="font-size:9px;background:#374151;color:#9ca3af;border-radius:4px;padding:1px 6px;margin-left:4px;">Lewat</span>' : '';
             return '<div class="msl-item" onclick="pickShowToEdit(' + s.id + ')">' +
                 '<div>' +
-                  '<div class="msl-setlist">' + (s.setlist_name || '—') + '</div>' +
+                  '<div class="msl-setlist">' + (s.setlist_name || '—') + pastLabel + '</div>' +
                   '<div class="msl-date">' + meta + '</div>' +
                 '</div>' +
                 '<div class="msl-arrow">›</div>' +
@@ -4135,26 +4116,20 @@ async function openDeleteShowModal() {
     dslShowCache = {};
 
     try {
-        // Ambil semua show mendatang dari semua member
+        // Ambil semua show dari semua member
         var now = new Date();
-        var todayStr = now.toISOString().split('T')[0];
 
         var result = await db.from('setlist_performance')
             .select('id, setlist_name, show_date, show_time, is_non_show, member_id, members(name)')
-            .gte('show_date', todayStr)
-            .order('show_date', { ascending: true })
-            .order('show_time', { ascending: true });
+            .order('show_date', { ascending: false })
+            .order('show_time', { ascending: false });
 
         if (result.error) throw result.error;
 
-        // Filter jam yang sudah lewat hari ini
-        var shows = (result.data || []).filter(function(s) {
-            var time = s.show_time || '23:59:59';
-            return new Date(s.show_date + 'T' + time) > now;
-        });
+        var shows = result.data || [];
 
         if (shows.length === 0) {
-            document.getElementById('dslList').innerHTML = '<div class="msl-empty">Tidak ada show mendatang.</div>';
+            document.getElementById('dslList').innerHTML = '<div class="msl-empty">Tidak ada show.</div>';
             return;
         }
 
@@ -4180,7 +4155,9 @@ async function openDeleteShowModal() {
             var dateStr = formatDate(g.show_date);
             var timeStr = g.show_time ? formatTime(g.show_time) : '';
             var meta = dateStr + (timeStr ? ' · ' + timeStr : '');
+            var isPast = new Date(g.show_date + 'T' + (g.show_time || '23:59:59')) < now;
             var nonShowLabel = g.is_non_show ? '<span style="font-size:10px;background:#6b7280;color:#fff;border-radius:4px;padding:2px 7px;white-space:nowrap;">Non-Show</span>' : '';
+            var pastLabel = isPast ? '<span style="font-size:10px;background:#374151;color:#9ca3af;border-radius:4px;padding:2px 7px;white-space:nowrap;">Lewat</span>' : '';
             var memberNames = g.members.map(function(m){ return m.name; }).join(', ');
 
             var item = document.createElement('div');
@@ -4188,7 +4165,7 @@ async function openDeleteShowModal() {
             item.style.cursor = 'default';
             item.innerHTML =
                 '<div style="flex:1;min-width:0;">' +
-                  '<div class="msl-setlist">' + (g.setlist_name || '—') + nonShowLabel + '</div>' +
+                  '<div class="msl-setlist">' + (g.setlist_name || '—') + nonShowLabel + pastLabel + '</div>' +
                   '<div class="msl-date">' + meta + '</div>' +
                   '<div style="font-size:11px;color:#9ca3af;margin-top:2px;">' + memberNames + '</div>' +
                 '</div>' +
@@ -4272,7 +4249,13 @@ async function doDeleteDslShow() {
 
         for (var i = 0; i < idsToDelete.length; i++) {
             var delRes = await db.from('setlist_performance').delete().eq('id', idsToDelete[i]);
-            if (delRes.error) throw delRes.error;
+            if (delRes.error) {
+                if (delRes.error.code === '42501' || (delRes.error.message && delRes.error.message.toLowerCase().includes('permission'))) {
+                    showNotification('error', 'Akses Ditolak', 'Tidak ada izin hapus. Aktifkan DELETE policy di Supabase untuk tabel setlist_performance.');
+                    return;
+                }
+                throw delRes.error;
+            }
         }
 
         // Update show count - hanya untuk member yang benar-benar dihapus dari show
