@@ -10,14 +10,15 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
 <style>
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:Arial,sans-serif;background:#f5f5f5;color:#333;min-height:100vh;padding-bottom:60px;transition:background 0.3s,color 0.3s}
+body{font-family:'Plus Jakarta Sans',Arial,sans-serif;background:#f5f5f5;color:#333;min-height:100vh;padding-bottom:60px;transition:background 0.3s,color 0.3s}
 body.dark{background:#0a0e1a;color:#e5e7eb}
 
-/* ============= HEADER SAMA DENGAN LIVESHOW ============= */
-.main-header{position:fixed;top:0;left:0;right:0;background:#fff;z-index:1001;border-bottom:1px solid #ddd;transition:background 0.3s,border-color 0.3s}
-body.dark .main-header{background:#111827;border-color:#1f2937}
-.theater-header{text-align:center;padding:8px 20px;font-size:14px;font-weight:bold;color:#fff;letter-spacing:1px;background:#e60012;}
+/* ============= HEADER ============= */
+.main-header{position:fixed;top:0;left:0;right:0;background:#fff;z-index:1001;border-bottom:1px solid #ddd;transition:background 0.3s,border-color 0.3s;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);box-shadow:0 2px 14px rgba(0,0,0,0.07)}
+body.dark .main-header{background:rgba(17,24,39,0.88);border-color:#1f2937}
+.theater-header{text-align:center;padding:8px 20px;font-size:13px;font-weight:800;color:#fff;letter-spacing:1.2px;background:#e60012;text-transform:uppercase;}
 body.dark .theater-header{color:#fff;background:#e60012;}
 .detail-header{display:flex;align-items:center;justify-content:space-between;padding:12px 20px;background:#fff;border-bottom:1px solid #ddd;transition:background 0.3s,border-color 0.3s;position:relative}
 body.dark .detail-header{background:#111827;border-color:#1f2937}
@@ -65,28 +66,31 @@ body.dark .calendar-day.other-month{color:#666}
 body.dark .section-title{color:#e5e7eb}
 .shows-count{background:#e60012;color:#fff;padding:3px 8px;border-radius:10px;font-size:11px;font-weight:bold;min-width:25px;text-align:center}
 .shows-list{display:flex;flex-direction:column;gap:15px}
+@keyframes fadeInUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+.shows-list .show-card{animation:fadeInUp 0.38s cubic-bezier(0.22,1,0.36,1) both}
+.shows-list .show-card:nth-child(1){animation-delay:0.04s}.shows-list .show-card:nth-child(2){animation-delay:0.10s}.shows-list .show-card:nth-child(3){animation-delay:0.16s}.shows-list .show-card:nth-child(4){animation-delay:0.22s}.shows-list .show-card:nth-child(n+5){animation-delay:0.28s}
 
 /* ============= SHOW CARD SAMA STYLING DENGAN LIVESHOW ============= */
-.show-card{background:#fff;border-radius:15px;overflow:hidden;cursor:pointer;transition:all 0.3s;box-shadow:0 2px 8px rgba(0,0,0,0.1);border:2px solid transparent}
-body.dark .show-card{background:#1f2937;box-shadow:0 2px 8px rgba(0,0,0,0.3)}
-.show-card:hover{transform:translateY(-3px);box-shadow:0 6px 16px rgba(0,0,0,0.15);border-color:#e60012}
-.show-card-header{background:linear-gradient(135deg, #ef4444 0%, #dc2626 100%);padding:20px;position:relative}
-.show-card-header.live-now{background:linear-gradient(135deg, #ef4444 0%, #dc2626 100%)}
-.show-card-header.upcoming{background:linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)}
+.show-card{background:#fff;border-radius:10px;overflow:hidden;cursor:pointer;transition:transform 0.25s cubic-bezier(0.34,1.56,0.64,1),box-shadow 0.25s ease,border-color 0.2s;box-shadow:0 4px 16px rgba(0,0,0,0.10);border:2px solid transparent}
+body.dark .show-card{background:#1f2937;box-shadow:0 4px 16px rgba(0,0,0,0.3)}
+.show-card:hover{transform:translateY(-4px);box-shadow:0 14px 32px rgba(0,0,0,0.16);border-color:#e60012}
+.show-card-header{padding:18px 20px 16px;position:relative;border-radius:8px 8px 0 0}
+.show-card-header.live-now{background:linear-gradient(135deg, #e60012 0%, #a00010 100%)}
+.show-card-header.upcoming{background:linear-gradient(135deg, #e60012 0%, #b91c1c 100%)}
 .show-card-header.finished{background:linear-gradient(135deg, #6b7280 0%, #4b5563 100%)}
-.show-status-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,0.2);padding:6px 12px;border-radius:15px;font-size:12px;font-weight:bold;margin-bottom:10px;color:#fff}
-.show-live-dot{width:8px;height:8px;background:#fff;border-radius:50%;animation:pulse 2s infinite}
-.show-upcoming-dot{width:8px;height:8px;background:#fff;border-radius:50%}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.5}}
-.show-card-title{font-size:16px;font-weight:bold;color:#fff;margin:0 0 10px 0;line-height:1.3;display:flex;align-items:center;flex-wrap:wrap;gap:8px}
-.show-card-time{display:flex;align-items:center;justify-content:space-between;color:rgba(255,255,255,0.9);font-size:13px;flex-wrap:wrap;gap:10px}
-.show-card-time div{display:flex;align-items:center;gap:6px}
-.show-card-time svg{width:14px;height:14px;flex-shrink:0}
-.show-card-members{padding:15px;border-top:1px solid #e5e7eb}
-body.dark .show-card-members{border-color:#374151}
-.show-card-members p{font-size:13px;color:#666;line-height:1.5}
+.show-status-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,0.22);backdrop-filter:blur(4px);padding:5px 12px;border-radius:20px;font-size:11px;font-weight:700;margin-bottom:10px;color:#fff;letter-spacing:0.5px}
+.show-live-dot{width:7px;height:7px;background:#fff;border-radius:50%;animation:pulse 2s infinite}
+.show-upcoming-dot{width:7px;height:7px;background:#fff;border-radius:50%}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
+.show-card-title{font-size:17px;font-weight:800;color:#fff;margin:0 0 12px 0;line-height:1.3;display:flex;align-items:center;flex-wrap:wrap;gap:8px}
+.show-card-time{display:flex;align-items:center;justify-content:flex-start;color:rgba(255,255,255,0.92);font-size:12px;flex-direction:column;gap:6px}
+.show-card-time div{display:flex;align-items:center;gap:7px;width:100%}
+.show-card-time svg{width:14px;height:14px;flex-shrink:0;opacity:0.85}
+.show-card-members{padding:14px 18px;background:rgba(0,0,0,0.03);border-top:1px solid rgba(0,0,0,0.07)}
+body.dark .show-card-members{border-color:#374151;background:rgba(255,255,255,0.03)}
+.show-card-members p{font-size:13px;color:#555;line-height:1.6}
 body.dark .show-card-members p{color:#9ca3af}
-.show-card-members strong{color:#333;font-weight:600}
+.show-card-members strong{color:#111;font-weight:700}
 body.dark .show-card-members strong{color:#e5e7eb}
 
 /* Birthday Badge */
@@ -595,6 +599,13 @@ function renderShows(date) {
                 </svg>Graduation Show ${show.graduationMember}</div>`;
         }
 
+        // Hitung jam selesai berdasarkan durasi show
+        const durationMins = getDurationMinutes(show.is_non_show);
+        const [startHour, startMin] = show.time.split(':').map(Number);
+        const endTotalMin = startHour * 60 + startMin + durationMins;
+        const endHour = Math.floor(endTotalMin / 60) % 24;
+        const endTimeStr = String(endHour).padStart(2,'0') + ':00';
+
         const setlistParam = encodeURIComponent(show.setlist);
         const dateParam = encodeURIComponent(show.date);
         const timeParam = encodeURIComponent(show.time);
@@ -624,7 +635,14 @@ function renderShows(date) {
                                 <circle cx="12" cy="12" r="10"></circle>
                                 <polyline points="12 6 12 12 16 14"></polyline>
                             </svg>
-                            ${show.time.slice(0, 5)} WIB • ${show.members.length > 0 ? show.members.length + ' member' : 'TBA'}
+                            ${show.time.slice(0, 2)}:00 - ${endTimeStr} WIB
+                        </div>
+                        <div>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                <circle cx="12" cy="7" r="4"></circle>
+                            </svg>
+                            ${show.members.length > 0 ? show.members.length + ' member' : '-'}
                         </div>
                     </div>
                 </div>
