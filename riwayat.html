@@ -510,6 +510,130 @@ body.dark .skeleton-card{background:#374151}
     .show-setlist{font-size:13px}
 }
 
+/* =============================================
+   TABLET PORTRAIT (481px – 768px)
+   ============================================= */
+@media (min-width: 481px) and (max-width: 768px) {
+    .container {
+        max-width: 600px;
+        margin: 110px auto 25px;
+        border-radius: 18px;
+        background: #fff;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.09);
+    }
+    body.dark .container { background: #111827; box-shadow: 0 4px 20px rgba(0,0,0,0.4); }
+    .member-info { padding: 22px 24px; }
+    .photo, .photo-error { width: 130px; height: 182px; }
+    .member-name { font-size: 21px; margin-bottom: 14px; }
+    .member-stats { gap: 36px; }
+    .stat-number { font-size: 26px; }
+    .stat-label { font-size: 12px; }
+    .filter-section { padding: 12px 18px; gap: 8px; }
+    .filter-btn { padding: 8px 16px; font-size: 13px; }
+    .show-card { padding: 18px; }
+    .show-date { font-size: 15px; }
+    .show-time { font-size: 13px; }
+    .show-setlist { font-size: 14px; }
+    .content { padding: 18px; }
+}
+
+/* =============================================
+   TABLET LANDSCAPE (769px – 1024px) — sidebar kiri fixed, konten kanan scroll
+   ============================================= */
+@media (min-width: 769px) and (max-width: 1024px) {
+    .main-header {
+        position: fixed !important;
+        top: 0; left: 0; right: 0;
+        background: #fff !important;
+        border-bottom: 1px solid #ddd !important;
+        z-index: 1001;
+    }
+    body.dark .main-header { background: #111827 !important; border-color: #1f2937 !important; }
+    .theater-header { font-size: 14px; padding: 9px 20px; }
+    .detail-header { background: #fff !important; border-bottom: 1px solid #ddd; }
+    body.dark .detail-header { background: #111827 !important; border-color: #1f2937 !important; }
+
+    .header { display: none; }
+
+    .container {
+        max-width: none;
+        width: 100%;
+        margin: 0;
+        padding-top: 0;
+        display: block;
+        background: transparent;
+        box-shadow: none;
+        min-height: 100vh;
+    }
+
+    /* Sidebar kiri fixed */
+    .member-info {
+        position: fixed;
+        top: 88px;
+        left: 0;
+        width: 260px;
+        height: calc(100vh - 88px);
+        overflow-y: auto;
+        border-bottom: none;
+        border-right: 1px solid #e5e7eb;
+        padding: 24px 18px 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        background: #fff;
+        box-shadow: 2px 0 8px rgba(0,0,0,0.04);
+        z-index: 100;
+    }
+    body.dark .member-info {
+        background: #111827;
+        border-right-color: #374151;
+    }
+    .member-info .photo-container { margin-top: 16px; margin-bottom: 10px; }
+    .photo, .photo-error { width: 130px; height: 182px; }
+    .member-name { font-size: 18px; margin-bottom: 8px; }
+    .member-stats { gap: 24px; margin-top: 6px; }
+    .stat-number { font-size: 24px; }
+    .stat-label { font-size: 11px; }
+
+    /* Filter di sidebar */
+    .member-info .filter-section {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 5px;
+        padding: 10px 0 0;
+        margin-top: 16px;
+        border-top: 1px solid #e5e7eb;
+        width: 100%;
+        background: transparent;
+        border-bottom: none;
+    }
+    body.dark .member-info .filter-section { border-top-color: #374151; }
+    .member-info .filter-btn {
+        padding: 7px 12px;
+        font-size: 11px;
+        border-radius: 8px;
+        text-align: left;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    /* Konten kanan: margin kiri sesuai sidebar */
+    .content {
+        margin-left: 260px;
+        padding: 24px 28px;
+        min-height: calc(100vh - 88px);
+        margin-top: 88px;
+    }
+    .filter-section:not(.member-info .filter-section) { display: none; }
+
+    .show-card { padding: 18px; border-radius: 14px; margin-bottom: 14px; }
+    .show-date { font-size: 15px; }
+    .show-time { font-size: 13px; }
+    .show-setlist { font-size: 14px; }
+}
+
 @media (min-width: 1025px) {
     /* Header fixed */
     .main-header {

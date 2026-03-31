@@ -12,23 +12,25 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:Arial,sans-serif;background:#f5f5f5;color:#333;min-height:100vh;padding:0;transition:background 0.3s,color 0.3s}
+body{font-family:'Plus Jakarta Sans',Arial,sans-serif;background:#f5f5f5;color:#333;min-height:100vh;padding:0;transition:background 0.3s,color 0.3s}
 body.dark{background:#0a0e1a;color:#e5e7eb}
 
 /* Header System */
-.main-header{position:fixed;top:0;left:0;right:0;z-index:1001;}
+.main-header{position:fixed;top:0;left:0;right:0;z-index:1001;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);box-shadow:0 2px 16px rgba(0,0,0,0.08);}
+body.dark .main-header{box-shadow:0 2px 16px rgba(0,0,0,0.4)}
 
 /* Baris 1 - Background merah JKT48 SHOW THEATER */
-.header-top-bar{background:#e60012;text-align:center;padding:7px 20px;}
-.header-top-title{font-size:13px;font-weight:bold;color:#fff;letter-spacing:0.5px;}
+.header-top-bar{background:#e60012;text-align:center;padding:8px 20px;}
+.header-top-title{font-size:13px;font-weight:800;color:#fff;letter-spacing:1.2px;text-transform:uppercase;}
 
 /* Baris 2 - Navigasi */
 .detail-header{display:flex;align-items:center;justify-content:space-between;padding:12px 20px;background:#fff;border-bottom:1px solid #ddd;transition:background 0.3s,border-color 0.3s;position:relative}
 body.dark .detail-header{background:#111827;border-color:#1f2937}
-.back-btn{background:transparent;border:none;color:#333;font-size:14px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:6px;padding:6px 0;transition:all 0.3s;position:relative;z-index:1}
+.back-btn{background:transparent;border:none;color:#333;font-size:14px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:6px;padding:6px 0;transition:transform 0.18s cubic-bezier(0.34,1.56,0.64,1),opacity 0.2s;position:relative;z-index:1}
 body.dark .back-btn{color:#e5e7eb}
-.back-btn:hover{opacity:0.7}
+.back-btn:hover{transform:translateX(-3px);opacity:0.85}
 .detail-title{
   font-size:15px;
   font-weight:bold;
@@ -42,20 +44,24 @@ body.dark .back-btn{color:#e5e7eb}
 body.dark .detail-title{color:#e5e7eb}
 .header-controls{display:flex;align-items:center;gap:10px}
 
+/* =============================================
+   DEFAULT (mobile/portrait) — vertikal normal
+   ============================================= */
+
 .container{
-  max-width:480px;
-  width:100%;
-  margin:110px auto 20px;
-  background:transparent;
-  border-radius:0;
-  overflow:visible;
-  box-shadow:none;
-  transition:background 0.3s,box-shadow 0.3s;
-  position:relative;
+  max-width: 480px;
+  width: 100%;
+  margin: 110px auto 20px;
+  background: transparent;
+  border-radius: 0;
+  overflow: visible;
+  box-shadow: none;
+  transition: background 0.3s;
+  position: relative;
 }
 body.dark .container{background:transparent;box-shadow:none}
 
-/* Header dalam container dengan warna generasi */
+/* container-header */
 .container-header{
   background:var(--gen-color);
   padding:12px 18px;
@@ -95,115 +101,72 @@ body.dark .container{background:transparent;box-shadow:none}
   color:#fff;
 }
 
-/* FOTO: Kotak tanpa border & tanpa radius */
-.photo-container{text-align:center;margin:18px 0;position:relative}
+/* main-content: default block (vertikal) */
+.main-content { display: block; }
+
+/* PANEL KIRI: default normal flow */
+.left-panel{
+  margin: 0 18px 24px;
+  background: transparent;
+}
+
+/* PANEL KANAN: default normal flow */
+.right-panel{
+  margin: 0 18px 24px;
+  background: transparent;
+}
+
+/* FOTO — default (mobile) */
+.photo-container{text-align:center;margin:20px 0 10px;position:relative}
 .photo{
-  width:135px;
-  height:190px;
-  object-fit:contain;
+  width:110px;
+  height:154px;
+  object-fit:cover;
+  object-position:center top;
   border-radius:0;
   transition:all 0.3s;
-}
-body.dark .photo{
-  background:#1a1a1a;
-}
-.photo-error{
-  width:135px;
-  height:190px;
-  border-radius:0;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  background:#f5f5f5;
-  color:#6b7280;
-  font-weight:600;
-  font-size:24px;
+  display:block;
   margin:0 auto;
+}
+body.dark .photo{background:#1a1a1a}
+.photo-error{
+  width:110px;height:154px;border-radius:0;
+  display:flex;align-items:center;justify-content:center;
+  background:#f5f5f5;color:#6b7280;font-weight:600;font-size:22px;margin:0 auto;
 }
 body.dark .photo-error{background:#1a1a1a;color:#9ca3af}
 
-.member-name{text-align:center;font-size:20px;font-weight:bold;color:#333;margin:10px 0 20px}
+.member-name{text-align:center;font-size:20px;font-weight:bold;color:#333;margin:10px 0 18px;line-height:1.3}
 body.dark .member-name{color:#e5e7eb}
 
-/* PANEL KIRI - FOTO + PROGRES */
-.left-panel{
-  margin:0 18px 24px;
-  background:transparent;
-}
+/* PANEL KIRI - title */
 .left-panel .panel-title{
-  font-size:16px;
-  font-weight:bold;
-  color:#333;
-  margin-bottom:12px;
-  padding-bottom:8px;
-  border-bottom:2px solid #e60012;
+  font-size:12px;font-weight:bold;color:#333;
+  margin-bottom:8px;padding-bottom:6px;
+  border-bottom:2px solid #e60012;width:100%;flex-shrink:0;
 }
 body.dark .left-panel .panel-title{color:#e5e7eb;border-color:#ff3366}
 
 /* PROGRESS MILESTONE */
-.milestone-card{
-  background:transparent;
-  border:none;
-  border-radius:0;
-  padding:0;
-}
-.milestone-header{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  margin-bottom:8px;
-}
-.milestone-title{
-  font-size:10px;
-  font-weight:600;
-  color:#6b7280;
-}
+.milestone-card{background:transparent;border:none;border-radius:0;padding:0;width:100%;flex-shrink:0}
+.milestone-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.milestone-title{font-size:9px;font-weight:600;color:#6b7280}
 body.dark .milestone-title{color:#9ca3af}
-.milestone-target{
-  font-size:13px;
-  font-weight:bold;
-  color:var(--gen-color);
-}
-.progress-bar-container{
-  height:14px;
-  background:#e5e7eb;
-  border-radius:7px;
-  overflow:hidden;
-  position:relative;
-  margin-bottom:5px;
-}
+.milestone-target{font-size:11px;font-weight:bold;color:var(--gen-color)}
+.progress-bar-container{height:12px;background:#e5e7eb;border-radius:6px;overflow:hidden;position:relative;margin-bottom:4px}
 body.dark .progress-bar-container{background:#374151}
 .progress-bar-fill{
-  height:100%;
-  background:var(--gen-color);
-  border-radius:7px;
-  transition:width 1s cubic-bezier(0.4,0,0.2,1);
-  position:relative;
+  height:100%;background:var(--gen-color);border-radius:6px;
+  transition:width 1s cubic-bezier(0.4,0,0.2,1);position:relative;overflow:hidden;
 }
-.progress-text{
-  position:absolute;
-  top:50%;
-  left:50%;
-  transform:translate(-50%,-50%);
-  font-size:9px;
-  font-weight:600;
-  color:#6b7280;
-  z-index:10;
-}
+.progress-bar-fill::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent 0%,rgba(255,255,255,0.28) 50%,transparent 100%);animation:pgshimmer 1.8s infinite}
+@keyframes pgshimmer{from{transform:translateX(-100%)}to{transform:translateX(100%)}}
+.progress-text{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:8px;font-weight:600;color:#6b7280;z-index:10}
 body.dark .progress-text{color:#9ca3af}
-.progress-info{
-  text-align:center;
-  font-size:9px;
-  color:#6b7280;
-  font-weight:500;
-}
+.progress-info{text-align:center;font-size:8px;color:#6b7280;font-weight:500}
 body.dark .progress-info{color:#9ca3af}
 
-/* PANEL KANAN - ABOUT + SOCIAL */
-.right-panel{
-  margin:0 18px 24px;
-  background:transparent;
-}
+/* PANEL KANAN - title */
 .right-panel .panel-title{
   font-size:16px;
   font-weight:bold;
@@ -363,291 +326,240 @@ body.dark .skeleton-info{background:#374151}
 .spinner{display:inline-block;width:20px;height:20px;border:3px solid rgba(0,0,0,0.1);border-top-color:#9ca3af;border-radius:50%;animation:spin 0.8s linear infinite}
 body.dark .spinner{border-color:rgba(255,255,255,0.1);border-top-color:#9ca3af}
 
-/* Touch device optimizations */
-@media (hover: none) and (pointer: coarse) {
-  .back-btn:active,
-  .show-history-btn:active,
-  .social-link:active {
-    opacity: 0.7;
-    transform: scale(0.98);
-  }
+/* =============================================
+   MOBILE (≤ 480px)
+   ============================================= */
+@media (max-width: 480px) {
+  .main-header{position:sticky;top:0}
+  .container{ max-width:100%; margin:0; }
+  .container-header{ padding:10px 14px; }
+  .container-header .profile-title{ font-size:14px; }
+  .container-header .show-history-btn{ width:30px;height:30px; }
+  .container-header .show-history-btn svg{ width:15px;height:15px; }
+  .left-panel, .right-panel{ margin:0 16px 20px; }
+  .member-name{ font-size:20px;margin:10px 0 16px; }
+  .left-panel .panel-title,.right-panel .panel-title,.social-title{ font-size:15px;margin-bottom:10px;padding-bottom:6px; }
+  .info-row{padding:8px 0}
+  .info-label{font-size:12px;width:90px}
+  .info-value{font-size:12px}
+  .milestone-target{font-size:13px}
+  .progress-bar-container{height:13px;border-radius:7px}
+  .progress-text{font-size:9px}
+  .progress-info{font-size:9px}
+  .social-icon{width:34px;height:34px;border-radius:8px}
+  .social-icon svg{width:17px;height:17px}
+  .social-name{font-size:12px}
+  .social-handle{font-size:10px}
+  .detail-header{padding:10px 14px}
+  .detail-title{font-size:14px}
 }
 
-@media (max-width:480px) {
-  body{padding:0}
-  .main-header{position:fixed;top:0;left:0;right:0;z-index:1001}
-  .detail-header{padding:12px 15px}
-  .detail-title{
-    font-size:14px;
-  }
+/* =============================================
+   TABLET PORTRAIT (481px – 768px portrait)
+   ============================================= */
+@media (min-width:481px) and (max-width:768px) and (orientation:portrait) {
+  .main-header{position:sticky;top:0}
+  .container{ max-width:600px; margin:0 auto; }
+  .container-header{ padding:13px 22px; }
+  .container-header .profile-title{ font-size:16px; }
+  .left-panel, .right-panel{ margin:0 22px 22px; }
+  .photo,.photo-error{ width:150px;height:210px; }
+  .member-name{ font-size:22px; }
+  .info-label{font-size:13px;width:100px}
+  .info-value{font-size:13px}
+}
+
+/* =============================================
+   TABLET LANDSCAPE (601px – 1024px landscape)
+   Kiri: NON-SCROLL | Kanan: SCROLL | Full layar
+   ============================================= */
+@media (min-width:601px) and (max-width:1024px) and (orientation:landscape) {
+  html, body{ overflow:hidden !important; height:100vh !important; padding:0 !important; }
+  .main-header{ position:fixed !important; top:0;left:0;right:0;z-index:1001; }
+
   .container{
-    max-width:100%;
-    margin:95px 0 0;
-    border-radius:0;
+    position:fixed !important;
+    top:var(--mb-header-h, 75px);
+    left:0;right:0;bottom:0;
+    max-width:100% !important;
+    width:100% !important;
+    margin:0 !important;
+    border-radius:0 !important;
+    overflow:hidden !important;
+    background:#fff !important;
+    box-shadow:none !important;
+    display:flex !important;
+    flex-direction:column !important;
   }
-  .container-header{
-    padding:10px 14px;
+  body.dark .container{ background:#111827 !important; }
+
+  .container-header{ padding:11px 22px;flex-shrink:0; }
+  .container-header .profile-title{ font-size:15px; }
+
+  .main-content{
+    display:flex !important;
+    flex-direction:row !important;
+    flex:1;
+    min-height:0;
+    overflow:hidden;
   }
-  .container-header .profile-title{
-    font-size:14px;
+
+  /* Panel kiri: NON-SCROLL */
+  .left-panel{
+    width:240px !important;
+    min-width:240px !important;
+    height:100%;
+    overflow:hidden !important;
+    background:#f9fafb;
+    border-right:1px solid #e5e7eb;
+    display:flex !important;
+    flex-direction:column !important;
+    align-items:center !important;
+    padding:18px 14px !important;
+    margin:0 !important;
+    flex-shrink:0;
   }
-  .container-header .show-history-btn{
-    width:32px;
-    height:32px;
+  body.dark .left-panel{ background:#0d1425;border-right-color:#374151; }
+
+  .photo-container{ margin:0 0 10px 0;flex-shrink:0; }
+  .photo,.photo-error{ width:115px;height:161px; }
+  .member-name{ font-size:14px;margin:6px 0 12px;flex-shrink:0; }
+  .left-panel .panel-title{ font-size:12px;margin-bottom:8px;padding-bottom:6px;width:100%;flex-shrink:0; }
+  .milestone-card{ width:100%;flex-shrink:0; }
+  .milestone-title{ font-size:9px; }
+  .milestone-target{ font-size:12px; }
+  .progress-bar-container{ height:11px;margin-bottom:5px; }
+  .progress-text{ font-size:8px; }
+  .progress-info{ font-size:8px; }
+
+  /* Panel kanan: SCROLL */
+  .right-panel{
+    flex:1 !important;
+    min-width:0;
+    height:100%;
+    overflow-y:auto !important;
+    overflow-x:hidden;
+    background:#fff;
+    padding:18px 22px !important;
+    margin:0 !important;
+    -webkit-overflow-scrolling:touch;
   }
-  .container-header .show-history-btn svg{
-    width:16px;
-    height:16px;
-  }
-  .photo,.photo-error{
-    width:120px;
-    height:170px;
-    border-radius:0;
-  }
-  .member-name{font-size:18px;margin:8px 0 15px}
-  .left-panel, .right-panel{
-    margin:0 14px 20px;
-  }
-  .left-panel .panel-title, .right-panel .panel-title, .social-title{
-    font-size:15px;
-    margin-bottom:10px;
-    padding-bottom:6px;
-  }
-  .info-row{padding:6px 0}
-  .info-label{font-size:11px;width:80px}
-  .info-value{font-size:11px}
-  .milestone-target{font-size:12px}
-  .progress-bar-container{height:12px;border-radius:6px}
-  .progress-text{font-size:8px}
-  .progress-info{font-size:8px}
-  .social-icon{width:32px;height:32px;border-radius:6px}
-  .social-icon svg{width:16px;height:16px}
-  .social-name{font-size:10px}
-  .social-handle{font-size:9px}
-  .social-arrow{font-size:12px}
-  .detail-footer{padding:10px;font-size:9px}
-  .skeleton-photo{
-    width:120px;
-    height:170px;
-    border-radius:0;
-  }
-  .skeleton-name{width:140px;height:22px}
-  .skeleton-info{height:35px}
-  .skeleton-info.small{height:28px}
+  body.dark .right-panel{ background:#111827; }
+  .right-panel .panel-title{ font-size:15px;margin-bottom:12px; }
+  .info-row{ padding:8px 0; }
+  .info-label{ font-size:12px;width:105px; }
+  .info-value{ font-size:12px; }
+  .social-icon{ width:34px;height:34px;border-radius:8px; }
+  .social-name{ font-size:12px; }
+  .social-handle{ font-size:10px; }
 }
 
-/* ============= DESKTOP LAYOUT - FULL ONE SIZE ============= */
-@media (min-width: 1025px) {
-    /* Header dua baris desktop */
-    .main-header {
-        position: fixed !important;
-        top: 0; left: 0; right: 0;
-        z-index: 1001;
-    }
-    .header-top-bar { background: #e60012 !important; padding: 8px 40px; }
-    .header-top-title { font-size: 15px; }
-    .detail-header { background: #fff; border-bottom: 1px solid #ddd; padding: 14px 40px; }
-    body.dark .detail-header { background: #111827 !important; border-color: #1f2937 !important; }
-    .back-btn { color: #333 !important; font-size: 16px; }
-    body.dark .back-btn { color: #e5e7eb !important; }
-    .detail-title { color: #333 !important; font-size: 20px; }
-    body.dark .detail-title { color: #e5e7eb !important; }
+/* =============================================
+   DESKTOP (≥ 1025px)
+   Kiri: NON-SCROLL | Kanan: SCROLL | Full layar
+   ============================================= */
+@media (min-width:1025px) {
+  html, body{ overflow:hidden !important; height:100vh !important; padding:0 !important; }
+  .main-header{ position:fixed !important; top:0;left:0;right:0;z-index:1001; }
+  .header-top-bar{ padding:8px 40px; }
+  .header-top-title{ font-size:15px; }
+  .detail-header{ background:#fff;border-bottom:1px solid #ddd;padding:14px 40px; }
+  body.dark .detail-header{ background:#111827 !important;border-color:#1f2937 !important; }
+  .back-btn{ font-size:16px; }
+  .detail-title{ font-size:18px; }
 
-    /* Container full width tanpa card, tanpa scroll */
-    .container {
-        max-width: 100%;
-        width: 100%;
-        margin: 95px 0 0; /* 2-row header */
-        padding: 0;
-        display: flex;
-        flex-direction: column;
-        min-height: calc(100vh - 95px);
-        background: #fff;
-        box-shadow: none;
-        border-radius: 0;
-    }
-    body.dark .container {
-        background: #111827;
-    }
+  .container{
+    position:fixed !important;
+    top:var(--mb-header-h, 75px);
+    left:0;right:0;bottom:0;
+    max-width:100% !important;
+    width:100% !important;
+    margin:0 !important;
+    border-radius:0 !important;
+    overflow:hidden !important;
+    background:#fff !important;
+    box-shadow:none !important;
+    display:flex !important;
+    flex-direction:column !important;
+  }
+  body.dark .container{ background:#111827 !important; }
 
-    /* Header dalam container untuk desktop - tanpa border radius */
-    .container-header {
-        width: 100%;
-        padding: 16px 40px;
-        background: var(--gen-color);
-        border-bottom: 1px solid rgba(255,255,255,0.2);
-        position: relative;
-        top: 0;
-    }
-    .container-header .profile-title {
-        font-size: 20px;
-        font-weight: 600;
-    }
-    .container-header .show-history-btn {
-        width: 44px;
-        height: 44px;
-    }
-    .container-header .show-history-btn svg {
-        width: 22px;
-        height: 22px;
-    }
+  .container-header{ padding:15px 40px;flex-shrink:0; }
+  .container-header .profile-title{ font-size:20px; }
+  .container-header .show-history-btn{ width:42px;height:42px; }
+  .container-header .show-history-btn svg{ width:20px;height:20px; }
 
-    /* Main content - flex row, full width, tanpa card */
-    .main-content {
-        display: flex;
-        flex: 1;
-        width: 100%;
-    }
+  .main-content{
+    display:flex !important;
+    flex-direction:row !important;
+    flex:1;
+    min-height:0;
+    overflow:hidden;
+  }
 
-    /* ===== PANEL KIRI: Foto + Progres - tanpa border radius, full height ===== */
-    .left-panel {
-        width: 320px;
-        padding: 40px 30px;
-        margin: 0;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        background: #fff;
-        border-right: 1px solid #e5e7eb;
-    }
-    body.dark .left-panel {
-        background: #111827;
-        border-right-color: #374151;
-    }
+  /* Panel kiri: NON-SCROLL */
+  .left-panel{
+    width:320px !important;
+    min-width:320px !important;
+    height:100%;
+    overflow:hidden !important;
+    background:#f9fafb;
+    border-right:1px solid #e5e7eb;
+    display:flex !important;
+    flex-direction:column !important;
+    align-items:center !important;
+    padding:36px 28px !important;
+    margin:0 !important;
+    flex-shrink:0;
+  }
+  body.dark .left-panel{ background:#0d1425;border-right-color:#374151; }
 
-    .photo-container { margin: 0 0 15px 0; }
-    .photo, .photo-error { width: 160px; height: 220px; }
-    .member-name { font-size: 22px; margin: 10px 0 25px 0; text-align: center; }
+  .photo-container{ margin:0 0 14px 0;flex-shrink:0; }
+  .photo,.photo-error{ width:155px;height:216px; }
+  .member-name{ font-size:21px;margin:10px 0 22px;flex-shrink:0; }
+  .left-panel .panel-title{ font-size:17px;margin-bottom:14px;padding-bottom:10px;width:100%;flex-shrink:0; }
+  .milestone-card{ width:100%;flex-shrink:0; }
+  .milestone-title{ font-size:12px; }
+  .milestone-target{ font-size:15px; }
+  .progress-bar-container{ height:16px;border-radius:8px;margin-bottom:7px; }
+  .progress-text{ font-size:10px; }
+  .progress-info{ font-size:10px; }
 
-    .left-panel .panel-title { 
-        font-size: 18px; 
-        margin-bottom: 15px; 
-        padding-bottom: 10px; 
-        width: 100%;
-        border-bottom-width: 2px;
-    }
-
-    .milestone-card { width: 100%; }
-    .milestone-header { margin-bottom: 12px; }
-    .milestone-title { font-size: 13px; }
-    .milestone-target { font-size: 16px; }
-    .progress-bar-container { height: 18px; border-radius: 9px; margin-bottom: 8px; }
-    .progress-text { font-size: 11px; }
-    .progress-info { font-size: 11px; }
-
-    /* ===== PANEL KANAN: About + Social Media - tanpa card, full height ===== */
-    .right-panel {
-        flex: 1;
-        padding: 40px 50px;
-        background: #fff;
-        display: flex;
-        flex-direction: column;
-    }
-    body.dark .right-panel { background: #111827; }
-
-    .right-panel .panel-title { 
-        font-size: 20px; 
-        margin-bottom: 20px; 
-        padding-bottom: 12px; 
-        border-bottom-width: 2px;
-    }
-    .info-row { padding: 14px 0; }
-    .info-label { font-size: 15px; width: 140px; }
-    .info-value { font-size: 15px; }
-
-    /* Social Media - tanpa card */
-    .social-section {
-        width: 100%;
-        margin-top: 25px;
-        padding-top: 0;
-        background: transparent;
-    }
-    .social-title { 
-        font-size: 20px; 
-        margin-bottom: 15px; 
-        padding-bottom: 12px; 
-        border-bottom-width: 2px;
-    }
-    .social-link { padding: 12px 0; }
-    .social-icon { width: 44px; height: 44px; border-radius: 12px; }
-    .social-icon svg { width: 20px; height: 20px; }
-    .social-name { font-size: 15px; }
-    .social-handle { font-size: 13px; }
-    .social-arrow { font-size: 16px; }
-
-    /* Footer - full width, tanpa border radius */
-    .detail-footer {
-        width: 100%;
-        padding: 18px 40px;
-        font-size: 13px;
-        border: none;
-        border-top: 1px solid #e5e7eb;
-        background: #fff;
-        margin: 0;
-        text-align: center;
-    }
-    body.dark .detail-footer {
-        background: #111827;
-        border-top-color: #374151;
-    }
-
-    /* Skeleton loading full one size */
-    .skeleton-loading {
-        display: flex;
-        flex-direction: column;
-        padding: 0;
-        min-height: calc(100vh - 95px);
-        width: 100%;
-    }
-    .skeleton-header {
-        height: 77px;
-        background: #e5e7eb;
-        width: 100%;
-    }
-    .skeleton-main {
-        display: flex;
-        flex: 1;
-        width: 100%;
-    }
-    .skeleton-left {
-        width: 320px;
-        padding: 40px 30px;
-        border-right: 1px solid #e5e7eb;
-    }
-    .skeleton-right {
-        flex: 1;
-        padding: 40px 50px;
-    }
-    .skeleton-photo {
-        width: 160px;
-        height: 220px;
-        margin: 0 auto 20px;
-    }
-    .skeleton-name {
-        width: 160px;
-        height: 26px;
-        margin: 0 auto 25px;
-    }
-    .skeleton-info {
-        width: 100%;
-        height: 45px;
-        margin-bottom: 12px;
-    }
-    .skeleton-footer {
-        height: 67px;
-        background: #e5e7eb;
-        width: 100%;
-        border-top: 1px solid #e5e7eb;
-    }
-    body.dark .skeleton-header,
-    body.dark .skeleton-footer,
-    body.dark .skeleton-photo,
-    body.dark .skeleton-name,
-    body.dark .skeleton-info,
-    body.dark .skeleton-left {
-        background: #1f2937;
-        border-color: #374151;
-    }
+  /* Panel kanan: SCROLL */
+  .right-panel{
+    flex:1 !important;
+    min-width:0;
+    height:100%;
+    overflow-y:auto !important;
+    overflow-x:hidden;
+    background:#fff;
+    padding:36px 48px !important;
+    margin:0 !important;
+    -webkit-overflow-scrolling:touch;
+  }
+  body.dark .right-panel{ background:#111827; }
+  .right-panel .panel-title{ font-size:20px;margin-bottom:18px;padding-bottom:12px; }
+  .info-row{ padding:13px 0; }
+  .info-label{ font-size:14px;width:135px; }
+  .info-value{ font-size:14px; }
+  .social-section{ margin-top:24px; }
+  .social-title{ font-size:20px;margin-bottom:14px;padding-bottom:12px; }
+  .social-link{ padding:11px 0; }
+  .social-icon{ width:42px;height:42px;border-radius:11px; }
+  .social-icon svg{ width:20px;height:20px; }
+  .social-name{ font-size:14px; }
+  .social-handle{ font-size:12px; }
+  .social-arrow{ font-size:16px; }
+}
+/* Skeleton dark mode */
+body.dark .skeleton-header,
+body.dark .skeleton-footer,
+body.dark .skeleton-photo,
+body.dark .skeleton-name,
+body.dark .skeleton-info,
+body.dark .skeleton-left {
+    background: #1f2937;
+    border-color: #374151;
 }
 </style>
 </head>
@@ -990,6 +902,14 @@ function showError(message) {
 
 window.addEventListener('DOMContentLoaded', () => {
   loadMember();
+  // CSS var untuk tinggi header (landscape full-screen)
+  function setMbHeaderH(){
+    const h = document.querySelector('.main-header');
+    if(h) document.documentElement.style.setProperty('--mb-header-h', h.offsetHeight+'px');
+  }
+  setMbHeaderH();
+  window.addEventListener('resize', setMbHeaderH);
+  new ResizeObserver(setMbHeaderH).observe(document.querySelector('.main-header'));
 });
 </script>
 </body>

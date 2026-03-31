@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -12,7 +13,7 @@
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'Plus Jakarta Sans',Arial,sans-serif;background:#f5f5f5;color:#333;min-height:100vh;padding-bottom:60px;transition:background 0.3s,color 0.3s}
+body{font-family:'Plus Jakarta Sans',Arial,sans-serif;background:#f5f5f5;color:#333;min-height:100vh;padding:0;transition:background 0.3s,color 0.3s}
 body.dark{background:#0a0e1a;color:#e5e7eb}
 
 .main-header{position:fixed;top:0;left:0;right:0;background:rgba(255,255,255,0.92);z-index:1001;border-bottom:1px solid #ddd;transition:background 0.3s,border-color 0.3s;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);box-shadow:0 2px 14px rgba(0,0,0,0.07)}
@@ -29,9 +30,20 @@ body.dark .detail-title{color:#e5e7eb}
 .header-controls{display:flex;align-items:center;gap:10px}
 
 
-/* Container utama */
-.container{max-width:800px;width:100%;margin:140px auto 30px;background:#fff;border-radius:22px;overflow:hidden;box-shadow:0 4px 16px rgba(0,0,0,0.09);transition:background 0.3s,box-shadow 0.3s}
-body.dark .container{background:#111827;box-shadow:0 4px 20px rgba(0,0,0,0.45)}
+/* Container utama — full page, tanpa card */
+.container{
+    width:100%;
+    max-width:100%;
+    margin:0;
+    margin-top:var(--lv-header-h, 78px);
+    background:#fff;
+    border-radius:0;
+    overflow:visible;
+    box-shadow:none;
+    transition:background 0.3s;
+    min-height:calc(100vh - var(--lv-header-h, 78px));
+}
+body.dark .container{background:#111827;box-shadow:none}
 
 /* Wrapper split layout — default: block (mobile/tablet portrait) */
 .show-content-wrapper{display:block}
@@ -138,9 +150,8 @@ body.dark .detail-footer{color:#9ca3af;border-top-color:#374151}
    MOBILE (< 480px) — vertikal, banner di atas
    ============================================= */
 @media (max-width:480px){
-    .main-header{position:sticky}
-    .container{margin:0 auto 15px;border-radius:0;box-shadow:none;width:100%;max-width:100%}
-    body.dark .container{box-shadow:none}
+    .main-header{position:sticky;top:0}
+    .container{margin-top:0 !important;min-height:auto}
     .show-content-wrapper{display:block}
     .live-show-header{padding:15px;text-align:center}
     .setlist-banner{width:100%;max-width:100%;height:180px;object-fit:cover;object-position:center;border-radius:8px;margin-bottom:12px;}
@@ -189,138 +200,266 @@ body.dark .detail-footer{color:#9ca3af;border-top-color:#374151}
     .banner-fallback{height:120px;font-size:13px}
 }
 
+
+
 /* =============================================
-   TABLET PORTRAIT (481px – 768px) — banner pas/fit, member di bawah
+   TABLET PORTRAIT (481px – 768px) — sticky header, konten langsung di bawah
    ============================================= */
 @media (min-width:481px) and (max-width:768px){
-    .container{max-width:95%;margin:120px auto 20px;border-radius:16px}
+    .main-header{position:sticky;top:0}
+    .container{margin-top:0 !important;min-height:auto}
     .show-content-wrapper{display:block}
-    .live-show-header{padding:20px 15px;text-align:center}
-    /* Banner pas mengisi lebar, object-fit contain agar logo tidak terpotong */
-    .setlist-banner{width:100%;max-width:100%;height:220px;border-radius:10px;margin-bottom:12px;object-fit:cover;object-position:center;}
-    .setlist-banner-container{width:100%;background:rgba(0,0,0,0.15);border-radius:10px;overflow:hidden;margin-bottom:12px;display:flex;align-items:center;justify-content:center}
+    .live-show-header{padding:22px 20px;text-align:center}
+    .setlist-banner{width:100%;max-width:480px;height:230px;border-radius:12px;margin-bottom:14px;object-fit:cover;object-position:center;}
+    .setlist-banner-container{width:100%;background:rgba(0,0,0,0.15);border-radius:12px;overflow:hidden;margin-bottom:14px;display:flex;align-items:center;justify-content:center}
     .setlist-banner-container .setlist-banner{margin-bottom:0;border-radius:0}
-    .banner-fallback{height:200px;font-size:15px;max-width:100%}
-    .live-show-header h1{font-size:18px;margin-bottom:10px}
-    .live-show-date-time{gap:12px;font-size:12px}
+    .banner-fallback{height:210px;font-size:15px;max-width:100%;border-radius:12px}
+    .live-show-header h1{font-size:19px;margin-bottom:12px}
+    .status-badge-main{padding:6px 14px;font-size:12px;margin-bottom:10px}
+    .live-show-date-time{gap:14px;font-size:13px}
     .live-show-date-time div{gap:5px}
     .live-show-date-time svg{width:14px;height:14px}
-    .watch-live-btn{padding:12px 24px;font-size:13px}
-    .countdown-container{padding:10px 14px;margin:10px auto}
-    .countdown-value{font-size:22px;padding:5px 8px;min-width:40px}
-    .countdown-timer{gap:10px}
-    .members-section{padding:15px}
-    .section-title{font-size:15px;margin-bottom:12px}
-    .members-grid{grid-template-columns:repeat(auto-fill, minmax(130px, 1fr));gap:12px}
+    .watch-live-btn{padding:13px 26px;font-size:14px;margin:14px auto}
+    .countdown-container{padding:12px 16px;margin:12px auto;max-width:360px}
+    .countdown-value{font-size:24px;padding:6px 10px;min-width:44px}
+    .countdown-timer{gap:12px}
+    .countdown-label{font-size:10px}
+    .members-section{padding:18px}
+    .section-title{font-size:16px;margin-bottom:14px}
+    /* 3 kolom untuk portrait tablet */
+    .members-grid{grid-template-columns:repeat(3, 1fr);gap:14px}
+    .member-card{border-radius:14px}
+    .member-info{padding:11px 8px}
+    .member-name{font-size:13px;min-height:30px}
+    .member-gen{font-size:10px}
     .birthday-member-card .member-avatar::after,
     .birthday-member-card .member-avatar::before,
     .graduation-member-card .member-avatar::after,
-    .graduation-member-card .member-avatar::before{width:20px;height:20px;top:3px;right:3px}
+    .graduation-member-card .member-avatar::before{width:22px;height:22px;top:4px;right:4px}
 }
 
 /* =============================================
-   TABLET LANDSCAPE (769px – 1024px) — banner kiri sticky, member kanan scroll
+   TABLET LANDSCAPE (601px – 1024px) — FULL 1 LAYAR
+   Merah kiri: non-scroll | Member kanan: scroll
    ============================================= */
-@media (min-width:769px) and (max-width:1024px){
-    .container{max-width:95%;margin:130px auto 25px;border-radius:16px;overflow:visible;background:transparent;box-shadow:none}
-    body.dark .container{background:transparent;box-shadow:none}
-    /* Wrapper flex: tinggi minimal 100% sisa viewport */
-    .show-content-wrapper{display:flex;flex-direction:row;align-items:stretch;gap:0;min-height:calc(100vh - 130px)}
-    /* Panel kiri: sticky terhadap viewport, tinggi 100vh dikurangi header */
+@media (min-width:601px) and (max-width:1024px) and (orientation:landscape){
+    /* Lock seluruh halaman ke 100vh */
+    html, body{
+        overflow:hidden !important;
+        height:100vh !important;
+        padding:0 !important;
+        margin:0 !important;
+    }
+
+    /* Header fixed di atas */
+    .main-header{
+        position:fixed !important;
+        top:0;left:0;right:0;
+        z-index:1001;
+    }
+
+    /* Footer tersembunyi — tidak perlu di landscape */
+    .detail-footer{ display:none !important; }
+
+    /* Container: mengisi SISA layar setelah header, posisi absolute agar benar-benar pas */
+    .container{
+        position:fixed !important;
+        top:var(--lv-header-h, 78px);
+        left:0; right:0; bottom:0;
+        max-width:100% !important;
+        width:100% !important;
+        margin:0 !important;
+        padding:0 !important;
+        border-radius:0 !important;
+        overflow:hidden !important;
+        background:transparent !important;
+        box-shadow:none !important;
+        height:auto !important; /* biarkan bottom:0 yang mengatur */
+    }
+    body.dark .container{ background:transparent !important; box-shadow:none !important; }
+
+    /* Wrapper flex row: isi seluruh container */
+    .show-content-wrapper{
+        display:flex !important;
+        flex-direction:row !important;
+        align-items:stretch !important;
+        width:100%;
+        height:100%;
+        position:absolute;
+        top:0; left:0; right:0; bottom:0;
+    }
+
+    /* Panel kiri (merah): NON-SCROLL, lebar tetap, tinggi penuh */
     .show-left-panel{
-        flex:0 0 310px;max-width:310px;
-        position:sticky;top:130px;
-        height:calc(100vh - 130px);
-        overflow-y:auto;
-        border-radius:16px 0 0 16px;
-        align-self:flex-start;
+        flex:0 0 270px !important;
+        max-width:270px !important;
+        width:270px !important;
+        height:100% !important;
+        overflow:hidden !important;
+        position:relative;
+        display:flex;
+        flex-direction:column;
+        align-self:stretch;
     }
-    /* Panel kanan: scroll normal */
-    .show-right-panel{
-        flex:1 1 auto;min-width:0;
-        background:#fff;
-        border-radius:0 16px 16px 0;
-        overflow:visible;
-    }
-    body.dark .show-right-panel{background:#111827}
+
+    /* live-show-header mengisi seluruh panel kiri */
     .live-show-header{
-        padding:20px;text-align:center;
-        border-radius:16px 0 0 0;
-        min-height:100%;height:100%;
+        flex:1 1 auto !important;
+        height:100% !important;
+        overflow:hidden !important;
+        padding:16px !important;
+        text-align:center;
+        display:flex;
+        flex-direction:column;
+        justify-content:flex-start;
+        border-radius:0 !important;
     }
-    .setlist-banner{width:100%;max-width:100%;height:190px;border-radius:8px;margin-bottom:12px;object-fit:cover;object-position:center;}
-    .setlist-banner-container{width:100%;background:rgba(0,0,0,0.15);border-radius:8px;overflow:hidden;margin-bottom:12px;display:flex;align-items:center;justify-content:center}
-    .setlist-banner-container .setlist-banner{margin-bottom:0;border-radius:0}
-    .banner-fallback{max-width:100%;height:170px;font-size:14px;border-radius:8px}
-    .live-show-header h1{font-size:16px;margin-bottom:10px}
-    .live-show-date-time{flex-direction:column;gap:8px;font-size:12px}
-    .live-show-date-time div{gap:5px;justify-content:center}
-    .live-show-date-time svg{width:13px;height:13px}
-    .watch-live-btn{padding:10px 16px;font-size:12px;margin:12px auto}
-    .countdown-container{padding:10px 12px;margin:10px auto;max-width:100%}
-    .countdown-value{font-size:19px;padding:4px 6px;min-width:34px}
-    .countdown-timer{gap:7px}
-    .countdown-label{font-size:9px}
-    .members-section{padding:16px}
-    .section-title{font-size:15px;margin-bottom:14px}
-    .members-grid{grid-template-columns:repeat(auto-fill, minmax(120px, 1fr));gap:12px}
-    .member-name{font-size:12px;min-height:28px}
-    .member-gen{font-size:10px}
+
+    /* Panel kanan (member): SCROLL */
+    .show-right-panel{
+        flex:1 1 auto !important;
+        min-width:0;
+        height:100% !important;
+        overflow-y:auto !important;
+        overflow-x:hidden !important;
+        background:#fff;
+        -webkit-overflow-scrolling:touch;
+        align-self:stretch;
+    }
+    body.dark .show-right-panel{ background:#111827; }
+
+    /* Banner lebih kecil agar muat */
+    .setlist-banner{
+        width:100%;max-width:100%;
+        height:120px !important;
+        border-radius:8px;
+        margin-bottom:8px !important;
+        object-fit:cover;object-position:center;
+        flex-shrink:0;
+    }
+    .setlist-banner-container{
+        width:100%;background:rgba(0,0,0,0.15);
+        border-radius:8px;overflow:hidden;
+        margin-bottom:8px !important;
+        display:flex;align-items:center;justify-content:center;
+        flex-shrink:0;
+    }
+    .setlist-banner-container .setlist-banner{ margin-bottom:0 !important; border-radius:0; }
+    .banner-fallback{ max-width:100%;height:110px;font-size:12px;border-radius:8px;flex-shrink:0; }
+
+    .status-badge-main{ padding:4px 9px;font-size:11px;margin-bottom:6px;flex-shrink:0; }
+    .live-dot-main,.upcoming-dot-main{ width:6px;height:6px; }
+    .live-show-header h1{ font-size:14px;margin-bottom:6px;flex-shrink:0; }
+    .live-show-date-time{ flex-direction:column;gap:5px;font-size:11px;flex-shrink:0; }
+    .live-show-date-time div{ gap:4px;justify-content:center; }
+    .live-show-date-time svg{ width:11px;height:11px; }
+
+    .countdown-container{ padding:7px 10px;margin:7px auto;max-width:100%;flex-shrink:0; }
+    .countdown-title{ font-size:10px; }
+    .countdown-value{ font-size:17px;padding:4px 6px;min-width:30px; }
+    .countdown-timer{ gap:6px; }
+    .countdown-label{ font-size:9px; }
+
+    .watch-live-btn{ padding:8px 14px;font-size:11px;margin:8px auto;flex-shrink:0; }
+    .watch-live-btn svg{ width:14px;height:14px; }
+
+    /* Member section kanan */
+    .members-section{ padding:14px; }
+    .section-title{ font-size:14px;margin-bottom:10px; }
+    .members-grid{ grid-template-columns:repeat(3,1fr);gap:10px; }
+    .member-card{ border-radius:10px; }
+    .member-info{ padding:9px 6px; }
+    .member-name{ font-size:12px;min-height:26px; }
+    .member-gen{ font-size:9px; }
+    .birthday-member-card .member-avatar::after,
+    .birthday-member-card .member-avatar::before,
+    .graduation-member-card .member-avatar::after,
+    .graduation-member-card .member-avatar::before{ width:18px;height:18px;top:3px;right:3px; }
 }
 
 /* =============================================
-   LAPTOP (≥ 1025px) — banner kiri sticky, member kanan scroll
+   LAPTOP (≥ 1025px) — full halaman, kiri fixed, kanan scroll
    ============================================= */
 @media (min-width:1025px){
-    body{padding:0}
-    .main-header{position:fixed;top:0;left:0;right:0;background:#fff;border-bottom:1px solid #ddd;z-index:1001}
+    html, body{ overflow:hidden !important; height:100vh !important; padding:0 !important; }
+    .main-header{position:fixed !important;top:0;left:0;right:0;background:#fff;border-bottom:1px solid #ddd;z-index:1001}
     .theater-header{color:#fff !important;background:#e60012 !important;font-size:15px;padding:10px 20px;letter-spacing:1px;}
     .detail-header{background:#fff;border-top:none;border-bottom:1px solid #ddd}
     body.dark .main-header{background:#111827;border-color:#1f2937}
     body.dark .theater-header{color:#fff !important;background:#e60012 !important;}
     body.dark .detail-header{background:#111827;border-color:#1f2937}
-    .container{max-width:1100px;margin:100px auto 40px;border-radius:15px;overflow:visible;background:transparent;box-shadow:none}
-    body.dark .container{background:transparent;box-shadow:none}
-    /* Split layout: banner kiri sticky, member kanan scroll */
-    .show-content-wrapper{display:flex;flex-direction:row;align-items:stretch;gap:0;min-height:calc(100vh - 100px)}
-    /* Panel kiri sticky setinggi viewport */
+    .detail-footer{display:none}
+
+    /* Container: posisi fixed mengisi sisa layar */
+    .container{
+        position:fixed !important;
+        top:var(--lv-header-h, 78px);
+        left:0; right:0; bottom:0;
+        max-width:100% !important;
+        width:100% !important;
+        margin:0 !important;
+        border-radius:0 !important;
+        overflow:hidden !important;
+        background:transparent !important;
+        box-shadow:none !important;
+        min-height:0 !important;
+    }
+    body.dark .container{background:transparent !important;box-shadow:none !important}
+
+    /* Wrapper flex row full height */
+    .show-content-wrapper{
+        display:flex;flex-direction:row;align-items:stretch;
+        width:100%;height:100%;
+        position:absolute;top:0;left:0;right:0;bottom:0;
+    }
+
+    /* Panel kiri: NON-SCROLL, lebar tetap */
     .show-left-panel{
         flex:0 0 380px;max-width:380px;
-        position:sticky;top:100px;
-        height:calc(100vh - 100px);
-        overflow-y:auto;
-        border-radius:15px 0 0 15px;
-        align-self:flex-start;
+        height:100%;
+        overflow:hidden;
+        position:relative;
+        display:flex;flex-direction:column;
+        align-self:stretch;
     }
-    /* Panel kanan scroll normal */
+
+    /* live-show-header isi penuh panel kiri */
+    .live-show-header{
+        flex:1 1 auto;
+        height:100%;
+        overflow:hidden;
+        padding:25px;text-align:center;
+        display:flex;flex-direction:column;justify-content:flex-start;
+        border-radius:0;
+    }
+
+    /* Panel kanan: SCROLL */
     .show-right-panel{
         flex:1 1 auto;min-width:0;
+        height:100%;
+        overflow-y:auto;overflow-x:hidden;
         background:#fff;
-        border-radius:0 15px 15px 0;
-        overflow:visible;
+        -webkit-overflow-scrolling:touch;
+        align-self:stretch;
     }
     body.dark .show-right-panel{background:#111827}
-    .live-show-header{
-        padding:25px;text-align:center;
-        border-radius:15px 0 0 0;
-        min-height:100%;height:100%;
-    }
-    .setlist-banner{width:100%;max-width:100%;height:220px;border-radius:10px;margin-bottom:15px;object-fit:cover;object-position:center;}
-    .setlist-banner-container{width:100%;background:rgba(0,0,0,0.15);border-radius:10px;overflow:hidden;margin-bottom:15px;display:flex;align-items:center;justify-content:center}
+
+    .setlist-banner{width:100%;max-width:100%;height:220px;border-radius:10px;margin-bottom:15px;object-fit:cover;object-position:center;flex-shrink:0;}
+    .setlist-banner-container{width:100%;background:rgba(0,0,0,0.15);border-radius:10px;overflow:hidden;margin-bottom:15px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
     .setlist-banner-container .setlist-banner{margin-bottom:0;border-radius:0}
-    .banner-fallback{max-width:100%;height:220px;font-size:16px;border-radius:10px}
-    .live-show-header h1{font-size:20px;margin-bottom:12px}
-    .status-badge-main{padding:7px 14px;font-size:13px;margin-bottom:12px}
+    .banner-fallback{max-width:100%;height:220px;font-size:16px;border-radius:10px;flex-shrink:0;}
+    .live-show-header h1{font-size:20px;margin-bottom:12px;flex-shrink:0;}
+    .status-badge-main{padding:7px 14px;font-size:13px;margin-bottom:12px;flex-shrink:0;}
     .live-dot-main,.upcoming-dot-main{width:9px;height:9px}
-    .live-show-date-time{flex-direction:column;gap:10px;font-size:13px;margin-bottom:16px}
+    .live-show-date-time{flex-direction:column;gap:10px;font-size:13px;margin-bottom:16px;flex-shrink:0;}
     .live-show-date-time div{gap:6px;justify-content:center}
     .live-show-date-time svg{width:15px;height:15px}
-    .countdown-container{max-width:100%;padding:14px 16px;margin:14px auto}
+    .countdown-container{max-width:100%;padding:14px 16px;margin:14px auto;flex-shrink:0;}
     .countdown-title{font-size:13px}
     .countdown-value{font-size:22px;min-width:44px;padding:7px 10px}
     .countdown-label{font-size:10px}
     .countdown-timer{gap:11px}
-    .watch-live-btn{padding:12px 24px;font-size:14px;margin:16px auto}
+    .watch-live-btn{padding:12px 24px;font-size:14px;margin:16px auto;flex-shrink:0;}
     .watch-live-btn svg{width:18px;height:18px}
     .members-section{padding:25px}
     .section-title{font-size:18px;margin-bottom:20px}
@@ -848,6 +987,14 @@ window.addEventListener('beforeunload', () => {
 // Initialize on page load
 window.addEventListener('DOMContentLoaded', () => {
   loadData();
+  // CSS var untuk tinggi header (landscape full-screen)
+  function setLvHeaderH(){
+    const h = document.querySelector('.main-header');
+    if(h) document.documentElement.style.setProperty('--lv-header-h', h.offsetHeight+'px');
+  }
+  setLvHeaderH();
+  window.addEventListener('resize', setLvHeaderH);
+  new ResizeObserver(setLvHeaderH).observe(document.querySelector('.main-header'));
 });
 </script>
 </body>
