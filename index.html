@@ -598,7 +598,7 @@ async function loadData() {
     try {
         const { data: membersData, error: membersError } = await db
             .from('members')
-            .select('id, name, gen, team, show, status')
+            .select('id, name, gen, team, show, status, is_graduated')
             .order('show', { ascending: false });
         if (membersError) throw membersError;
         members = membersData || [];
@@ -740,6 +740,7 @@ function renderMembers() {
         return;
     }
     let filtered = members.filter(m => {
+        if (m.is_graduated) return false;
         const matchGen = currentGen === 'all' || m.gen === currentGen;
         const matchTeam = currentTeam === 'all' || m.team === currentTeam;
         const matchSearch = !searchQuery || m.name.toLowerCase().includes(searchQuery.toLowerCase());
@@ -747,8 +748,16 @@ function renderMembers() {
     });
     if (filtered.length === 0) {
         let msg = '';
-        if (searchQuery) msg = `Tidak ada "${searchQuery}"`;
-        else if (currentTeam !== 'all') msg = `Belum Tersedia ${currentTeam}`;
+        if (searchQuery) {
+            const graduatedMatch = members.find(m =>
+                m.is_graduated && m.name.toLowerCase().includes(searchQuery.toLowerCase())
+            );
+            if (graduatedMatch) {
+                msg = `${graduatedMatch.name} telah Graduation`;
+            } else {
+                msg = `Tidak ada "${searchQuery}"`;
+            }
+        } else if (currentTeam !== 'all') msg = `Belum Tersedia ${currentTeam}`;
         else if (currentGen !== 'all') msg = `Belum ada Gen ${currentGen}`;
         else msg = 'Belum ada data';
         list.innerHTML = `<div class="simple-message">${msg}</div>`;
@@ -793,7 +802,7 @@ function renderSetlistMembers() {
         return;
     }
     list.innerHTML = '';
-    const arr = members.map(m => ({
+    const arr = members.filter(m => !m.is_graduated).map(m => ({
         name: m.name,
         shows: setlistData.members[m.name] || 0,
         memberData: m
@@ -1045,7 +1054,7 @@ function setupRealtimeSubscription() {
         .on('postgres_changes', { event: '*', schema: 'public', table: 'members' }, async () => {
             const { data: membersData, error } = await db
                 .from('members')
-                .select('id, name, gen, team, show, status')
+                .select('id, name, gen, team, show, status, is_graduated')
                 .order('show', { ascending: false });
             if (!error && membersData) {
                 members = membersData;
