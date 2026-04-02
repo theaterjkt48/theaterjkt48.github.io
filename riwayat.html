@@ -16,8 +16,8 @@
 body{font-family:'Plus Jakarta Sans',Arial,sans-serif;background:#f5f5f5;color:#333;min-height:100vh;padding:0;transition:background 0.3s,color 0.3s}
 body.dark{background:#0a0e1a;color:#e5e7eb}
 
-.main-header{position:fixed;top:0;left:0;right:0;background:rgba(255,255,255,0.92);z-index:1001;border-bottom:1px solid #ddd;transition:background 0.3s,border-color 0.3s;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);box-shadow:0 2px 14px rgba(0,0,0,0.07)}
-body.dark .main-header{background:rgba(17,24,39,0.88);border-color:#1f2937}
+.main-header{position:fixed;top:0;left:0;right:0;background:rgba(255,255,255,0.88);z-index:1001;transition:background 0.3s,border-color 0.3s;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);box-shadow:0 2px 14px rgba(0,0,0,0.07)}
+body.dark .main-header{background:rgba(17,24,39,0.88);border-color:#1f2937;box-shadow:0 2px 16px rgba(0,0,0,0.4)}
 
 .theater-header{text-align:center;padding:8px 20px;font-size:13px;font-weight:800;color:#fff;letter-spacing:1.2px;background:#e60012;text-transform:uppercase;}
 body.dark .theater-header{color:#fff;background:#e60012;}
@@ -27,13 +27,13 @@ body.dark .theater-header{color:#fff;background:#e60012;}
     align-items:center;
     justify-content:space-between;
     padding:12px 20px;
-    background:#fff;
-    border-bottom:1px solid #ddd;
+    background:rgba(255,255,255,0.88);
+    
     transition:background 0.3s,border-color 0.3s;
     position:relative;
 }
 body.dark .detail-header{
-    background:#111827;
+    background:rgba(17,24,39,0.88);
     border-color:#1f2937;
 }
 
@@ -187,7 +187,7 @@ body.dark .filter-section{
     padding:7px 14px;
     border-radius:24px;
     border:2px solid #e5e7eb;
-    background:#fff;
+    background:rgba(255,255,255,0.88);
     color:#6b7280;
     font-size:12px;
     font-weight:700;
@@ -196,7 +196,7 @@ body.dark .filter-section{
     transition:transform 0.18s cubic-bezier(0.34,1.56,0.64,1),background 0.2s,box-shadow 0.2s,border-color 0.2s;
 }
 body.dark .filter-btn{
-    background:#111827;
+    background:rgba(17,24,39,0.88);
     border-color:#374151;
     color:#9ca3af;
 }
@@ -336,7 +336,7 @@ body.dark .show-time{color:#9ca3af}
 .live-dot{
     width:6px;
     height:6px;
-    background:#fff;
+    background:rgba(255,255,255,0.88);
     border-radius:50%;
     animation:blink 1s infinite;
 }
@@ -544,14 +544,14 @@ body.dark .skeleton-card{background:#374151}
     .main-header {
         position: fixed !important;
         top: 0; left: 0; right: 0;
-        background: #fff !important;
+        background: rgba(255,255,255,0.88) !important;
         border-bottom: 1px solid #ddd !important;
         z-index: 1001;
     }
-    body.dark .main-header { background: #111827 !important; border-color: #1f2937 !important; }
+    body.dark .main-header { background: rgba(17,24,39,0.88) !important; border-color: #1f2937 !important; }
     .theater-header { font-size: 14px; padding: 9px 20px; }
-    .detail-header { background: #fff !important; border-bottom: 1px solid #ddd; }
-    body.dark .detail-header { background: #111827 !important; border-color: #1f2937 !important; }
+    .detail-header { background: rgba(255,255,255,0.88) !important;  }
+    body.dark .detail-header { background: rgba(17,24,39,0.88) !important; border-color: #1f2937 !important; }
 
     .header { display: none; }
 
@@ -639,16 +639,16 @@ body.dark .skeleton-card{background:#374151}
     .main-header {
         position: fixed !important;
         top: 0; left: 0; right: 0;
-        background: #fff !important;
+        background: rgba(255,255,255,0.88) !important;
         border-bottom: 1px solid #ddd !important;
         margin-bottom: 0 !important;
         z-index: 1001;
     }
-    body.dark .main-header { background: #111827 !important; border-color: #1f2937 !important; }
+    body.dark .main-header { background: rgba(17,24,39,0.88) !important; border-color: #1f2937 !important; }
     .theater-header { color: #fff !important; background: #e60012 !important; font-size: 15px; padding: 10px 20px; letter-spacing: 1px; }
-    .detail-header { background: #fff !important; border-top: none; border-bottom: 1px solid #ddd; }
+    .detail-header { background: rgba(255,255,255,0.88) !important;   }
     body.dark .theater-header { color: #fff !important; background: #e60012 !important; }
-    body.dark .detail-header { background: #111827 !important; border-color: #1f2937; }
+    body.dark .detail-header { background: rgba(17,24,39,0.88) !important; border-color: #1f2937; }
 
     .header { display: none; }
 
