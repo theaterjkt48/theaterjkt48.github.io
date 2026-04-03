@@ -183,33 +183,33 @@ body.dark .detail-footer{color:#9ca3af;border-top-color:#374151}
 
     /* Kalender kiri: NON-SCROLL */
     .calendar-section{
-        flex:0 0 300px;
-        width:300px;
-        min-width:300px;
+        flex:0 0 340px;
+        width:340px;
+        min-width:340px;
         height:100%;
         overflow:hidden !important;
         border-right:1px solid #e5e7eb;
         border-bottom:none;
-        padding:18px;
+        padding:20px;
         background:rgba(255,255,255,0.88);
         display:flex;
         flex-direction:column;
     }
     body.dark .calendar-section{background:rgba(17,24,39,0.88);border-right-color:#374151}
 
-    .calendar-header{margin-bottom:12px;flex-shrink:0}
-    .calendar-title{font-size:15px}
-    .calendar-nav button{width:30px;height:30px}
+    .calendar-header{margin-bottom:14px;flex-shrink:0}
+    .calendar-title{font-size:17px}
+    .calendar-nav button{width:32px;height:32px}
     .calendar-grid{
         flex:1;
         display:grid;
         grid-template-columns:repeat(7,1fr);
-        gap:4px;
+        gap:5px;
         overflow:hidden;
         align-content:start;
     }
-    .calendar-day-header{padding:6px 0;font-size:10px}
-    .calendar-day{padding:6px 0;font-size:12px;min-height:32px}
+    .calendar-day-header{padding:8px 0;font-size:11px}
+    .calendar-day{padding:8px 0;font-size:13px;min-height:36px}
     .calendar-indicator{width:5px;height:5px}
 
     /* Show kanan: SCROLL */
@@ -302,20 +302,20 @@ body.dark .detail-footer{color:#9ca3af;border-top-color:#374151}
 
     /* Kalender kiri: NON-SCROLL */
     .calendar-section{
-        flex:0 0 350px;
-        width:350px;
+        flex:0 0 420px;
+        width:420px;
         height:100%;
         overflow:hidden !important;
         border-right:1px solid #e5e7eb;
         border-bottom:none;
-        padding:30px;
+        padding:35px;
         background:rgba(255,255,255,0.88);
         display:flex;
         flex-direction:column;
     }
     body.dark .calendar-section{background:rgba(17,24,39,0.88);border-color:#374151;}
 
-    .calendar-header{flex-shrink:0;margin-bottom:20px}
+    .calendar-header{flex-shrink:0;margin-bottom:22px}
     .calendar-grid{
         flex:1;
         display:grid;
@@ -324,8 +324,8 @@ body.dark .detail-footer{color:#9ca3af;border-top-color:#374151}
         overflow:hidden;
         align-content:start;
     }
-    .calendar-title{font-size:20px}
-    .calendar-day{padding:15px 0;min-height:50px;font-size:16px}
+    .calendar-title{font-size:22px}
+    .calendar-day{padding:16px 0;min-height:54px;font-size:17px}
     .calendar-day-header{padding:15px 0;font-size:13px}
     .calendar-indicator{width:8px;height:8px}
 
@@ -466,16 +466,10 @@ async function loadSchedule() {
     try {
         console.log('Loading schedule...');
 
-        // Range query berdasarkan WIB
-        const todayWIB = moment().utcOffset(7 * 60);
-        const startStr = todayWIB.clone().subtract(1, 'month').startOf('month').format('YYYY-MM-DD');
-        const endStr = todayWIB.clone().add(2, 'month').endOf('month').format('YYYY-MM-DD');
-
+        // Fetch semua data sekaligus tanpa batasan tanggal
         const { data, error } = await db
             .from('setlist_performance')
             .select(`*, members(name)`)
-            .gte('show_date', startStr)
-            .lte('show_date', endStr)
             .order('show_date', { ascending: true })
             .order('show_time', { ascending: true });
 
@@ -631,6 +625,7 @@ function renderCalendar() {
 function changeMonth(direction) {
     currentMonth.add(direction, 'month');
     renderCalendar();
+
     const firstDayStr = currentMonth.clone().startOf('month').format('YYYY-MM-DD');
     if (allShows.some(show => show.show_date >= firstDayStr)) {
         selectDate(firstDayStr);
