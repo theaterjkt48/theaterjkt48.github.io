@@ -304,7 +304,7 @@ body.dark .detail-footer{color:#9ca3af;border-top-color:#374151}
     }
     .show-left-panel::-webkit-scrollbar{ display:none !important; }
 
-    /* live-show-header: bisa melar ke bawah */
+    /* live-show-header: konten di-center vertikal */
     .live-show-header{
         flex:0 0 auto !important;
         min-height:100% !important;
@@ -313,7 +313,7 @@ body.dark .detail-footer{color:#9ca3af;border-top-color:#374151}
         text-align:center;
         display:flex;
         flex-direction:column;
-        justify-content:flex-start;
+        justify-content:center;
         border-radius:0 !important;
     }
 
@@ -415,23 +415,26 @@ body.dark .detail-footer{color:#9ca3af;border-top-color:#374151}
         position:absolute;top:0;left:0;right:0;bottom:0;
     }
 
-    /* Panel kiri: NON-SCROLL, lebar tetap */
+    /* Panel kiri: SCROLL tersembunyi, lebar tetap */
     .show-left-panel{
         flex:0 0 460px;max-width:460px;
         height:100%;
-        overflow:hidden;
+        overflow-y:auto;
+        overflow-x:hidden;
+        scrollbar-width:none;
         position:relative;
         display:flex;flex-direction:column;
         align-self:stretch;
     }
+    .show-left-panel::-webkit-scrollbar{ display:none; }
 
-    /* live-show-header isi penuh panel kiri */
+    /* live-show-header isi penuh panel kiri, konten di-center vertikal */
     .live-show-header{
         flex:1 1 auto;
-        height:100%;
-        overflow:hidden;
+        min-height:100%;
+        overflow:visible;
         padding:25px;text-align:center;
-        display:flex;flex-direction:column;justify-content:flex-start;
+        display:flex;flex-direction:column;justify-content:center;
         border-radius:0;
     }
 
