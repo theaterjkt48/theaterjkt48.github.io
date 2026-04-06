@@ -517,7 +517,7 @@ let autoRefreshInterval = null;
 
 function getUrlParams() {
     const params = new URLSearchParams(window.location.search);
-    const setlist = params.get('setlist') ? decodeURIComponent(params.get('setlist')) : '';
+    const setlist = params.get('setlist') || '';
     const date = params.get('date') || '';
     const time = params.get('time') || '';
     return { setlist, date, time };
