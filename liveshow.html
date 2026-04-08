@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -853,7 +854,7 @@ function renderPage(showData, showTime, isBirthdayShow, birthdayMember, isGradua
       </div>
       <div class="show-right-panel">
         <div class="members-section">
-          <div class="section-title"><span>Member yang Tampil</span><span class="members-count">${membersData.length}</span></div>
+          <div class="section-title"><span>${(() => { if (membersData.length === 0) return 'Member yang Tampil'; const teams = [...new Set(membersData.map(m => m.team && m.team.toLowerCase()).filter(Boolean))]; if (teams.length === 1) { const t = teams[0]; if (t === 'dream') return 'Team Dream'; if (t === 'passion') return 'Team Passion'; if (t === 'love') return 'Team Love'; } return 'Member yang Tampil'; })()}</span><span class="members-count">${membersData.length}</span></div>
           <div class="members-grid" id="membersGrid">${renderMembersGrid(membersData, birthdayMember, graduationMember)}</div>
         </div>
       </div>

@@ -469,13 +469,13 @@ async function loadSchedule() {
         // Fetch semua data sekaligus tanpa batasan tanggal
         const { data, error } = await db
             .from('setlist_performance')
-            .select(`*, members(name)`)
+            .select(`*, members(name, team)`)
             .order('show_date', { ascending: true })
             .order('show_time', { ascending: true });
 
         if (error) throw error;
 
-        allShows = (data || []).map(show => ({ ...show, memberName: show.members?.name }));
+        allShows = (data || []).map(show => ({ ...show, memberName: show.members?.name, memberTeam: show.members?.team }));
         console.log('Shows loaded:', allShows.length);
 
         // Reset ke hari ini dalam WIB
@@ -682,7 +682,7 @@ function renderShows(date) {
                 is_non_show: show.is_non_show || false
             };
         }
-        if (show.memberName) grouped[key].members.push(show.memberName);
+        if (show.memberName) grouped[key].members.push({ name: show.memberName, team: show.memberTeam });
     });
 
     const sortedShows = Object.values(grouped).sort((a, b) => a.time.localeCompare(b.time));
@@ -776,7 +776,7 @@ function renderShows(date) {
                     </div>
                 </div>
                 <div class="show-card-members">
-                    <p><strong>Member yang tampil:</strong> ${show.members.length > 0 ? show.members.sort().join(', ') : '<em>Member Belum Diumumkan</em>'}</p>
+                    <p><strong>${(() => { if (show.members.length === 0) return 'Member yang tampil'; const teams = [...new Set(show.members.map(m => m.team && m.team.toLowerCase()).filter(Boolean))]; if (teams.length === 1) { const t = teams[0]; if (t === 'dream') return 'Team Dream'; if (t === 'passion') return 'Team Passion'; if (t === 'love') return 'Team Love'; } return 'Member yang tampil'; })()}:</strong> ${show.members.length > 0 ? show.members.map(m => m.name).sort().join(', ') : '<em>Member Belum Diumumkan</em>'}</p>
                 </div>
             </div>`;
     });
