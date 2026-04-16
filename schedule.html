@@ -506,12 +506,12 @@ async function loadSchedule() {
 }
 
 const SETLIST_COLORS = {
-  'Te Wo Tsunaginagara':     { from: '#FF69B4', to: '#c0407a' },
-  'Te wo Tsunaginagara':     { from: '#FF69B4', to: '#c0407a' },
-  'Cara Meminum Ramune':     { from: '#00CED1', to: '#008b8d' },
-  'Ramune no Nomikata':      { from: '#00CED1', to: '#008b8d' },
-  'Pertaruhan Cinta':        { from: '#D30000', to: '#900603' },
-  'Pajama Drive':            { from: '#00006d', to: '#000045' },
+  'Te Wo Tsunaginagara':     { from: '#fd6ab1', to: '#c0407a' },
+  'Te wo Tsunaginagara':     { from: '#fd6ab1', to: '#c0407a' },
+  'Cara Meminum Ramune':     { from: '#17b1cb', to: '#0e7a8c' },
+  'Ramune no Nomikata':      { from: '#17b1cb', to: '#0e7a8c' },
+  'Pertaruhan Cinta':        { from: '#541414', to: '#3a0d0d' },
+  'Pajama Drive':            { from: '#541414', to: '#3a0d0d' },
   'non_show':                { from: '#3b82f6', to: '#1d4ed8' },
   // Team Shows
   'Passion 200%':            { from: '#f69220', to: '#c4711a' },
@@ -527,10 +527,10 @@ function getSetlistGradient(setlistName, isNonShow) {
   const col = SETLIST_COLORS[setlistName];
   if (col) return `linear-gradient(135deg, ${col.from} 0%, ${col.to} 100%)`;
   const lower = (setlistName || '').toLowerCase();
-  if (lower.includes('tsunaginagara') || lower.includes('tewo')) return `linear-gradient(135deg, #FF69B4 0%, #c0407a 100%)`;
-  if (lower.includes('ramune')) return `linear-gradient(135deg, #00CED1 0%, #008b8d 100%)`;
-  if (lower.includes('pertaruhan')) return `linear-gradient(135deg, #D30000 0%, #900603 100%)`;
-  if (lower.includes('pajama')) return `linear-gradient(135deg, #00006d 0%, #000045 100%)`;
+  if (lower.includes('tsunaginagara') || lower.includes('tewo')) return `linear-gradient(135deg, #fd6ab1 0%, #c0407a 100%)`;
+  if (lower.includes('ramune')) return `linear-gradient(135deg, #17b1cb 0%, #0e7a8c 100%)`;
+  if (lower.includes('pertaruhan')) return `linear-gradient(135deg, #541414 0%, #3a0d0d 100%)`;
+  if (lower.includes('pajama')) return `linear-gradient(135deg, #541414 0%, #3a0d0d 100%)`;
   if (lower.includes('passion')) return `linear-gradient(135deg, #f69220 0%, #c4711a 100%)`;
   if (lower.includes('dream')) return `linear-gradient(135deg, #00a4a5 0%, #007b7c 100%)`;
   if (lower.includes('love')) return `linear-gradient(135deg, #e20785 0%, #a80562 100%)`;
@@ -541,10 +541,10 @@ function getSetlistColor(setlistName) {
     if (!setlistName) return '#e60012';
     const l = setlistName.toLowerCase().trim();
     if (l.includes('non_show') || l === 'non_show') return '#22c55e';
-    if (l.includes('te wo tsunaginagara') || l.includes('tewo') || l.includes('tsunaginagara')) return '#FF69B4';
-    if (l.includes('ramune')) return '#00CED1';
-    if (l.includes('pertaruhan')) return '#D30000';
-    if (l.includes('pajama')) return '#00006d';
+    if (l.includes('te wo tsunaginagara') || l.includes('tewo') || l.includes('tsunaginagara')) return '#fd6ab1';
+    if (l.includes('ramune')) return '#17b1cb';
+    if (l.includes('pertaruhan')) return '#541414';
+    if (l.includes('pajama')) return '#541414';
     if (l.includes('passion')) return '#f69220';
     if (l.includes('dream')) return '#00a4a5';
     if (l.includes('love')) return '#e20785';
