@@ -610,10 +610,11 @@ function getSetlistBannerUrl(setlistName) {
     'Ramune no Nomikata': 'banner/ramune_no_nomikata.jpg',
     'Cara Meminum Ramune': 'banner/ramune_no_nomikata.jpg',
     "Passion 200%": "banner/passion.jpg",
-    "DREAM BAKUDAN": "banner/JKT48_FIGHT.jpg",
     "Passion 200% [SHONICHI]": "banner/passion.jpg",
+    "Dream bakudan": "banner/Dream Bakudan.jpg",
+    "Dream bakudan [SHONICHI]": "banner/Dream Bakudan.jpg",
     "DREAM BAKUDAN": "banner/Dream Bakudan.jpg",
-    "DREAM BAKUDAN [SHONICHI]": "banner/Dream Bakudan.jpg",
+    "DREAM BAKUDAN [SHONICHI]": "banner/DREAM BAKUDAN.jpg",
     "Love 200%": "banner/love.jpg",
     "Love 200% [SHONICHI]": "banner/love.jpg"
   };
@@ -628,9 +629,6 @@ function getSetlistBannerUrl(setlistName) {
   // Kalau gak ada, coba cari yang mirip (case-insensitive & partial match)
   const lowerName = normalizedName.toLowerCase();
   
-  if (lowerName.includes('passion')) {
-    return 'banner/passion.jpg';
-  }
   if (lowerName.includes('ramune')) {
     return 'banner/ramune_no_nomikata.jpg';
   }
@@ -643,23 +641,11 @@ function getSetlistBannerUrl(setlistName) {
   if (lowerName.includes('pajama')) {
     return 'banner/pajama_drive.jpg';
   }
-  if (lowerName.includes('andai') || lowerName.includes('bukan idola')) {
-    return "banner/ANDAI KU BUKAN IDOLA.jpg";
+  if (lowerName.includes('passion')) {
+    return 'banner/PASSION200%.jpg';
   }
-  if (lowerName.includes('bakudan') || lowerName.includes('dream bakudan')) {
-    return 'banner/JKT48_FIGHT.jpg';
-  }
-  if (lowerName.includes('fight love') || lowerName.includes('dream passion')) {
-    return 'banner/JKT48 FIGHT LOVE DREAM PASSION.jpg';
-  }
-  if (lowerName.includes('jkt48 school') || lowerName.includes('school')) {
-    return 'banner/JKT48 SCHOOL.jpg';
-  }
-  if (lowerName.includes('pdmk') || lowerName.includes('seleksi')) {
-    return 'banner/SELEKSI PDMK.jpg';
-  }
-  if (lowerName.includes('z vs alpha') || lowerName.includes('alpha')) {
-    return 'banner/Z VS ALPHA.jpg';
+  if (lowerName.includes('bakudan') || lowerName.includes('dream')) {
+    return 'banner/Dream Bakudan.jpg';
   }
   
   return null;
