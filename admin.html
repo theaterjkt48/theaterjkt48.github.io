@@ -4361,22 +4361,27 @@ async function openDeleteShowModal() {
 
     try {
         var now = new Date();
-        // Hanya ambil show dari 7 hari ke belakang sampai masa depan
-        var past7 = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
-        var past7Str = past7.toISOString().split('T')[0];
+        var todayStr = now.toISOString().split('T')[0];
+        var SHOW_DURATION_MINUTES = 150;
 
         var result = await db.from('setlist_performance')
             .select('id, setlist_name, show_date, show_time, is_non_show, member_id, members(name)')
-            .gte('show_date', past7Str)
-            .order('show_date', { ascending: false })
-            .order('show_time', { ascending: false });
+            .gte('show_date', todayStr)
+            .order('show_date', { ascending: true })
+            .order('show_time', { ascending: true });
 
         if (result.error) throw result.error;
 
-        var shows = result.data || [];
+        // Filter: hanya show yang belum selesai (showEnd > now), sama seperti edit modal
+        var shows = (result.data || []).filter(function(s) {
+            if (!s.show_time) return false;
+            var showStart = new Date(s.show_date + 'T' + s.show_time);
+            var showEnd = new Date(showStart.getTime() + SHOW_DURATION_MINUTES * 60000);
+            return showEnd > now;
+        });
 
         if (shows.length === 0) {
-            document.getElementById('dslList').innerHTML = '<div class="msl-empty">Tidak ada show.</div>';
+            document.getElementById('dslList').innerHTML = '<div class="msl-empty">Tidak ada show mendatang.</div>';
             return;
         }
 
@@ -4402,9 +4407,7 @@ async function openDeleteShowModal() {
             var dateStr = formatDate(g.show_date);
             var timeStr = g.show_time ? formatTime(g.show_time) : '';
             var meta = dateStr + (timeStr ? ' · ' + timeStr : '');
-            var isPast = new Date(g.show_date + 'T' + (g.show_time || '23:59:59')) < now;
             var nonShowLabel = g.is_non_show ? '<span style="font-size:10px;background:#6b7280;color:#fff;border-radius:4px;padding:2px 7px;white-space:nowrap;">Non-Show</span>' : '';
-            var pastLabel = isPast ? '<span style="font-size:10px;background:#374151;color:#9ca3af;border-radius:4px;padding:2px 7px;white-space:nowrap;">Lewat</span>' : '';
             var memberNames = g.members.map(function(m){ return m.name; }).join(', ');
 
             var item = document.createElement('div');
@@ -4412,7 +4415,7 @@ async function openDeleteShowModal() {
             item.style.cursor = 'default';
             item.innerHTML =
                 '<div style="flex:1;min-width:0;">' +
-                  '<div class="msl-setlist">' + (g.setlist_name || '—') + nonShowLabel + pastLabel + '</div>' +
+                  '<div class="msl-setlist">' + (g.setlist_name || '—') + nonShowLabel + '</div>' +
                   '<div class="msl-date">' + meta + '</div>' +
                   '<div style="font-size:11px;color:#9ca3af;margin-top:2px;">' + memberNames + '</div>' +
                 '</div>' +
