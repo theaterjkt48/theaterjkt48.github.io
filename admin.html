@@ -4449,14 +4449,13 @@ function confirmDslDelete(group) {
     }).join('');
     document.getElementById('confirmDslMembers').innerHTML = chipsHtml;
 
-    // Isi dropdown member (pilih hapus untuk member mana saja atau semua)
+    // Isi dropdown member (default: hapus seluruh show ini)
     var select = document.getElementById('dslMemberSelect');
-    select.innerHTML = '<option value="all">Semua Member (' + group.members.length + ')</option>';
-    select.innerHTML += '<option value="entire">Hapus Seluruh Schedule</option>';
+    select.innerHTML = '<option value="entire">🗑 Hapus Show Ini (semua ' + group.members.length + ' member)</option>';
     group.members.forEach(function(m){
         var opt = document.createElement('option');
         opt.value = m.rowId;
-        opt.textContent = m.name + ' saja';
+        opt.textContent = '👤 Hapus ' + m.name + ' saja';
         select.appendChild(opt);
     });
 
@@ -4475,22 +4474,10 @@ async function doDeleteDslShow() {
     try {
         var idsToDelete;
         if (val === 'entire') {
-            // Hapus semua row termasuk null placeholder (hapus seluruh schedule)
+            // Hapus semua row untuk show ini (semua member + null placeholder)
             idsToDelete = group.ids;
-        } else if (val === 'all') {
-            // Hapus semua row member, tapi pertahankan 1 row sebagai null placeholder
-            var memberRowIds = group.members.map(function(m){ return m.rowId; });
-            if (memberRowIds.length > 0) {
-                // Jadikan row pertama sebagai null placeholder (set member_id = null)
-                var keepRowId = memberRowIds[0];
-                var nullRes = await db.from('setlist_performance').update({ member_id: null }).eq('id', keepRowId);
-                if (nullRes.error) throw nullRes.error;
-                // Hapus sisanya
-                idsToDelete = memberRowIds.slice(1);
-            } else {
-                idsToDelete = [];
-            }
         } else {
+            // Hapus 1 member saja dari show ini
             idsToDelete = [parseInt(val)];
         }
 
@@ -4517,7 +4504,7 @@ async function doDeleteDslShow() {
         // Update show count - hanya untuk member yang benar-benar dihapus dari show
         if (!group.is_non_show) {
             var membersToDecrement = [];
-            if (val === 'all' || val === 'entire') {
+            if (val === 'entire') {
                 // Semua member di show ini dikurang 1 masing-masing
                 membersToDecrement = group.members;
             } else {
@@ -4538,7 +4525,10 @@ async function doDeleteDslShow() {
             }
         }
 
-        showNotification('success', 'Dihapus', idsToDelete.length + ' show berhasil dihapus');
+        var successMsg = val === 'entire'
+            ? 'Show berhasil dihapus (' + group.members.length + ' member)'
+            : '1 member berhasil dihapus dari show';
+        showNotification('success', 'Dihapus', successMsg);
         await loadData();
         await openDeleteShowModal();
 
