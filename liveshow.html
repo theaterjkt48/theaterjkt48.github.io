@@ -608,20 +608,18 @@ function getLiveStatus(show_date, show_time, isNonShow = false) {
 
 function getSetlistBannerUrl(setlistName) {
   const bannerMap = {
-    'Te Wo Tsunaginagara': 'banner/te_wo_tsunaginagara.jpg',
     'Te wo Tsunaginagara': 'banner/te_wo_tsunaginagara.jpg',
+    
     'Pertaruhan Cinta': 'banner/pertaruhan_cinta.jpg',
+    
     'Pajama Drive': 'banner/pajama_drive.jpg',
+    
     'Ramune no Nomikata': 'banner/ramune_no_nomikata.jpg',
-    'Cara Meminum Ramune': 'banner/ramune_no_nomikata.jpg',
+    
     "Passion 200%": "banner/passion.jpg",
-    "Passion 200% [SHONICHI]": "banner/passion.jpg",
-    "Dream bakudan": "banner/dream.jpg",
-    "Dream bakudan [SHONICHI]": "banner/dream.jpg",
+    
     "DREAM BAKUDAN": "banner/dream.jpg",
-    "DREAM BAKUDAN [SHONICHI]": "banner/dream.jpg",
-    "Love 200%": "banner/love.jpg",
-    "Love 200% [SHONICHI]": "banner/love.jpg",
+    
     "ITADAKI♥LOVE": "banner/love.jpg",
     "ITADAKI♥LOVE [SHONICHI]": "banner/love.jpg"
   };
@@ -649,10 +647,13 @@ function getSetlistBannerUrl(setlistName) {
     return 'banner/pajama_drive.jpg';
   }
   if (lowerName.includes('passion')) {
-    return 'banner/PASSION200%.jpg';
+    return 'banner/passion.jpg';
+  }
+    if (lowerName.includes('itidaki')) {
+    return 'banner/love.jpg';
   }
   if (lowerName.includes('bakudan') || lowerName.includes('dream')) {
-    return 'banner/Dream Bakudan.jpg';
+    return 'banner/dream.jpg';
   }
   
   return null;
