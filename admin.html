@@ -6,6 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Admin - JKT48 Show Theater</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://accounts.google.com/gsi/client" async defer></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth}
@@ -1911,6 +1912,25 @@ body.dark #confirmEslModal .esl-option-dropdown select { background:#0a0e1a;colo
         </div>
         <h3 class="login-form-title">Selamat Datang</h3>
         <p class="login-form-sub">Masukkan kredensial admin untuk melanjutkan</p>
+
+        <!-- Google OAuth Button -->
+        <button onclick="loginWithGoogle()" 
+                style="width:100%;padding:12px 16px;background:linear-gradient(135deg,#4285F4,#3367D6);color:#fff;border:none;border-radius:8px;font-weight:600;font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;transition:all 0.3s;margin-bottom:16px;box-shadow:0 2px 8px rgba(66,133,244,0.3);">
+          <svg width="18" height="18" viewBox="0 0 48 48" fill="none">
+            <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.9C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l8.02 6.24C12.81 13.75 17.9 9.5 24 9.5z"/>
+            <path fill="#34A853" d="M46.3 24.5c0-1.3-.1-2.6-.32-3.88H24v7.37h12.3c-.6 3.15-2.68 5.8-5.64 7.62v8.9h9.02c5.3-4.88 8.36-12.04 8.36-20.01z"/>
+            <path fill="#4285F4" d="M10.53 36.57c-1.86 1.48-4.35 2.35-7.06 2.35-1.63 0-3.14-.35-4.48-.97l-8 6.16C1.07 45.42 6.26 48 12 48c5.7 0 10.93-2.1 14.9-5.58l-8.02-6.24z"/>
+            <path fill="#FBBC04" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-8.02-6.24c-2.35 1.58-5.36 2.51-8.87 2.51-7.06 0-13.09-4.72-15.25-11.07H2.18v6.16C6.07 43.72 14.44 48 24 48z"/>
+            <path fill="none" d="M0 0h48v48H0z"/>
+          </svg>
+          Login dengan Google
+        </button>
+
+        <div style="text-align:center;margin-bottom:16px;color:#6b7280;font-size:12px;display:flex;align-items:center;gap:8px;">
+          <span style="flex:1;height:1px;background:#e5e7eb"></span>
+          atau
+          <span style="flex:1;height:1px;background:#e5e7eb"></span>
+        </div>
 
         <label class="input-label">Email</label>
         <input id="email" type="email" placeholder="Masukan email">
@@ -4233,6 +4253,68 @@ function clearSearch(){
     document.getElementById('searchInput').focus();
 }
 
+// =================== GOOGLE OAUTH LOGIN ===================
+async function loginWithGoogle() {
+    try {
+        var errorEl = document.getElementById('errorMsg');
+        errorEl.textContent = 'Mengarahkan ke Google...';
+        errorEl.style.display = 'block';
+        errorEl.style.color = '#9ca3af';
+        
+        // Supabase OAuth dengan Google
+        const { data, error } = await db.auth.signInWithOAuth({
+            provider: 'google',
+            options: {
+                redirectTo: window.location.origin + window.location.pathname
+            }
+        });
+        
+        if (error) throw error;
+        // Browser akan redirect ke Google login
+        
+    } catch (err) {
+        console.error('Google login error:', err);
+        var errorEl = document.getElementById('errorMsg');
+        errorEl.textContent = 'Error: ' + (err.message || 'Gagal login dengan Google');
+        errorEl.style.display = 'block';
+        errorEl.style.color = '#ef4444';
+        showNotification('error', 'Login Google', 'Gagal login dengan Google: ' + err.message);
+    }
+}
+
+// Check session setelah redirect dari Google
+async function checkGoogleSession() {
+    try {
+        const { data: { session }, error } = await db.auth.getSession();
+        
+        if (session && session.user) {
+            console.log('Google OAuth berhasil:', session.user.email);
+            
+            // Set login info
+            var email = session.user.email;
+            var loginTime = new Date().getTime();
+            localStorage.setItem('jkt48_admin_email', email);
+            localStorage.setItem('jkt48_admin_login_time', loginTime.toString());
+            localStorage.setItem('jkt48_admin_oauth_provider', 'google');
+            
+            // Hide login modal
+            document.getElementById('loginModal').style.display = 'none';
+            
+            // Load data
+            loadData();
+            loadActivityLog();
+            showNotification('success', 'Login', 'Berhasil login dengan Google');
+            
+            return true;
+        }
+    } catch (err) {
+        console.warn('Google session check failed:', err);
+    }
+    return false;
+}
+
+// =================== END GOOGLE OAUTH ===================
+
 function login(){
     var email=document.getElementById('email').value.trim();
     var password=document.getElementById('password').value.trim();
@@ -4270,8 +4352,33 @@ function closeLogoutModal(){
 }
 
 function confirmLogout(){
-    localStorage.removeItem('jkt48_admin_email');
-    localStorage.removeItem('jkt48_admin_login_time');
+    var provider = localStorage.getItem('jkt48_admin_oauth_provider');
+    
+    // Logout dari Supabase jika pakai OAuth
+    if (provider === 'google') {
+        db.auth.signOut().then(function() {
+            localStorage.removeItem('jkt48_admin_email');
+            localStorage.removeItem('jkt48_admin_login_time');
+            localStorage.removeItem('jkt48_admin_oauth_provider');
+            finishLogout();
+        }).catch(function(err) {
+            console.warn('Error signing out:', err);
+            // Tetap lanjut logout meski error
+            localStorage.removeItem('jkt48_admin_email');
+            localStorage.removeItem('jkt48_admin_login_time');
+            localStorage.removeItem('jkt48_admin_oauth_provider');
+            finishLogout();
+        });
+    } else {
+        // Password login logout
+        localStorage.removeItem('jkt48_admin_email');
+        localStorage.removeItem('jkt48_admin_login_time');
+        localStorage.removeItem('jkt48_admin_oauth_provider');
+        finishLogout();
+    }
+}
+
+function finishLogout(){
     closeLogoutModal();
     // Reset form login
     var emailEl = document.getElementById('email');
@@ -4987,8 +5094,6 @@ async function doEditEslShow() {
     }
 }
 
-// =================== END EDIT SHOW FUNCTIONS ===================
-
 // Toggle password visibility
 function togglePasswordVisibility() {
     var input = document.getElementById('password');
@@ -5027,11 +5132,14 @@ function togglePasswordVisibility() {
 })();
 
 // Initialize
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', async function() {
     document.body.classList.add('dark');
     
-    // Fetch stats for login panel even before login
-    if (_needLogin) {
+    // Cek Google OAuth session terlebih dahulu
+    var googleSessionValid = await checkGoogleSession();
+    
+    if (!googleSessionValid && _needLogin) {
+        // Fetch stats for login panel even before login
         db.from('members').select('status,gen').then(function(result){
             if (!result.error && result.data) {
                 var active = result.data.filter(function(m){ return m.status !== 'graduated'; }).length;
@@ -5050,7 +5158,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Langsung sembunyikan splash tanpa animasi
     splash.style.display = 'none';
     
-    if (_needLogin) {
+    if (_needLogin && !googleSessionValid) {
         // Tampilkan login modal langsung
         loginModal.style.display = 'flex';
         loginModal.classList.add('animate-in');
