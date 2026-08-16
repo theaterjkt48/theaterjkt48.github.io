@@ -2932,6 +2932,43 @@ async function loadData(){
     }
 }
 
+// Tandai member sebagai graduated/resign secara langsung, tanpa perlu ada show terakhir
+// (untuk kasus pengunduran diri / resign yang tidak melalui show perpisahan)
+async function toggleGraduatedDirect(memberId) {
+    var m = members.find(function(x){ return x.id === memberId; });
+    if (!m) return;
+
+    var isCurrentlyGraduated = m.status === 'graduated';
+    var confirmMsg = isCurrentlyGraduated
+        ? 'Batalkan status graduated untuk ' + m.name + '? Member akan aktif kembali (status: Inti).'
+        : 'Tandai ' + m.name + ' sebagai resign/graduated?\n\nIni untuk kasus pengunduran diri tanpa show terakhir. Member akan langsung hilang dari daftar publik.';
+
+    if (!confirm(confirmMsg)) return;
+
+    try {
+        var newStatus = isCurrentlyGraduated ? 'inti' : 'graduated';
+        var newIsGraduated = !isCurrentlyGraduated;
+
+        var result = await db.from('members')
+            .update({ is_graduated: newIsGraduated, status: newStatus })
+            .eq('id', memberId);
+
+        if (result.error) throw result.error;
+
+        m.is_graduated = newIsGraduated;
+        m.status = newStatus;
+
+        showNotification('success', isCurrentlyGraduated ? 'Status Dibatalkan' : 'Ditandai Graduated',
+            m.name + (isCurrentlyGraduated ? ' aktif kembali' : ' telah ditandai resign/graduated'));
+
+        renderMembers();
+        updateStats();
+    } catch (err) {
+        console.error('Gagal update status graduated:', err);
+        showNotification('error', 'Error', 'Gagal update status: ' + err.message);
+    }
+}
+
 function updateMemberMappings() {
     memberIdMap = {};
     memberNameMap = {};
@@ -3132,6 +3169,7 @@ function renderMembers(){
                     '<button onclick="updateShow('+m.id+',-1)" title="Kurang show" '+(m.status==='graduated'?'disabled': '')+'>−</button>'+
                     '<button onclick="openSetlistModal('+m.id+')" title="Tambah show" '+(m.status==='graduated'?'disabled': '')+' style="background:rgba(255,255,255,0.25);">+</button>'+
                     '<button onclick="openMemberShowList('+m.id+')" title="Edit show" style="background:rgba(59,130,246,0.45);">✎</button>'+
+                    '<button onclick="toggleGraduatedDirect('+m.id+')" title="'+(m.status==='graduated'?'Batalkan status graduated':'Tandai resign/graduated (tanpa show terakhir)')+'" style="background:rgba(139,92,246,0.45);">🎓</button>'+
                 '</div>'+
             '</div>';
         list.appendChild(card);
