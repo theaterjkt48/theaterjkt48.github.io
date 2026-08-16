@@ -181,6 +181,7 @@ body.dark .avatar-wrap{background:#1e1e2e}
 }
 .status-badge.trainee{background:rgba(245,158,11,0.92)}
 .status-badge.graduated{background:rgba(107,114,128,0.92)}
+.status-badge.resigned{background:rgba(220,38,38,0.92)}
 
 /* Footer */
 .card-footer{
@@ -559,6 +560,35 @@ body.dark .graduation-dropdown {
   opacity: 0.25;
   cursor: not-allowed;
 }
+
+/* Card untuk resigned member (pengunduran diri, terpisah dari graduated) */
+.card.resigned {
+  border: 2px solid #dc2626;
+  opacity: 0.6;
+  position: relative;
+}
+.card.resigned::after {
+  content: "RESIGNED";
+  position: absolute;
+  top: 38%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(-25deg);
+  background: rgba(60,20,20,0.82);
+  color: #fecaca;
+  font-size: 11px;
+  font-weight: 800;
+  padding: 6px 14px;
+  border-radius: 8px;
+  z-index: 20;
+  letter-spacing: 2px;
+  border: 1px solid rgba(255,255,255,0.15);
+  backdrop-filter: blur(4px);
+}
+.card.resigned .admin-controls button {
+  opacity: 0.25;
+  cursor: not-allowed;
+}
+
 
 /* Bulk Add Modal khusus */
 #bulkAddModal .modal-box {
@@ -1768,6 +1798,8 @@ body.dark #confirmEslModal .esl-option-dropdown select { background:#0a0e1a;colo
     <button class="filter all active" onclick="filterType('all')">ALL</button>
     <button class="filter inti" onclick="filterType('inti')">INTI</button>
     <button class="filter trainee" onclick="filterType('trainee')">TRAINEE</button>
+    <button class="filter graduated" onclick="filterType('graduated')" style="background:rgba(107,114,128,0.35)">GRADUATED</button>
+    <button class="filter resigned" onclick="filterType('resigned')" style="background:rgba(220,38,38,0.35)">RESIGNED</button>
     <button class="filter" onclick="filterGen(3)" style="background:#ec4899;color:#fff">Gen 3</button>
     <button class="filter" onclick="filterGen(6)" style="background:#22c55e;color:#fff">Gen 6</button>
     <button class="filter" onclick="filterGen(7)" style="background:#15803d;color:#fff">Gen 7</button>
@@ -2737,10 +2769,15 @@ var currentMemberId=null;
 var memberIdMap = {}; // { memberName: memberId }
 var memberNameMap = {}; // { memberId: memberName }
 
+// Member dianggap tidak aktif kalau sudah graduated ATAU resigned (dua status terpisah, sama-sama berarti "keluar dari grup")
+function isMemberInactive(m) {
+    return m.status === 'graduated' || m.status === 'resigned';
+}
+
 // Team Quick-Select
 function selectTeamMembers(team) {
     var activeTeamMembers = members.filter(function(m) {
-        return m.team && m.team.toLowerCase() === team.toLowerCase() && m.status !== 'graduated';
+        return m.team && m.team.toLowerCase() === team.toLowerCase() && !isMemberInactive(m);
     });
 
     if (activeTeamMembers.length === 0) {
@@ -2917,6 +2954,22 @@ async function loadData(){
             }
             showNotification('info', 'Data Disinkronkan', outOfSync.length + ' member graduated diperbaiki statusnya');
         }
+
+        // Auto-sync #3: perbaiki data dimana is_resigned=true tapi status belum 'resigned'
+        var resignOutOfSync = members.filter(function(m){ return m.is_resigned === true && m.status !== 'resigned'; });
+        if (resignOutOfSync.length > 0) {
+            console.log('Sinkronisasi status resigned untuk ' + resignOutOfSync.length + ' member:', resignOutOfSync.map(function(m){return m.name;}));
+            for (var j = 0; j < resignOutOfSync.length; j++) {
+                var fixResignResult = await db.from('members').update({ is_resigned: true, status: 'resigned' }).eq('id', resignOutOfSync[j].id);
+                if (!fixResignResult.error) {
+                    resignOutOfSync[j].is_resigned = true;
+                    resignOutOfSync[j].status = 'resigned';
+                } else {
+                    console.error('Gagal sinkronisasi status untuk ' + resignOutOfSync[j].name + ':', fixResignResult.error);
+                }
+            }
+            showNotification('info', 'Data Disinkronkan', resignOutOfSync.length + ' member resigned diperbaiki statusnya');
+        }
         
         // Update mapping
         updateMemberMappings();
@@ -2932,8 +2985,7 @@ async function loadData(){
     }
 }
 
-// Tandai member sebagai graduated/resign secara langsung, tanpa perlu ada show terakhir
-// (untuk kasus pengunduran diri / resign yang tidak melalui show perpisahan)
+// Tandai member sebagai GRADUATED secara langsung, tanpa perlu ada show terakhir
 async function toggleGraduatedDirect(memberId) {
     var m = members.find(function(x){ return x.id === memberId; });
     if (!m) return;
@@ -2941,7 +2993,7 @@ async function toggleGraduatedDirect(memberId) {
     var isCurrentlyGraduated = m.status === 'graduated';
     var confirmMsg = isCurrentlyGraduated
         ? 'Batalkan status graduated untuk ' + m.name + '? Member akan aktif kembali (status: Inti).'
-        : 'Tandai ' + m.name + ' sebagai resign/graduated?\n\nIni untuk kasus pengunduran diri tanpa show terakhir. Member akan langsung hilang dari daftar publik.';
+        : 'Tandai ' + m.name + ' sebagai GRADUATED?\n\nUntuk kelulusan tanpa show perpisahan formal. Member akan langsung hilang dari daftar publik.';
 
     if (!confirm(confirmMsg)) return;
 
@@ -2950,21 +3002,59 @@ async function toggleGraduatedDirect(memberId) {
         var newIsGraduated = !isCurrentlyGraduated;
 
         var result = await db.from('members')
-            .update({ is_graduated: newIsGraduated, status: newStatus })
+            .update({ is_graduated: newIsGraduated, is_resigned: false, status: newStatus })
             .eq('id', memberId);
 
         if (result.error) throw result.error;
 
         m.is_graduated = newIsGraduated;
+        m.is_resigned = false;
         m.status = newStatus;
 
         showNotification('success', isCurrentlyGraduated ? 'Status Dibatalkan' : 'Ditandai Graduated',
-            m.name + (isCurrentlyGraduated ? ' aktif kembali' : ' telah ditandai resign/graduated'));
+            m.name + (isCurrentlyGraduated ? ' aktif kembali' : ' telah ditandai graduated'));
 
         renderMembers();
         updateStats();
     } catch (err) {
         console.error('Gagal update status graduated:', err);
+        showNotification('error', 'Error', 'Gagal update status: ' + err.message);
+    }
+}
+
+// Tandai member sebagai RESIGNED secara langsung (pengunduran diri, terpisah dari graduation)
+async function toggleResignedDirect(memberId) {
+    var m = members.find(function(x){ return x.id === memberId; });
+    if (!m) return;
+
+    var isCurrentlyResigned = m.status === 'resigned';
+    var confirmMsg = isCurrentlyResigned
+        ? 'Batalkan status resigned untuk ' + m.name + '? Member akan aktif kembali (status: Inti).'
+        : 'Tandai ' + m.name + ' sebagai RESIGNED (mengundurkan diri)?\n\nUntuk kasus pengunduran diri tanpa show perpisahan, seperti pengumuman resign. Member akan langsung hilang dari daftar publik.';
+
+    if (!confirm(confirmMsg)) return;
+
+    try {
+        var newStatus = isCurrentlyResigned ? 'inti' : 'resigned';
+        var newIsResigned = !isCurrentlyResigned;
+
+        var result = await db.from('members')
+            .update({ is_resigned: newIsResigned, is_graduated: false, status: newStatus })
+            .eq('id', memberId);
+
+        if (result.error) throw result.error;
+
+        m.is_resigned = newIsResigned;
+        m.is_graduated = false;
+        m.status = newStatus;
+
+        showNotification('success', isCurrentlyResigned ? 'Status Dibatalkan' : 'Ditandai Resigned',
+            m.name + (isCurrentlyResigned ? ' aktif kembali' : ' telah ditandai resigned'));
+
+        renderMembers();
+        updateStats();
+    } catch (err) {
+        console.error('Gagal update status resigned:', err);
         showNotification('error', 'Error', 'Gagal update status: ' + err.message);
     }
 }
@@ -2980,7 +3070,7 @@ function updateMemberMappings() {
 }
 
 function updateLoginStats() {
-    var activeMembers = members.filter(function(m){ return m.status !== 'graduated'; });
+    var activeMembers = members.filter(function(m){ return !isMemberInactive(m); });
     var elM = document.getElementById('loginStatMembers');
     var elG = document.getElementById('loginStatGen');
     if (elM) elM.textContent = activeMembers.length;
@@ -3141,12 +3231,14 @@ function renderMembers(){
         var percent=Math.min(100,(m.show/1000)*100);
         var color=GEN_COLORS[m.gen]||'#6366f1';
         var card=document.createElement('div');
-        card.className='card animate-in'+(m.status==='trainee'?' trainee':'')+(m.status==='graduated'?' graduated':'');
+        card.className='card animate-in'+(m.status==='trainee'?' trainee':'')+(m.status==='graduated'?' graduated':'')+(m.status==='resigned'?' resigned':'');
         card.style.setProperty('--gen-color',color);
         
         var statusBadgeHtml='';
         if(m.status==='graduated'){
             statusBadgeHtml='<div class="status-badge graduated">GRADUATED</div>';
+        }else if(m.status==='resigned'){
+            statusBadgeHtml='<div class="status-badge resigned">RESIGNED</div>';
         }else if(m.status==='trainee'){
             statusBadgeHtml='<div class="status-badge trainee">TRAINEE</div>';
         }else{
@@ -3154,6 +3246,7 @@ function renderMembers(){
         }
         
         var firstChar = m.name.charAt(0);
+        var memberInactive = isMemberInactive(m);
         card.innerHTML=
             '<div class="avatar-wrap">'+
                 '<img class="avatar" src="img/'+m.name.toLowerCase()+'.jpg" onerror="this.onerror=null;this.style.display=\'none\';var p=document.createElement(\'div\');p.className=\'avatar-placeholder\';p.textContent=\''+firstChar+'\';this.parentNode.appendChild(p);" alt="'+m.name+'">'+
@@ -3166,10 +3259,11 @@ function renderMembers(){
                 '<div class="show"><span class="show-num">'+m.show+'</span>&nbsp;show</div>'+
                 '<div class="bar"><span style="width:'+percent+'%"></span></div>'+
                 '<div class="admin-controls">'+
-                    '<button onclick="updateShow('+m.id+',-1)" title="Kurang show" '+(m.status==='graduated'?'disabled': '')+'>−</button>'+
-                    '<button onclick="openSetlistModal('+m.id+')" title="Tambah show" '+(m.status==='graduated'?'disabled': '')+' style="background:rgba(255,255,255,0.25);">+</button>'+
+                    '<button onclick="updateShow('+m.id+',-1)" title="Kurang show" '+(memberInactive?'disabled': '')+'>−</button>'+
+                    '<button onclick="openSetlistModal('+m.id+')" title="Tambah show" '+(memberInactive?'disabled': '')+' style="background:rgba(255,255,255,0.25);">+</button>'+
                     '<button onclick="openMemberShowList('+m.id+')" title="Edit show" style="background:rgba(59,130,246,0.45);">✎</button>'+
-                    '<button onclick="toggleGraduatedDirect('+m.id+')" title="'+(m.status==='graduated'?'Batalkan status graduated':'Tandai resign/graduated (tanpa show terakhir)')+'" style="background:rgba(139,92,246,0.45);">🎓</button>'+
+                    (m.status!=='resigned' ? '<button onclick="toggleGraduatedDirect('+m.id+')" title="'+(m.status==='graduated'?'Batalkan status graduated':'Tandai graduated (tanpa show terakhir)')+'" style="background:rgba(139,92,246,0.45);">🎓</button>' : '')+
+                    (m.status!=='graduated' ? '<button onclick="toggleResignedDirect('+m.id+')" title="'+(m.status==='resigned'?'Batalkan status resigned':'Tandai resign (pengunduran diri)')+'" style="background:rgba(220,38,38,0.45);">🚪</button>' : '')+
                 '</div>'+
             '</div>';
         list.appendChild(card);
@@ -3292,7 +3386,7 @@ function filterEditMemberBySetlist() {
     memberSelect.innerHTML = '<option value="">-- Pilih Member --</option>';
     var sorted = members.slice().sort(function(a,b){ return a.name.localeCompare(b.name); });
     sorted.forEach(function(m) {
-        if (m.status === 'graduated') return;
+        if (isMemberInactive(m)) return;
         if (allowedStatus && m.status !== allowedStatus) return;
         var selected = (String(m.id) === String(currentVal)) ? 'selected' : '';
         memberSelect.innerHTML += '<option value="' + m.id + '" ' + selected + '>' + m.name + '</option>';
@@ -3446,7 +3540,7 @@ function populateMemberDropdown(dropdownId) {
     });
     
     sortedMembers.forEach(function(member) {
-        if (member.status !== 'graduated') {
+        if (!isMemberInactive(member)) {
             var selected = (member.name === previousValue) ? 'selected' : '';
             dropdown.innerHTML += '<option value="' + member.name + '" ' + selected + '>' + member.name + '</option>';
         }
@@ -3460,8 +3554,8 @@ function openSetlistModal(memberId){
     var member=members.find(function(m){return m.id===memberId});
     if(!member) return;
     
-    if(member.status==='graduated'){
-        showNotification('warning', 'Graduated', member.name+' sudah graduated');
+    if(isMemberInactive(member)){
+        showNotification('warning', member.status==='graduated'?'Graduated':'Resigned', member.name+' sudah '+(member.status==='graduated'?'graduated':'resigned'));
         return;
     }
     
@@ -3611,8 +3705,8 @@ async function addShowWithSetlist(){
         if(!member) return;
     }
     
-    if(member.status === 'graduated'){
-        showNotification('error', 'Graduated', member.name+' sudah graduated');
+    if(isMemberInactive(member)){
+        showNotification('error', member.status==='graduated'?'Graduated':'Resigned', member.name+' sudah '+(member.status==='graduated'?'graduated':'resigned'));
         closeSetlistModal();
         return;
     }
@@ -3817,8 +3911,8 @@ async function bulkAddShows(){
             continue;
         }
         
-        if(member.status === 'graduated'){
-            failedNames.push(name+' (sudah graduated)');
+        if(isMemberInactive(member)){
+            failedNames.push(name+' (sudah '+(member.status==='graduated'?'graduated':'resigned')+')');
             continue;
         }
         
@@ -3911,8 +4005,8 @@ async function updateShow(id, change){
     var member = members.find(function(m) { return m.id === id });
     if (!member) return;
     
-    if(member.status === 'graduated'){
-        showNotification('warning', 'Graduated', member.name+' sudah graduated');
+    if(isMemberInactive(member)){
+        showNotification('warning', member.status==='graduated'?'Graduated':'Resigned', member.name+' sudah '+(member.status==='graduated'?'graduated':'resigned'));
         return;
     }
     
@@ -4115,7 +4209,7 @@ async function openEditShow(showId) {
         // Tampilkan semua member dulu (akan difilter ulang setelah setlist di-set)
         var sortedEditMembers = members.slice().sort(function(a,b){ return a.name.localeCompare(b.name); });
         sortedEditMembers.forEach(function(member) {
-            if (member.status === 'graduated') return;
+            if (isMemberInactive(member)) return;
             var selected = (member.id === currentEditShowData.member_id) ? 'selected' : '';
             memberSelect.innerHTML += '<option value="' + member.id + '" ' + selected + '>' + member.name + '</option>';
         });
@@ -4287,9 +4381,10 @@ function updateStats(){
     var trainee=filtered.filter(function(m){return m.status==='trainee'}).length;
     var inti=filtered.filter(function(m){return m.status==='inti'}).length;
     var graduated=filtered.filter(function(m){return m.status==='graduated'}).length;
+    var resigned=filtered.filter(function(m){return m.status==='resigned'}).length;
     var totalShows=filtered.reduce(function(sum,m){return sum+m.show},0);
     
-    var statsText=total+' members • '+inti+' Inti • '+trainee+' Trainee • '+graduated+' Graduated • '+totalShows+' total show';
+    var statsText=total+' members • '+inti+' Inti • '+trainee+' Trainee • '+graduated+' Graduated • '+resigned+' Resigned • '+totalShows+' total show';
     if(currentGen!=='all') statsText+=' • Gen '+currentGen;
     if(currentStatus!=='all') statsText+=' • '+currentStatus.toUpperCase();
     if(searchQuery) statsText+=' • Search: "'+searchQuery+'"';
@@ -4798,7 +4893,7 @@ function eslPopulateMemberDropdown(dropdownId) {
     var prev = sel.value;
     sel.innerHTML = '<option value="">-- Pilih Member --</option>';
     members.slice().sort(function(a,b){ return a.name.localeCompare(b.name); }).forEach(function(m) {
-        if (m.status === 'graduated') return;
+        if (isMemberInactive(m)) return;
         var opt = document.createElement('option');
         opt.value = m.name; opt.textContent = m.name;
         if (m.name === prev) opt.selected = true;
@@ -4846,7 +4941,7 @@ function editPopulateMemberDropdown(dropdownId) {
     var prev = sel.value;
     sel.innerHTML = '<option value="">-- Pilih Member --</option>';
     members.slice().sort(function(a,b){ return a.name.localeCompare(b.name); }).forEach(function(m) {
-        if (m.status === 'graduated') return;
+        if (isMemberInactive(m)) return;
         var opt = document.createElement('option');
         opt.value = m.name; opt.textContent = m.name;
         if (m.name === prev) opt.selected = true;
@@ -4988,7 +5083,7 @@ function eslPopulateMemberDropdown(id) {
     if (!sel) return;
     var prev = sel.value;
     sel.innerHTML = '<option value="">-- Pilih Member --</option>';
-    (members || []).filter(function(m){ return m.status !== 'graduated'; }).forEach(function(m){
+    (members || []).filter(function(m){ return !isMemberInactive(m); }).forEach(function(m){
         sel.innerHTML += '<option value="' + m.name + '">' + m.name + '</option>';
     });
     sel.value = prev;
@@ -5163,7 +5258,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     if (_needLogin) {
         db.from('members').select('status,gen').then(function(result){
             if (!result.error && result.data) {
-                var active = result.data.filter(function(m){ return m.status !== 'graduated'; }).length;
+                var active = result.data.filter(function(m){ return !isMemberInactive(m); }).length;
                 var elM = document.getElementById('loginStatMembers');
                 var elG = document.getElementById('loginStatGen');
                 if (elM) elM.textContent = active;
