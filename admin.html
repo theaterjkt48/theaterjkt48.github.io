@@ -3061,46 +3061,6 @@ async function finalizeMemberStatuses() {
     }
 }
 
-// Tandai member sebagai GRADUATED secara langsung (efektif hari ini juga), tanpa perlu ada show terakhir
-async function toggleGraduatedDirect(memberId) {
-    var m = members.find(function(x){ return x.id === memberId; });
-    if (!m) return;
-
-    var isCurrentlyGraduated = m.status === 'graduated';
-    var confirmMsg = isCurrentlyGraduated
-        ? 'Batalkan status graduated untuk ' + m.name + '? Member akan aktif kembali (status: Inti).'
-        : 'Tandai ' + m.name + ' sebagai GRADUATED efektif hari ini?\n\nUntuk kelulusan tanpa show perpisahan formal. Member akan langsung hilang dari daftar publik.';
-
-    if (!confirm(confirmMsg)) return;
-
-    try {
-        var newStatus = isCurrentlyGraduated ? 'inti' : 'graduated';
-        var newIsGraduated = !isCurrentlyGraduated;
-        var newGradDate = isCurrentlyGraduated ? null : todayDateStr();
-
-        var result = await db.from('members')
-            .update({ is_graduated: newIsGraduated, is_resigned: false, status: newStatus, graduation_date: newGradDate, resign_date: null })
-            .eq('id', memberId);
-
-        if (result.error) throw result.error;
-
-        m.is_graduated = newIsGraduated;
-        m.is_resigned = false;
-        m.status = newStatus;
-        m.graduation_date = newGradDate;
-        m.resign_date = null;
-
-        showNotification('success', isCurrentlyGraduated ? 'Status Dibatalkan' : 'Ditandai Graduated',
-            m.name + (isCurrentlyGraduated ? ' aktif kembali' : ' telah ditandai graduated'));
-
-        renderMembers();
-        updateStats();
-    } catch (err) {
-        console.error('Gagal update status graduated:', err);
-        showNotification('error', 'Error', 'Gagal update status: ' + err.message);
-    }
-}
-
 // ============= RESIGN MODAL (pengunduran diri dengan tanggal efektif) =============
 function openResignModal() {
     var sel = document.getElementById('resignMemberSelect');
@@ -3452,7 +3412,6 @@ function renderMembers(){
                     '<button onclick="updateShow('+m.id+',-1)" title="Kurang show" '+(memberInactive?'disabled': '')+'>−</button>'+
                     '<button onclick="openSetlistModal('+m.id+')" title="Tambah show" '+(memberInactive?'disabled': '')+' style="background:rgba(255,255,255,0.25);">+</button>'+
                     '<button onclick="openMemberShowList('+m.id+')" title="Edit show" style="background:rgba(59,130,246,0.45);">✎</button>'+
-                    (m.status!=='resigned' ? '<button onclick="toggleGraduatedDirect('+m.id+')" title="'+(m.status==='graduated'?'Batalkan status graduated':'Tandai graduated (tanpa show terakhir)')+'" style="background:rgba(139,92,246,0.45);">🎓</button>' : '')+
                 '</div>'+
             '</div>';
         list.appendChild(card);
