@@ -95,8 +95,8 @@ body.dark .search-clear-btn:hover svg{stroke:#f87171}
 @media (max-width:767px){
   .top{flex-direction:column;align-items:stretch;gap:8px;padding:10px 12px}
   .search-box{max-width:100%;flex:none}
-  .top-actions{width:100%;display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px}
-  .top-actions button{padding:9px 6px;font-size:12px;border-radius:12px;white-space:nowrap;text-align:center}
+  .top-actions{width:100%;display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:6px}
+  .top-actions button{padding:9px 4px;font-size:11px;border-radius:12px;white-space:nowrap;text-align:center}
 }
 textarea{font-family:Arial,sans-serif;max-height:150px;min-height:100px;resize:vertical}
 body.dark textarea{background:#0a0e1a;color:#e5e7eb;border-color:#374151}
@@ -1005,17 +1005,21 @@ body.dark #setlistModal .modal-divider { background:#1f2937; }
 #setlistModal .option-card-row { display:flex; align-items:center; gap:10px; cursor:pointer; }
 #setlistModal .option-card.birthday-card   { background:#fff5f5; border-color:#fecaca; }
 #setlistModal .option-card.graduation-card { background:#eff6ff; border-color:#bfdbfe; }
+#setlistModal .option-card.resign-card     { background:#fef2f2; border-color:#fca5a5; }
 #setlistModal .option-card.nonshow-card    { background:#f0fdf4; border-color:#86efac; }
 body.dark #setlistModal .option-card.birthday-card   { background:#1f1818; border-color:#7f1d1d; }
 body.dark #setlistModal .option-card.graduation-card { background:#1a1f2e; border-color:#1e3a8a; }
+body.dark #setlistModal .option-card.resign-card     { background:#2a1414; border-color:#7f1d1d; }
 body.dark #setlistModal .option-card.nonshow-card    { background:#052e16; border-color:#166534; }
 #setlistModal .option-card input[type="checkbox"] { width:18px; height:18px; cursor:pointer; margin:0; flex-shrink:0; accent-color:#e60012; }
 #setlistModal .option-label { font-size:13px; font-weight:600; flex:1; display:flex; align-items:center; gap:7px; }
 #setlistModal .option-card.birthday-card   .option-label { color:#be123c; }
 #setlistModal .option-card.graduation-card .option-label { color:#1e40af; }
+#setlistModal .option-card.resign-card     .option-label { color:#b91c1c; }
 #setlistModal .option-card.nonshow-card    .option-label { color:#166534; }
 body.dark #setlistModal .option-card.birthday-card   .option-label { color:#fca5a5; }
 body.dark #setlistModal .option-card.graduation-card .option-label { color:#93c5fd; }
+body.dark #setlistModal .option-card.resign-card     .option-label { color:#fca5a5; }
 body.dark #setlistModal .option-card.nonshow-card    .option-label { color:#86efac; }
 #setlistModal .option-dropdown { margin-top:10px; padding-top:10px; border-top:1px solid rgba(0,0,0,0.08); display:none; }
 body.dark #setlistModal .option-dropdown { border-top-color:rgba(255,255,255,0.06); }
@@ -1790,6 +1794,7 @@ body.dark #confirmEslModal .esl-option-dropdown select { background:#0a0e1a;colo
         <button class="bulk-btn" onclick="openBulkAddModal()">Bulk Add</button>
         <button style="background:#3b82f6;color:#fff;" onclick="openEditShowListModal()">Edit Show</button>
         <button style="background:#ef4444;color:#fff;" onclick="openDeleteShowModal()">Hapus Show</button>
+        <button style="background:#dc2626;color:#fff;" onclick="openResignModal()">Resign</button>
     </div>
 </div>
 
@@ -1798,8 +1803,6 @@ body.dark #confirmEslModal .esl-option-dropdown select { background:#0a0e1a;colo
     <button class="filter all active" onclick="filterType('all')">ALL</button>
     <button class="filter inti" onclick="filterType('inti')">INTI</button>
     <button class="filter trainee" onclick="filterType('trainee')">TRAINEE</button>
-    <button class="filter graduated" onclick="filterType('graduated')" style="background:rgba(107,114,128,0.35)">GRADUATED</button>
-    <button class="filter resigned" onclick="filterType('resigned')" style="background:rgba(220,38,38,0.35)">RESIGNED</button>
     <button class="filter" onclick="filterGen(3)" style="background:#ec4899;color:#fff">Gen 3</button>
     <button class="filter" onclick="filterGen(6)" style="background:#22c55e;color:#fff">Gen 6</button>
     <button class="filter" onclick="filterGen(7)" style="background:#15803d;color:#fff">Gen 7</button>
@@ -2024,7 +2027,40 @@ body.dark #confirmEslModal .esl-option-dropdown select { background:#0a0e1a;colo
   </div>
 </div>
 
-<!-- Setlist Modal (Tambah Show) -->
+<!-- Resign Modal (Pengunduran Diri dengan tanggal efektif) -->
+<div class="modal" id="resignModal">
+  <div class="modal-box" style="max-width:400px;">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
+      <div style="width:44px;height:44px;background:#fee2e2;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#dc2626" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+      </div>
+      <div>
+        <h3 style="font-size:17px;font-weight:700;margin:0;">Resign Member</h3>
+        <div style="font-size:12px;color:#9ca3af;">Pengunduran diri tanpa show terakhir</div>
+      </div>
+    </div>
+
+    <label class="input-label">Pilih Member</label>
+    <select id="resignMemberSelect" onchange="onResignMemberChange()" style="margin-bottom:12px;">
+      <option value="">-- Pilih Member --</option>
+    </select>
+
+    <div id="resignDateSection">
+      <label class="input-label">Efektif Mulai Tanggal</label>
+      <input type="date" id="resignEffectiveDate" style="margin-bottom:4px;">
+      <div class="tip-text"><svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;vertical-align:middle;margin-right:5px"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>Member tetap aktif normal sampai tanggal ini tiba. Setelah lewat, otomatis terkunci &amp; hilang dari daftar publik.</div>
+    </div>
+
+    <div id="resignAlreadySetInfo" style="display:none;background:#fef2f2;color:#b91c1c;border-radius:8px;padding:10px 12px;font-size:12px;margin-top:10px;"></div>
+
+    <div class="modal-buttons" style="gap:10px;margin-top:16px;">
+      <button class="btn-cancel" onclick="closeResignModal()" style="flex:1;padding:12px;font-size:14px;border-radius:12px;">Tutup</button>
+      <button id="resignCancelBtn" onclick="cancelResignForSelected()" style="display:none;flex:1;padding:12px;font-size:14px;border-radius:12px;background:#6b7280;color:#fff;font-weight:700;">Batalkan Resign</button>
+      <button id="resignSaveBtn" onclick="saveResignForSelected()" style="flex:1;padding:12px;font-size:14px;border-radius:12px;background:#dc2626;color:#fff;font-weight:700;">Simpan</button>
+    </div>
+  </div>
+</div>
+
 <div class="modal" id="setlistModal">
   <div class="modal-box">
 
@@ -2970,6 +3006,9 @@ async function loadData(){
             }
             showNotification('info', 'Data Disinkronkan', resignOutOfSync.length + ' member resigned diperbaiki statusnya');
         }
+
+        // Auto-finalize: member yang graduation_date/resign_date sudah lewat, dikunci statusnya
+        await finalizeMemberStatuses();
         
         // Update mapping
         updateMemberMappings();
@@ -2985,7 +3024,44 @@ async function loadData(){
     }
 }
 
-// Tandai member sebagai GRADUATED secara langsung, tanpa perlu ada show terakhir
+// Helper tanggal hari ini dalam format YYYY-MM-DD (untuk dibandingkan dengan graduation_date/resign_date)
+function todayDateStr() {
+    var d = new Date();
+    return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+}
+
+// Cek semua member yang graduation_date/resign_date-nya sudah lewat tapi status belum di-finalize,
+// lalu otomatis kunci mereka (is_graduated/is_resigned = true, status disesuaikan).
+// Member dengan tanggal efektif di masa depan TETAP aktif normal sampai tanggalnya tiba.
+async function finalizeMemberStatuses() {
+    var today = todayDateStr();
+    var toFinalize = members.filter(function(m) {
+        var gradDue = m.graduation_date && m.graduation_date <= today && m.status !== 'graduated';
+        var resignDue = m.resign_date && m.resign_date <= today && m.status !== 'resigned';
+        return gradDue || resignDue;
+    });
+
+    for (var i = 0; i < toFinalize.length; i++) {
+        var m = toFinalize[i];
+        try {
+            if (m.graduation_date && m.graduation_date <= today && m.status !== 'graduated') {
+                var r1 = await db.from('members').update({ is_graduated: true, is_resigned: false, status: 'graduated' }).eq('id', m.id);
+                if (!r1.error) { m.is_graduated = true; m.is_resigned = false; m.status = 'graduated'; }
+            } else if (m.resign_date && m.resign_date <= today && m.status !== 'resigned') {
+                var r2 = await db.from('members').update({ is_resigned: true, is_graduated: false, status: 'resigned' }).eq('id', m.id);
+                if (!r2.error) { m.is_resigned = true; m.is_graduated = false; m.status = 'resigned'; }
+            }
+        } catch (e) {
+            console.error('Gagal finalize status untuk ' + m.name + ':', e);
+        }
+    }
+
+    if (toFinalize.length > 0) {
+        showNotification('info', 'Status Diperbarui', toFinalize.length + ' member sudah lewat tanggal efektif, status diperbarui otomatis');
+    }
+}
+
+// Tandai member sebagai GRADUATED secara langsung (efektif hari ini juga), tanpa perlu ada show terakhir
 async function toggleGraduatedDirect(memberId) {
     var m = members.find(function(x){ return x.id === memberId; });
     if (!m) return;
@@ -2993,16 +3069,17 @@ async function toggleGraduatedDirect(memberId) {
     var isCurrentlyGraduated = m.status === 'graduated';
     var confirmMsg = isCurrentlyGraduated
         ? 'Batalkan status graduated untuk ' + m.name + '? Member akan aktif kembali (status: Inti).'
-        : 'Tandai ' + m.name + ' sebagai GRADUATED?\n\nUntuk kelulusan tanpa show perpisahan formal. Member akan langsung hilang dari daftar publik.';
+        : 'Tandai ' + m.name + ' sebagai GRADUATED efektif hari ini?\n\nUntuk kelulusan tanpa show perpisahan formal. Member akan langsung hilang dari daftar publik.';
 
     if (!confirm(confirmMsg)) return;
 
     try {
         var newStatus = isCurrentlyGraduated ? 'inti' : 'graduated';
         var newIsGraduated = !isCurrentlyGraduated;
+        var newGradDate = isCurrentlyGraduated ? null : todayDateStr();
 
         var result = await db.from('members')
-            .update({ is_graduated: newIsGraduated, is_resigned: false, status: newStatus })
+            .update({ is_graduated: newIsGraduated, is_resigned: false, status: newStatus, graduation_date: newGradDate, resign_date: null })
             .eq('id', memberId);
 
         if (result.error) throw result.error;
@@ -3010,6 +3087,8 @@ async function toggleGraduatedDirect(memberId) {
         m.is_graduated = newIsGraduated;
         m.is_resigned = false;
         m.status = newStatus;
+        m.graduation_date = newGradDate;
+        m.resign_date = null;
 
         showNotification('success', isCurrentlyGraduated ? 'Status Dibatalkan' : 'Ditandai Graduated',
             m.name + (isCurrentlyGraduated ? ' aktif kembali' : ' telah ditandai graduated'));
@@ -3022,40 +3101,151 @@ async function toggleGraduatedDirect(memberId) {
     }
 }
 
-// Tandai member sebagai RESIGNED secara langsung (pengunduran diri, terpisah dari graduation)
-async function toggleResignedDirect(memberId) {
-    var m = members.find(function(x){ return x.id === memberId; });
+// ============= RESIGN MODAL (pengunduran diri dengan tanggal efektif) =============
+function openResignModal() {
+    var sel = document.getElementById('resignMemberSelect');
+    sel.innerHTML = '<option value="">-- Pilih Member --</option>';
+
+    var sortedMembers = members.slice().sort(function(a,b){ return a.name.localeCompare(b.name); });
+    sortedMembers.forEach(function(m) {
+        // Tampilkan member yang belum graduated, ATAU member yang sedang resign (untuk bisa dibatalkan)
+        if (m.status === 'graduated') return;
+        var label = m.name;
+        if (m.resign_date) {
+            var isDone = m.status === 'resigned';
+            label += isDone ? ' (Resigned sejak ' + formatDateID(m.resign_date) + ')' : ' (Resign efektif ' + formatDateID(m.resign_date) + ')';
+        }
+        var opt = document.createElement('option');
+        opt.value = m.id;
+        opt.textContent = label;
+        sel.appendChild(opt);
+    });
+
+    document.getElementById('resignEffectiveDate').value = getTodayDate();
+    document.getElementById('resignDateSection').style.display = 'block';
+    document.getElementById('resignAlreadySetInfo').style.display = 'none';
+    document.getElementById('resignCancelBtn').style.display = 'none';
+    document.getElementById('resignSaveBtn').style.display = 'block';
+    document.getElementById('resignModal').style.display = 'flex';
+}
+
+function closeResignModal() {
+    document.getElementById('resignModal').style.display = 'none';
+}
+
+function formatDateID(dateStr) {
+    if (!dateStr) return '';
+    var months = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
+    var parts = dateStr.split('-');
+    if (parts.length !== 3) return dateStr;
+    return parseInt(parts[2],10) + ' ' + months[parseInt(parts[1],10)-1] + ' ' + parts[0];
+}
+
+function onResignMemberChange() {
+    var id = document.getElementById('resignMemberSelect').value;
+    var infoBox = document.getElementById('resignAlreadySetInfo');
+    var cancelBtn = document.getElementById('resignCancelBtn');
+    var saveBtn = document.getElementById('resignSaveBtn');
+    var dateSection = document.getElementById('resignDateSection');
+
+    if (!id) {
+        infoBox.style.display = 'none';
+        cancelBtn.style.display = 'none';
+        saveBtn.style.display = 'block';
+        dateSection.style.display = 'block';
+        return;
+    }
+
+    var m = members.find(function(x){ return String(x.id) === String(id); });
+    if (m && m.resign_date) {
+        var isDone = m.status === 'resigned';
+        infoBox.textContent = isDone
+            ? m.name + ' sudah RESIGNED sejak ' + formatDateID(m.resign_date) + '. Tidak bisa diubah lagi kecuali dibatalkan.'
+            : m.name + ' terjadwal resign efektif ' + formatDateID(m.resign_date) + '. Masih aktif normal sampai tanggal tersebut.';
+        infoBox.style.display = 'block';
+        cancelBtn.style.display = 'block';
+        document.getElementById('resignEffectiveDate').value = m.resign_date;
+        // Kalau sudah final (lewat tanggal), kunci - tidak bisa diubah lagi, cuma bisa dibatalkan
+        if (isDone) {
+            saveBtn.style.display = 'none';
+            dateSection.style.display = 'none';
+        } else {
+            saveBtn.style.display = 'block';
+            dateSection.style.display = 'block';
+        }
+    } else {
+        infoBox.style.display = 'none';
+        cancelBtn.style.display = 'none';
+        saveBtn.style.display = 'block';
+        dateSection.style.display = 'block';
+        document.getElementById('resignEffectiveDate').value = getTodayDate();
+    }
+}
+
+async function saveResignForSelected() {
+    var id = document.getElementById('resignMemberSelect').value;
+    if (!id) { showNotification('warning', 'Validasi', 'Pilih member dulu'); return; }
+
+    var effDate = document.getElementById('resignEffectiveDate').value;
+    if (!effDate) { showNotification('warning', 'Validasi', 'Pilih tanggal efektif resign'); return; }
+
+    var m = members.find(function(x){ return String(x.id) === String(id); });
     if (!m) return;
 
-    var isCurrentlyResigned = m.status === 'resigned';
-    var confirmMsg = isCurrentlyResigned
-        ? 'Batalkan status resigned untuk ' + m.name + '? Member akan aktif kembali (status: Inti).'
-        : 'Tandai ' + m.name + ' sebagai RESIGNED (mengundurkan diri)?\n\nUntuk kasus pengunduran diri tanpa show perpisahan, seperti pengumuman resign. Member akan langsung hilang dari daftar publik.';
-
+    var today = todayDateStr();
+    var isImmediate = effDate <= today;
+    var confirmMsg = isImmediate
+        ? 'Tandai ' + m.name + ' RESIGNED efektif ' + formatDateID(effDate) + ' (langsung berlaku sekarang)?'
+        : 'Jadwalkan ' + m.name + ' resign efektif ' + formatDateID(effDate) + '?\n\nMember tetap aktif normal sampai tanggal tersebut tiba.';
     if (!confirm(confirmMsg)) return;
 
     try {
-        var newStatus = isCurrentlyResigned ? 'inti' : 'resigned';
-        var newIsResigned = !isCurrentlyResigned;
-
-        var result = await db.from('members')
-            .update({ is_resigned: newIsResigned, is_graduated: false, status: newStatus })
-            .eq('id', memberId);
-
+        var updateData = { resign_date: effDate, graduation_date: null };
+        if (isImmediate) {
+            updateData.is_resigned = true;
+            updateData.is_graduated = false;
+            updateData.status = 'resigned';
+        }
+        var result = await db.from('members').update(updateData).eq('id', m.id);
         if (result.error) throw result.error;
 
-        m.is_resigned = newIsResigned;
-        m.is_graduated = false;
-        m.status = newStatus;
+        Object.assign(m, updateData);
 
-        showNotification('success', isCurrentlyResigned ? 'Status Dibatalkan' : 'Ditandai Resigned',
-            m.name + (isCurrentlyResigned ? ' aktif kembali' : ' telah ditandai resigned'));
+        showNotification('success', isImmediate ? 'Ditandai Resigned' : 'Resign Dijadwalkan',
+            m.name + (isImmediate ? ' telah resigned' : ' akan resign efektif ' + formatDateID(effDate)));
 
+        closeResignModal();
         renderMembers();
         updateStats();
     } catch (err) {
-        console.error('Gagal update status resigned:', err);
-        showNotification('error', 'Error', 'Gagal update status: ' + err.message);
+        console.error('Gagal set resign:', err);
+        showNotification('error', 'Error', 'Gagal simpan: ' + err.message);
+    }
+}
+
+async function cancelResignForSelected() {
+    var id = document.getElementById('resignMemberSelect').value;
+    if (!id) return;
+    var m = members.find(function(x){ return String(x.id) === String(id); });
+    if (!m) return;
+
+    if (!confirm('Batalkan resign untuk ' + m.name + '? Member akan aktif kembali (status: Inti).')) return;
+
+    try {
+        var updateData = { resign_date: null, is_resigned: false, status: 'inti' };
+        var result = await db.from('members').update(updateData).eq('id', m.id);
+        if (result.error) throw result.error;
+
+        Object.assign(m, updateData);
+
+        showNotification('success', 'Resign Dibatalkan', m.name + ' aktif kembali');
+
+        closeResignModal();
+        renderMembers();
+        updateStats();
+    } catch (err) {
+        console.error('Gagal batalkan resign:', err);
+        showNotification('error', 'Error', 'Gagal batalkan: ' + err.message);
     }
 }
 
@@ -3263,7 +3453,6 @@ function renderMembers(){
                     '<button onclick="openSetlistModal('+m.id+')" title="Tambah show" '+(memberInactive?'disabled': '')+' style="background:rgba(255,255,255,0.25);">+</button>'+
                     '<button onclick="openMemberShowList('+m.id+')" title="Edit show" style="background:rgba(59,130,246,0.45);">✎</button>'+
                     (m.status!=='resigned' ? '<button onclick="toggleGraduatedDirect('+m.id+')" title="'+(m.status==='graduated'?'Batalkan status graduated':'Tandai graduated (tanpa show terakhir)')+'" style="background:rgba(139,92,246,0.45);">🎓</button>' : '')+
-                    (m.status!=='graduated' ? '<button onclick="toggleResignedDirect('+m.id+')" title="'+(m.status==='resigned'?'Batalkan status resigned':'Tandai resign (pengunduran diri)')+'" style="background:rgba(220,38,38,0.45);">🚪</button>' : '')+
                 '</div>'+
             '</div>';
         list.appendChild(card);
@@ -3767,11 +3956,18 @@ async function addShowWithSetlist(){
             return;
         }
 
-        // Jika graduation show, update is_graduated = true dan status = 'graduated' di tabel members
+        // Jika graduation show, set graduation_date = tanggal show. Status baru final kalau tanggalnya sudah lewat/hari ini.
         if (isGraduationShow && graduationMember) {
             var gradMember = members.find(function(m){ return m.name === graduationMember; });
             if (gradMember) {
-                await db.from('members').update({ is_graduated: true, status: 'graduated' }).eq('id', gradMember.id);
+                var isGradImmediate = showDate <= todayDateStr();
+                var gradUpdateData = { graduation_date: showDate, resign_date: null };
+                if (isGradImmediate) {
+                    gradUpdateData.is_graduated = true;
+                    gradUpdateData.is_resigned = false;
+                    gradUpdateData.status = 'graduated';
+                }
+                await db.from('members').update(gradUpdateData).eq('id', gradMember.id);
             }
         }
         
@@ -3950,11 +4146,18 @@ async function bulkAddShows(){
             return;
         }
         
-        // Jika graduation show, update is_graduated = true dan status = 'graduated' di tabel members
+        // Jika graduation show, set graduation_date = tanggal show. Status baru final kalau tanggalnya sudah lewat/hari ini.
         if (isGraduationShow && graduationMember) {
             var gradMemberBulk = members.find(function(m){ return m.name === graduationMember; });
             if (gradMemberBulk) {
-                await db.from('members').update({ is_graduated: true, status: 'graduated' }).eq('id', gradMemberBulk.id);
+                var isGradImmediateBulk = showDate <= todayDateStr();
+                var gradUpdateDataBulk = { graduation_date: showDate, resign_date: null };
+                if (isGradImmediateBulk) {
+                    gradUpdateDataBulk.is_graduated = true;
+                    gradUpdateDataBulk.is_resigned = false;
+                    gradUpdateDataBulk.status = 'graduated';
+                }
+                await db.from('members').update(gradUpdateDataBulk).eq('id', gradMemberBulk.id);
             }
         }
         
@@ -4337,11 +4540,18 @@ async function saveEditShow() {
                 .eq('id', newMemberId);
         }
 
-        // Jika graduation show, update is_graduated = true dan status = 'graduated' di tabel members
+        // Jika graduation show, set graduation_date = tanggal show. Status baru final kalau tanggalnya sudah lewat/hari ini.
         if (isGraduationShow && graduationMember) {
             var gradMemberEdit = members.find(function(m){ return m.name === graduationMember; });
             if (gradMemberEdit) {
-                await db.from('members').update({ is_graduated: true, status: 'graduated' }).eq('id', gradMemberEdit.id);
+                var isGradImmediateEdit = showDate <= todayDateStr();
+                var gradUpdateDataEdit = { graduation_date: showDate, resign_date: null };
+                if (isGradImmediateEdit) {
+                    gradUpdateDataEdit.is_graduated = true;
+                    gradUpdateDataEdit.is_resigned = false;
+                    gradUpdateDataEdit.status = 'graduated';
+                }
+                await db.from('members').update(gradUpdateDataEdit).eq('id', gradMemberEdit.id);
             }
         }
         

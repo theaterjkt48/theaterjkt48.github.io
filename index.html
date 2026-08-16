@@ -390,9 +390,16 @@ let members = [],
     latestUpdateTime = null,
     allShowsData = [];
 
-// Member dianggap keluar dari grup kalau sudah graduated ATAU resigned (dua status terpisah)
+// Member dianggap keluar dari grup kalau sudah graduated ATAU resigned (dua status terpisah),
+// termasuk kalau tanggal efektif graduation_date/resign_date sudah lewat meskipun admin
+// belum sempat buka panel admin untuk finalize (dihitung real-time di sini)
 function isMemberInactive(m) {
-    return !!(m.is_graduated || m.is_resigned);
+    if (m.is_graduated || m.is_resigned) return true;
+    var today = new Date();
+    var todayStr = today.getFullYear() + '-' + String(today.getMonth()+1).padStart(2,'0') + '-' + String(today.getDate()).padStart(2,'0');
+    if (m.graduation_date && m.graduation_date <= todayStr) return true;
+    if (m.resign_date && m.resign_date <= todayStr) return true;
+    return false;
 }
 
 // ============= FUNGSI LIVE STATUS =============
@@ -603,7 +610,7 @@ async function loadData() {
     try {
         const { data: membersData, error: membersError } = await db
             .from('members')
-            .select('id, name, gen, team, show, status, is_graduated, is_resigned')
+            .select('id, name, gen, team, show, status, is_graduated, is_resigned, graduation_date, resign_date')
             .order('show', { ascending: false });
         if (membersError) throw membersError;
         members = membersData || [];
@@ -758,7 +765,8 @@ function renderMembers() {
                 isMemberInactive(m) && m.name.toLowerCase().includes(searchQuery.toLowerCase())
             );
             if (inactiveMatch) {
-                msg = inactiveMatch.is_resigned
+                const isResignCase = inactiveMatch.is_resigned || (inactiveMatch.resign_date && !inactiveMatch.is_graduated);
+                msg = isResignCase
                     ? `${inactiveMatch.name} telah Resign`
                     : `${inactiveMatch.name} telah Graduation`;
             } else {
@@ -1060,7 +1068,7 @@ function setupRealtimeSubscription() {
         .on('postgres_changes', { event: '*', schema: 'public', table: 'members' }, async () => {
             const { data: membersData, error } = await db
                 .from('members')
-                .select('id, name, gen, team, show, status, is_graduated, is_resigned')
+                .select('id, name, gen, team, show, status, is_graduated, is_resigned, graduation_date, resign_date')
                 .order('show', { ascending: false });
             if (!error && membersData) {
                 members = membersData;
