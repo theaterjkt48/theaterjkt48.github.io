@@ -941,25 +941,16 @@ function showSetlist(type) {
 
 // ============= STATE MANAGEMENT =============
 function saveCurrentState() {
-    sessionStorage.setItem('jkt48_current_gen', currentGen);
-    sessionStorage.setItem('jkt48_current_team', currentTeam);
-    sessionStorage.setItem('jkt48_search_query', searchQuery);
     sessionStorage.setItem('jkt48_setlist_view', currentSetlistView || '');
     sessionStorage.setItem('jkt48_scroll_position', window.scrollY);
 }
 
 function restoreState() {
-    const savedGen = sessionStorage.getItem('jkt48_current_gen');
-    const savedTeam = sessionStorage.getItem('jkt48_current_team');
-    const savedSearch = sessionStorage.getItem('jkt48_search_query');
     const savedSetlist = sessionStorage.getItem('jkt48_setlist_view');
-    if (savedGen && savedGen !== 'null') currentGen = savedGen === 'all' ? 'all' : parseInt(savedGen);
-    if (savedTeam && savedTeam !== 'null') currentTeam = savedTeam;
-    if (savedSearch && savedSearch !== 'null') {
-        searchQuery = savedSearch;
-        document.getElementById('searchInput').value = searchQuery;
-        toggleClearBtn();
-    }
+    // Bersihkan sisa key lama - search & filter gen/team selalu mulai default tiap refresh
+    sessionStorage.removeItem('jkt48_search_query');
+    sessionStorage.removeItem('jkt48_current_gen');
+    sessionStorage.removeItem('jkt48_current_team');
     if (savedSetlist && savedSetlist !== 'null' && savedSetlist !== '') {
         currentSetlistView = savedSetlist;
         if (currentSetlistView) {
@@ -978,12 +969,6 @@ function restoreState() {
         }
     } else {
         currentSetlistView = null;
-    }
-    if (currentTeam !== 'all') {
-        document.querySelectorAll('.team-filter').forEach(btn => {
-            btn.classList.remove('active');
-            if (btn.textContent.includes(currentTeam)) btn.classList.add('active');
-        });
     }
 }
 
