@@ -2954,27 +2954,62 @@ async function loadData(){
         members=result.data||[];
         console.log('Berhasil memuat '+members.length+' member');
 
+        var today = todayDateStr();
+
+        // Koreksi: member yang KELIRU sudah kefinalisasi (is_graduated/is_resigned = true)
+        // padahal graduation_date/resign_date-nya masih di masa depan (misal dari bug versi lama).
+        // Balikin dulu jadi aktif normal - finalizeMemberStatuses() nanti yang akan mengunci ulang
+        // begitu tanggalnya beneran tiba.
+        var prematureFixed = [];
+        for (var p = 0; p < members.length; p++) {
+            var pm = members[p];
+            var prematureGrad = pm.is_graduated && pm.graduation_date && pm.graduation_date > today;
+            var prematureResign = pm.is_resigned && pm.resign_date && pm.resign_date > today;
+            if (prematureGrad || prematureResign) {
+                var revertData = {};
+                if (prematureGrad) { revertData.is_graduated = false; if (pm.status === 'graduated') revertData.status = 'inti'; }
+                if (prematureResign) { revertData.is_resigned = false; if (pm.status === 'resigned') revertData.status = 'inti'; }
+                var revertResult = await db.from('members').update(revertData).eq('id', pm.id);
+                if (!revertResult.error) {
+                    Object.assign(pm, revertData);
+                    prematureFixed.push(pm);
+                }
+            }
+        }
+        if (prematureFixed.length > 0) {
+            console.log('Koreksi finalisasi prematur:', prematureFixed.map(function(m){return m.name;}));
+            showNotification('info', 'Status Dikoreksi', prematureFixed.length + ' member dikembalikan aktif (tanggal efektif belum tiba)');
+        }
+
         // Auto-sync #1: perbaiki data dimana is_graduated=true tapi status belum 'graduated'
         var outOfSync = members.filter(function(m){ return m.is_graduated === true && m.status !== 'graduated'; });
 
         // Auto-sync #2: cari riwayat show yang ditandai graduation di setlist_performance,
-        // tapi member terkait di tabel members belum ditandai graduated sama sekali
-        // (terjadi kalau graduation di-set lewat Edit Show sebelum ada perbaikan ini)
+        // isi graduation_date member yang belum punya (TIDAK langsung finalize - biar
+        // finalizeMemberStatuses() yang menentukan berdasarkan tanggal show tersebut)
         var gradShowsResult = await db.from('setlist_performance')
-            .select('graduation_member')
+            .select('graduation_member, show_date')
             .eq('is_graduation_show', true)
             .not('graduation_member', 'is', null);
 
         if (!gradShowsResult.error && gradShowsResult.data) {
-            var gradNames = {};
+            var gradDateMap = {};
             gradShowsResult.data.forEach(function(row) {
-                if (row.graduation_member) gradNames[row.graduation_member] = true;
-            });
-            members.forEach(function(m) {
-                if (gradNames[m.name] && !m.is_graduated && outOfSync.indexOf(m) === -1) {
-                    outOfSync.push(m);
+                if (row.graduation_member && row.show_date) {
+                    if (!gradDateMap[row.graduation_member] || row.show_date > gradDateMap[row.graduation_member]) {
+                        gradDateMap[row.graduation_member] = row.show_date;
+                    }
                 }
             });
+            for (var k = 0; k < members.length; k++) {
+                var mm = members[k];
+                if (gradDateMap[mm.name] && !mm.graduation_date && mm.status !== 'graduated') {
+                    var setDateResult = await db.from('members').update({ graduation_date: gradDateMap[mm.name] }).eq('id', mm.id);
+                    if (!setDateResult.error) {
+                        mm.graduation_date = gradDateMap[mm.name];
+                    }
+                }
+            }
         }
 
         if (outOfSync.length > 0) {
