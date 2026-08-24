@@ -7,7 +7,7 @@
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.107.0"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
@@ -439,6 +439,17 @@ const SUPABASE_URL = "https://pprxfopqkvpeajeoxzig.supabase.co";
 const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBwcnhmb3Bxa3ZwZWFqZW94emlnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjYyNTI4MTIsImV4cCI6MjA4MTgyODgxMn0.iXRO_dAHhtVHRLqGTresG_63RD2zIaopNXtXYNfthdg";
 const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
+// Security: escape any DB-sourced string before inserting into innerHTML to prevent stored XSS
+function escapeHtml(str) {
+    if (str === null || str === undefined) return '';
+    return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+}
+
 const SHOW_DURATION_MINUTES = 150;
 const EVENT_DURATION_MINUTES = 150;
 const PRE_SHOW_BUFFER_MINUTES = 15;
@@ -750,14 +761,14 @@ function renderShows(date) {
             specialBadges += `<div class="birthday-badge">
                 <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" viewBox="0 0 16 16">
                     <path d="m7.994.013-.595.79a.747.747 0 0 0 .101 1.01V4H5a2 2 0 0 0-2 2v3H2a2 2 0 0 0-2 2v4a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-4a2 2 0 0 0-2-2h-1V6a2 2 0 0 0-2-2H8.5V1.806A.747.747 0 0 0 8.592.802zM4 6a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v.414a.9.9 0 0 1-.646-.268 1.914 1.914 0 0 0-2.708 0 .914.914 0 0 1-1.292 0 1.914 1.914 0 0 0-2.708 0A.9.9 0 0 1 4 6.414zm0 1.414c.49 0 .98-.187 1.354-.56a.914.914 0 0 1 1.292 0c.748.747 1.96.747 2.708 0a.914.914 0 0 1 1.292 0c.374.373.864.56 1.354.56V9H4zM1 11a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v.793l-.354.354a.914.914 0 0 1-1.293 0 1.914 1.914 0 0 0-2.707 0 .914.914 0 0 1-1.292 0 1.914 1.914 0 0 0-2.708 0 .914.914 0 0 1-1.292 0L1 11.793zm11.646 1.854a1.915 1.915 0 0 0 2.354.279V15H1v-1.867c.737.452 1.715.36 2.354-.28a.914.914 0 0 1 1.292 0c.748.748 1.96.748 2.708 0a.914.914 0 0 1 1.292 0c.748.748 1.96.748 2.707 0a.914.914 0 0 1 1.293 0Z"/>
-                </svg>STS ${show.birthdayMember}</div>`;
+                </svg>STS ${escapeHtml(show.birthdayMember)}</div>`;
         }
         if (show.isGraduation && show.graduationMember) {
             specialBadges += `<div class="graduation-badge">
                 <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" viewBox="0 0 16 16">
                     <path d="M8.211 2.047a.5.5 0 0 0-.422 0l-7.5 3.5a.5.5 0 0 0 .025.917l7.5 3a.5.5 0 0 0 .372 0L14 7.14V13a1 1 0 0 0-1 1v2h3v-2a1 1 0 0 0-1-1V6.739l.686-.275a.5.5 0 0 0 .025-.917l-7.5-3.5Z"/>
                     <path d="M4.176 9.032a.5.5 0 0 0-.656.327l-.5 1.7a.5.5 0 0 0 .294.605l4.5 1.8a.5.5 0 0 0 .372 0l4.5-1.8a.5.5 0 0 0 .294-.605l-.5-1.7a.5.5 0 0 0-.656-.327L8 10.466 4.176 9.032Z"/>
-                </svg>Graduation Show ${show.graduationMember}</div>`;
+                </svg>Graduation Show ${escapeHtml(show.graduationMember)}</div>`;
         }
 
         // Hitung jam selesai berdasarkan durasi show
@@ -781,7 +792,7 @@ function renderShows(date) {
             <div class="show-card" data-setlist="${setlistParam}" data-date="${dateParam}" data-time="${timeParam}" onclick="openShowDetail(this)">
                 <div class="show-card-header ${headerClass}" style="background:${bgStyle};">
                     ${statusBadge}
-                    <div class="show-card-title"><span>${show.setlist}</span>${specialBadges}</div>
+                    <div class="show-card-title"><span>${escapeHtml(show.setlist)}</span>${specialBadges}</div>
                     <div class="show-card-time">
                         <div>
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -809,7 +820,7 @@ function renderShows(date) {
                     </div>
                 </div>
                 <div class="show-card-members">
-                    <p><strong>${(() => { if (show.members.length === 0) return 'Member yang tampil'; const teams = [...new Set(show.members.map(m => m.team && m.team.toLowerCase()).filter(Boolean))]; if (teams.length === 1) { const t = teams[0]; if (t === 'dream') return 'Team Dream'; if (t === 'passion') return 'Team Passion'; if (t === 'love') return 'Team Love'; } return 'Member yang tampil'; })()}:</strong> ${show.members.length > 0 ? show.members.map(m => m.name).sort().join(', ') : '<em>Member Belum Diumumkan</em>'}</p>
+                    <p><strong>${(() => { if (show.members.length === 0) return 'Member yang tampil'; const teams = [...new Set(show.members.map(m => m.team && m.team.toLowerCase()).filter(Boolean))]; if (teams.length === 1) { const t = teams[0]; if (t === 'dream') return 'Team Dream'; if (t === 'passion') return 'Team Passion'; if (t === 'love') return 'Team Love'; } return 'Member yang tampil'; })()}:</strong> ${show.members.length > 0 ? show.members.map(m => escapeHtml(m.name)).sort().join(', ') : '<em>Member Belum Diumumkan</em>'}</p>
                 </div>
             </div>`;
     });

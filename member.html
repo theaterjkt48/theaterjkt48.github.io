@@ -10,7 +10,7 @@
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.107.0"></script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
 *{margin:0;padding:0;box-sizing:border-box}
@@ -620,6 +620,17 @@ const MEMBER_NAME = urlParams.get('member');
 
 const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
+// Security: escape any DB-sourced string before inserting into innerHTML to prevent stored XSS
+function escapeHtml(str) {
+  if (str === null || str === undefined) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
 const GEN_COLORS = {
   3: '#ec4899', 6: '#22c55e', 7: '#15803d', 8: '#1e40af',
   9: '#06b6d4', 10: '#38bdf8', 11: '#f97316', 12: '#fde68a',
@@ -685,11 +696,11 @@ function renderMember(member) {
   const photoHtml = `
     <div class="photo-container">
       <img class="photo" 
-           src="img/${member.name.toLowerCase()}.jpg" 
+           src="img/${encodeURIComponent(member.name.toLowerCase())}.jpg" 
            loading="lazy"
            decoding="async"
-           onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\\'photo-error\\'>${member.name.charAt(0)}</div>';"
-           alt="${member.name}">
+           onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\\'photo-error\\'>${escapeHtml(member.name.charAt(0))}</div>';"
+           alt="${escapeHtml(member.name)}">
     </div>
   `;
   
@@ -723,7 +734,7 @@ function renderMember(member) {
       <!-- PANEL KIRI: Foto + Progres -->
       <div class="left-panel">
         ${photoHtml}
-        <div class="member-name">${member.name}</div>
+        <div class="member-name">${escapeHtml(member.name)}</div>
         <div class="panel-title">Progres</div>
         <div class="milestone-card">
           <div class="milestone-header">
@@ -745,32 +756,32 @@ function renderMember(member) {
         <div class="panel-title">About</div>
         <div class="info-row">
           <div class="info-label">Nama</div>
-          <div class="info-value">${member.full_name || member.name}</div>
+          <div class="info-value">${escapeHtml(member.full_name || member.name)}</div>
         </div>
         <div class="info-row">
           <div class="info-label">Tanggal Lahir</div>
-          <div class="info-value">${formatTanggal(member.birth_date)}</div>
+          <div class="info-value">${escapeHtml(formatTanggal(member.birth_date))}</div>
         </div>
         <div class="info-row">
           <div class="info-label">Golongan Darah</div>
-          <div class="info-value">${member.blood_type || '-'}</div>
+          <div class="info-value">${escapeHtml(member.blood_type) || '-'}</div>
         </div>
         <div class="info-row">
           <div class="info-label">Horoskop</div>
-          <div class="info-value">${member.zodiac || '-'}</div>
+          <div class="info-value">${escapeHtml(member.zodiac) || '-'}</div>
         </div>
         <div class="info-row">
           <div class="info-label">Tinggi Badan</div>
-          <div class="info-value">${member.height ? member.height + ' cm' : '-'}</div>
+          <div class="info-value">${member.height ? escapeHtml(member.height) + ' cm' : '-'}</div>
         </div>
         <div class="info-row">
           <div class="info-label">Generasi</div>
-          <div class="info-value">${member.gen}</div>
+          <div class="info-value">${escapeHtml(member.gen)}</div>
         </div>
         ${member.status !== 'trainee' ? `
         <div class="info-row">
           <div class="info-label">Team</div>
-          <div class="info-value" style="color:${ member.team && member.team.toLowerCase()==='passion' ? '#f69220' : member.team && member.team.toLowerCase()==='dream' ? '#00a4a5' : member.team && member.team.toLowerCase()==='love' ? '#e20785' : 'inherit' };font-weight:${member.team ? '700' : 'inherit'}">${member.team || '-'}</div>
+          <div class="info-value" style="color:${ member.team && member.team.toLowerCase()==='passion' ? '#f69220' : member.team && member.team.toLowerCase()==='dream' ? '#00a4a5' : member.team && member.team.toLowerCase()==='love' ? '#e20785' : 'inherit' };font-weight:${member.team ? '700' : 'inherit'}">${escapeHtml(member.team) || '-'}</div>
         </div>
         ` : ''}
         
@@ -779,7 +790,7 @@ function renderMember(member) {
           <div class="social-title">Social Media</div>
           ${member.twitter || member.instagram || member.tiktok ? `
             ${member.twitter ? `
-            <a href="https://twitter.com/${member.twitter}" target="_blank" class="social-link">
+            <a href="https://twitter.com/${encodeURIComponent(member.twitter)}" target="_blank" rel="noopener noreferrer" class="social-link">
               <div class="social-icon twitter">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" width="18" height="18" fill="currentColor">
                   <path d="M357.2 48L427.8 48 273.6 224.2 455 464 313 464 201.7 318.6 74.5 464 3.8 464 168.7 275.5-5.2 48 140.4 48 240.9 180.9 357.2 48z"/>
@@ -787,13 +798,13 @@ function renderMember(member) {
               </div>
               <div class="social-info">
                 <div class="social-name">Twitter</div>
-                <div class="social-handle">@${member.twitter}</div>
+                <div class="social-handle">@${escapeHtml(member.twitter)}</div>
               </div>
               <div class="social-arrow">→</div>
             </a>
             ` : ''}
             ${member.instagram ? `
-            <a href="https://instagram.com/${member.instagram}" target="_blank" class="social-link">
+            <a href="https://instagram.com/${encodeURIComponent(member.instagram)}" target="_blank" rel="noopener noreferrer" class="social-link">
               <div class="social-icon instagram">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
@@ -803,13 +814,13 @@ function renderMember(member) {
               </div>
               <div class="social-info">
                 <div class="social-name">Instagram</div>
-                <div class="social-handle">@${member.instagram}</div>
+                <div class="social-handle">@${escapeHtml(member.instagram)}</div>
               </div>
               <div class="social-arrow">→</div>
             </a>
             ` : ''}
             ${member.tiktok ? `
-            <a href="https://tiktok.com/@${member.tiktok}" target="_blank" class="social-link">
+            <a href="https://tiktok.com/@${encodeURIComponent(member.tiktok)}" target="_blank" rel="noopener noreferrer" class="social-link">
               <div class="social-icon tiktok">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
                   <path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/>
@@ -817,7 +828,7 @@ function renderMember(member) {
               </div>
               <div class="social-info">
                 <div class="social-name">TikTok</div>
-                <div class="social-handle">@${member.tiktok}</div>
+                <div class="social-handle">@${escapeHtml(member.tiktok)}</div>
               </div>
               <div class="social-arrow">→</div>
             </a>

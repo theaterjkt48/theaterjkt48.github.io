@@ -5,13 +5,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Admin - JKT48 Show Theater</title>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" onerror="window.__supabaseLoadFailed=true"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.107.0" onerror="window.__supabaseLoadFailed=true"></script>
 <script>
 // Fallback: kalau CDN utama gagal, coba CDN cadangan (unpkg)
 window.addEventListener('DOMContentLoaded', function() {
     if (window.__supabaseLoadFailed && typeof supabase === 'undefined') {
         var fallback = document.createElement('script');
-        fallback.src = 'https://unpkg.com/@supabase/supabase-js@2';
+        fallback.src = 'https://unpkg.com/@supabase/supabase-js@2.107.0';
         fallback.onerror = function() { window.__supabaseTotallyFailed = true; showInitError(); };
         fallback.onload = function() { window.location.reload(); };
         document.head.appendChild(fallback);
@@ -1977,7 +1977,7 @@ body.dark #confirmEslModal .esl-option-dropdown select { background:#0a0e1a;colo
           </button>
         </div>
         <div class="error" id="errorMsg"></div>
-        <button onclick="login()" class="login-submit-btn">
+        <button onclick="login()" class="login-submit-btn" id="loginBtn">
           <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
           Masuk
         </button>
@@ -2629,7 +2629,34 @@ body.dark #confirmEslModal .esl-option-dropdown select { background:#0a0e1a;colo
 <script>
 var SUPABASE_URL='https://pprxfopqkvpeajeoxzig.supabase.co';
 var SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBwcnhmb3Bxa3ZwZWFqZW94emlnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjYyNTI4MTIsImV4cCI6MjA4MTgyODgxMn0.iXRO_dAHhtVHRLqGTresG_63RD2zIaopNXtXYNfthdg';
-var ADMIN_ACCOUNTS={'admin@jkt48.com':'jkt48admin','superadmin@jkt48.com':'jkt48super'};
+// SECURITY: hardcoded ADMIN_ACCOUNTS removed — login now goes through real Supabase Auth
+// (supabase.auth.signInWithPassword). Create admin users in the Supabase Dashboard under
+// Authentication → Users, not in this file. See SECURITY REPORT for the RLS policies that
+// must accompany this change — without them, this login is still cosmetic.
+// Security: escape any DB-sourced string before inserting into innerHTML to prevent stored XSS
+function escapeHtml(str) {
+    if (str === null || str === undefined) return '';
+    return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+}
+// For values interpolated inside an inline onclick/onerror="fn('VALUE')" attribute —
+// must survive both JS-string parsing and HTML-attribute parsing.
+function escapeForJsAttr(str) {
+    if (str === null || str === undefined) return '';
+    return String(str)
+        .replace(/\\/g, '\\\\')
+        .replace(/'/g, "\\'")
+        .replace(/\n/g, '\\n')
+        .replace(/\r/g, '\\r')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+}
 var GEN_COLORS={3:'#ec4899',6:'#22c55e',7:'#15803d',8:'#1e40af',9:'#06b6d4',10:'#38bdf8',11:'#f97316',12:'#fde68a',13:'#facc15',14:'#e879f9'};
 var SETLIST_INTI={'Cara Meminum Ramune':'Setlist segar seperti minuman ramune','Te Wo Tsunaginagara':'Setlist sambil bergandengan tangan','Pertaruhan Cinta':'Setlist tentang taruhan cinta untuk member inti'};
 var SETLIST_PASSION=Object.assign({},SETLIST_INTI,{'Passion 200%':'Setlist penuh semangat 200% untuk member inti'});
@@ -2868,7 +2895,7 @@ function showNotification(type, title, message, duration = 3000) {
     notification.id = id;
     
     const text = message || title;
-    notification.innerHTML = `<span class="notification-dot"></span><span>${text}</span>`;
+    notification.innerHTML = `<span class="notification-dot"></span><span>${escapeHtml(text)}</span>`;
     
     container.appendChild(notification);
     
@@ -2918,26 +2945,18 @@ function getCurrentTime() {
 function toggleTheme(){ /* dark mode permanent */ }
 
 document.body.classList.add('dark');
+// SECURITY: session state now comes from Supabase Auth (server-verified JWT session),
+// not from a locally-set localStorage flag that anyone could fake in the console.
+// The actual check + login-modal toggle happens in the "Initialize" DOMContentLoaded
+// handler below (it needs to run after the DOM, and this script block runs before it).
 
-var adminEmail=localStorage.getItem('jkt48_admin_email');
-var loginTime=localStorage.getItem('jkt48_admin_login_time');
-var _needLogin = false;
-if(!adminEmail||!loginTime){
-    _needLogin = true;
-    setTimeout(function(){document.getElementById('email').focus()},100);
-}else{
-    var currentTime=new Date().getTime();
-    var sessionAge=currentTime-parseInt(loginTime);
-    if(sessionAge>86400000){
-        localStorage.removeItem('jkt48_admin_email');
-        localStorage.removeItem('jkt48_admin_login_time');
-        showNotification('warning', 'Session Expired', 'Sesi berakhir, silakan login ulang');
-        _needLogin = true;
-    }else{
-        loadData();
-        loadActivityLog();
+// Keep the UI in sync if the session expires or the user logs out/in from another tab
+db.auth.onAuthStateChange(function(event, session){
+    if (event === 'SIGNED_OUT' || !session) {
+        var lm = document.getElementById('loginModal');
+        if (lm) lm.style.display='flex';
     }
-}
+});
 
 async function loadData(){
     try{
@@ -3054,7 +3073,7 @@ async function loadData(){
         
     }catch(err){
         console.error('Error:',err);
-        document.getElementById('list').innerHTML='<div class="msg" style="color:#ef4444">Error: '+err.message+'</div>';
+        document.getElementById('list').innerHTML='<div class="msg" style="color:#ef4444">Error: '+escapeHtml(err.message)+'</div>';
         showNotification('error', 'Load Error', 'Gagal memuat data: ' + err.message);
     }
 }
@@ -3324,7 +3343,7 @@ function renderActivityLog(){
         var timeStr=time.toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'});
 
         if(log.status==='failed'){
-            return'<div class="activity-item" style="--color:#60a5fa"><div class="activity-icon" style="font-size:16px;font-weight:900;color:#60a5fa;">✗</div><div class="activity-content"><div class="activity-text"><span style="font-weight:800;color:#60a5fa;">Gagal: '+log.member+'</span></div><div class="activity-time">'+timeStr+' • Bulk Add Gagal</div></div></div>';
+            return'<div class="activity-item" style="--color:#60a5fa"><div class="activity-icon" style="font-size:16px;font-weight:900;color:#60a5fa;">✗</div><div class="activity-content"><div class="activity-text"><span style="font-weight:800;color:#60a5fa;">Gagal: '+escapeHtml(log.member)+'</span></div><div class="activity-time">'+timeStr+' • Bulk Add Gagal</div></div></div>';
         }
 
         var icon = log.isNonShow ? '○' : (log.change > 0 ? '+' : '−');
@@ -3342,14 +3361,14 @@ function renderActivityLog(){
             specialBadge = ' <span style="background:rgba(251,191,36,0.15);color:#fbbf24;font-size:9px;font-weight:700;padding:2px 7px;border-radius:8px;margin-left:2px;">STS</span>';
         }
         var changeDisplay = log.isNonShow ? '+1' : ((log.change > 0 ? '+' : '') + log.change);
-        var changeLine = '<span style="font-weight:800;color:'+color+';">'+log.member+'</span>'+statusBadge+specialBadge+
+        var changeLine = '<span style="font-weight:800;color:'+color+';">'+escapeHtml(log.member)+'</span>'+statusBadge+specialBadge+
             ' <span style="color:'+color+';font-weight:700;margin-left:4px;">'+changeDisplay+'</span>'+
             ' <span style="color:#9ca3af;font-size:10px;margin-left:2px;">'+oldValue+' → '+log.newValue+' '+(log.isNonShow?'non-show':'show')+'</span>';
 
         // Baris 2: setlist - tanggal - jam
         var detailParts = [];
         var cleanSetlist = log.setlist ? log.setlist.replace(/\s*\(Non-Show\)\s*/i, '').trim() : null;
-        if(cleanSetlist) detailParts.push(cleanSetlist);
+        if(cleanSetlist) detailParts.push(escapeHtml(cleanSetlist));
         if(log.showDate) detailParts.push(formatDate(log.showDate));
         if(log.showTime) detailParts.push(formatTime(log.showTime));
         var detailLine = detailParts.length > 0
@@ -3406,7 +3425,7 @@ function renderMembers(){
         }else if(currentGen!=='all'){
             message = 'Tidak ada member Generasi '+currentGen;
         }
-        list.innerHTML='<div class="msg">'+message+'</div>';
+        list.innerHTML='<div class="msg">'+escapeHtml(message)+'</div>';
         return;
     }
     
@@ -3434,13 +3453,13 @@ function renderMembers(){
         var memberInactive = isMemberInactive(m);
         card.innerHTML=
             '<div class="avatar-wrap">'+
-                '<img class="avatar" src="img/'+m.name.toLowerCase()+'.jpg" onerror="this.onerror=null;this.style.display=\'none\';var p=document.createElement(\'div\');p.className=\'avatar-placeholder\';p.textContent=\''+firstChar+'\';this.parentNode.appendChild(p);" alt="'+m.name+'">'+
+                '<img class="avatar" src="img/'+encodeURIComponent(m.name.toLowerCase())+'.jpg" onerror="this.onerror=null;this.style.display=\'none\';var p=document.createElement(\'div\');p.className=\'avatar-placeholder\';p.textContent=\''+escapeForJsAttr(firstChar)+'\';this.parentNode.appendChild(p);" alt="'+escapeHtml(m.name)+'">'+
                 '<div class="avatar-overlay"></div>'+
                 statusBadgeHtml+
             '</div>'+
             '<div class="card-footer">'+
-                '<div class="gen-badge">Gen '+m.gen+'</div>'+
-                '<div class="name">'+m.name+'</div>'+
+                '<div class="gen-badge">Gen '+escapeHtml(m.gen)+'</div>'+
+                '<div class="name">'+escapeHtml(m.name)+'</div>'+
                 '<div class="show"><span class="show-num">'+m.show+'</span>&nbsp;show</div>'+
                 '<div class="bar"><span style="width:'+percent+'%"></span></div>'+
                 '<div class="admin-controls">'+
@@ -3572,7 +3591,7 @@ function filterEditMemberBySetlist() {
         if (isMemberInactive(m)) return;
         if (allowedStatus && m.status !== allowedStatus) return;
         var selected = (String(m.id) === String(currentVal)) ? 'selected' : '';
-        memberSelect.innerHTML += '<option value="' + m.id + '" ' + selected + '>' + m.name + '</option>';
+        memberSelect.innerHTML += '<option value="' + escapeHtml(m.id) + '" ' + selected + '>' + escapeHtml(m.name) + '</option>';
     });
 }
 
@@ -3725,7 +3744,7 @@ function populateMemberDropdown(dropdownId) {
     sortedMembers.forEach(function(member) {
         if (!isMemberInactive(member)) {
             var selected = (member.name === previousValue) ? 'selected' : '';
-            dropdown.innerHTML += '<option value="' + member.name + '" ' + selected + '>' + member.name + '</option>';
+            dropdown.innerHTML += '<option value="' + escapeHtml(member.name) + '" ' + selected + '>' + escapeHtml(member.name) + '</option>';
         }
     });
 }
@@ -4253,7 +4272,7 @@ function showConfirmToast(member, lastSetlist, onConfirm) {
         var jam = lastSetlist.show_time ? formatTime(lastSetlist.show_time) : '-';
         var setlist = lastSetlist.setlist_name || '-';
         var extra = '';
-        if (lastSetlist.is_birthday_show) extra = ' <span style="background:#fef3c7;color:#92400e;font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px;">STS ' + (lastSetlist.birthday_member || '') + '</span>';
+        if (lastSetlist.is_birthday_show) extra = ' <span style="background:#fef3c7;color:#92400e;font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px;">STS ' + escapeHtml(lastSetlist.birthday_member || '') + '</span>';
         if (lastSetlist.is_graduation_show) extra = ' <span style="background:#ede9fe;color:#5b21b6;font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px;">LAST SHOW</span>';
         if (lastSetlist.is_non_show) extra = ' <span style="background:#dcfce7;color:#166534;font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px;">NON-SHOW</span>';
 
@@ -4272,7 +4291,7 @@ function showConfirmToast(member, lastSetlist, onConfirm) {
             '&source=admin';
 
         var liveshowLink = showPassed ? '' :
-            '<a href="' + liveshowParams + '" target="_blank" style="display:flex;align-items:center;justify-content:center;gap:6px;margin-top:12px;padding:9px;background:#e60012;color:#fff;border-radius:10px;font-size:13px;font-weight:700;text-decoration:none;">' +
+            '<a href="' + escapeHtml(liveshowParams) + '" target="_blank" rel="noopener noreferrer" style="display:flex;align-items:center;justify-content:center;gap:6px;margin-top:12px;padding:9px;background:#e60012;color:#fff;border-radius:10px;font-size:13px;font-weight:700;text-decoration:none;">' +
                 '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>' +
                 'Lihat Live Show' +
             '</a>';
@@ -4284,7 +4303,7 @@ function showConfirmToast(member, lastSetlist, onConfirm) {
                     '<div style="display:flex;align-items:center;gap:8px;font-size:13px;">' +
                         '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>' +
                         '<span style="color:#6b7280;">Member</span>' +
-                        '<span style="font-weight:700;color:#111;margin-left:auto;">' + member.name + '</span>' +
+                        '<span style="font-weight:700;color:#111;margin-left:auto;">' + escapeHtml(member.name) + '</span>' +
                     '</div>' +
                     '<div style="display:flex;align-items:center;gap:8px;font-size:13px;">' +
                         '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>' +
@@ -4299,7 +4318,7 @@ function showConfirmToast(member, lastSetlist, onConfirm) {
                     '<div style="display:flex;align-items:center;gap:8px;font-size:13px;">' +
                         '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>' +
                         '<span style="color:#6b7280;">Setlist</span>' +
-                        '<span style="font-weight:700;color:#111;margin-left:auto;">' + setlist + extra + '</span>' +
+                        '<span style="font-weight:700;color:#111;margin-left:auto;">' + escapeHtml(setlist) + extra + '</span>' +
                     '</div>' +
                 '</div>' +
                 liveshowLink +
@@ -4408,7 +4427,7 @@ async function openEditShow(showId) {
         sortedEditMembers.forEach(function(member) {
             if (isMemberInactive(member)) return;
             var selected = (member.id === currentEditShowData.member_id) ? 'selected' : '';
-            memberSelect.innerHTML += '<option value="' + member.id + '" ' + selected + '>' + member.name + '</option>';
+            memberSelect.innerHTML += '<option value="' + escapeHtml(member.id) + '" ' + selected + '>' + escapeHtml(member.name) + '</option>';
         });
         
         // Set tanggal dan waktu
@@ -4591,7 +4610,7 @@ function updateStats(){
     var statsText=total+' members • '+inti+' Inti • '+trainee+' Trainee • '+graduated+' Graduated • '+resigned+' Resigned • '+totalShows+' total show';
     if(currentGen!=='all') statsText+=' • Gen '+currentGen;
     if(currentStatus!=='all') statsText+=' • '+currentStatus.toUpperCase();
-    if(searchQuery) statsText+=' • Search: "'+searchQuery+'"';
+    if(searchQuery) statsText+=' • Search: "'+escapeHtml(searchQuery)+'"';
     
     document.getElementById('stats').innerHTML=statsText;
 }
@@ -4643,31 +4662,43 @@ function clearSearch(){
 }
 
 
-function login(){
+async function login(){
     var email=document.getElementById('email').value.trim();
     var password=document.getElementById('password').value.trim();
     var error=document.getElementById('errorMsg');
-    
+
     error.style.display='none';
-    
+
     if(!email||!password){
         error.textContent='Email dan password harus diisi';
         error.style.display='block';
         return;
     }
-    
-    if(ADMIN_ACCOUNTS[email]===password){
-        var loginTime=new Date().getTime();
-        localStorage.setItem('jkt48_admin_email',email);
-        localStorage.setItem('jkt48_admin_login_time',loginTime.toString());
+
+    var loginBtn = document.getElementById('loginBtn');
+    if (loginBtn) { loginBtn.disabled = true; }
+
+    try {
+        // SECURITY: real authentication via Supabase Auth instead of a hardcoded
+        // client-side password table. Supabase verifies the credentials server-side
+        // and returns a session; database access is then governed by RLS policies
+        // tied to that session, not by anything running in this page.
+        var { data, error: authError } = await db.auth.signInWithPassword({ email: email, password: password });
+        if (authError || !data.session) {
+            error.textContent='Email atau password salah';
+            error.style.display='block';
+            showNotification('error', 'Login', 'Email atau password salah');
+            return;
+        }
         document.getElementById('loginModal').style.display='none';
         loadData();
         loadActivityLog();
         showNotification('success', 'Login', 'Berhasil masuk');
-    }else{
-        error.textContent='Email atau password salah';
+    } catch (e) {
+        error.textContent='Login gagal: ' + escapeHtml(e.message || 'unknown error');
         error.style.display='block';
-        showNotification('error', 'Login', 'Email atau password salah');
+    } finally {
+        if (loginBtn) { loginBtn.disabled = false; }
     }
 }
 
@@ -4679,9 +4710,8 @@ function closeLogoutModal(){
     document.getElementById('logoutModal').style.display='none';
 }
 
-function confirmLogout(){
-    localStorage.removeItem('jkt48_admin_email');
-    localStorage.removeItem('jkt48_admin_login_time');
+async function confirmLogout(){
+    await db.auth.signOut();
     finishLogout();
 }
 
@@ -4749,7 +4779,7 @@ async function openMemberShowList(memberId) {
             var meta = dateStr + (timeStr ? ' · ' + timeStr : '');
             return '<div class="msl-item" onclick="pickShowToEdit(' + s.id + ')">' +
                 '<div>' +
-                  '<div class="msl-setlist">' + (s.setlist_name || '—') + '</div>' +
+                  '<div class="msl-setlist">' + escapeHtml(s.setlist_name || '—') + '</div>' +
                   '<div class="msl-date">' + meta + '</div>' +
                 '</div>' +
                 '<div class="msl-arrow">›</div>' +
@@ -4759,7 +4789,7 @@ async function openMemberShowList(memberId) {
         document.getElementById('mslList').innerHTML = html;
 
     } catch(err) {
-        document.getElementById('mslList').innerHTML = '<div class="msl-empty" style="color:#ef4444;">Gagal memuat: ' + err.message + '</div>';
+        document.getElementById('mslList').innerHTML = '<div class="msl-empty" style="color:#ef4444;">Gagal memuat: ' + escapeHtml(err.message) + '</div>';
     }
 }
 
@@ -4834,14 +4864,14 @@ async function openDeleteShowModal() {
             var timeStr = g.show_time ? formatTime(g.show_time) : '';
             var meta = dateStr + (timeStr ? ' · ' + timeStr : '');
             var nonShowLabel = g.is_non_show ? '<span style="font-size:10px;background:#6b7280;color:#fff;border-radius:4px;padding:2px 7px;white-space:nowrap;">Non-Show</span>' : '';
-            var memberNames = g.members.map(function(m){ return m.name; }).join(', ');
+            var memberNames = g.members.map(function(m){ return escapeHtml(m.name); }).join(', ');
 
             var item = document.createElement('div');
             item.className = 'msl-item';
             item.style.cursor = 'default';
             item.innerHTML =
                 '<div style="flex:1;min-width:0;">' +
-                  '<div class="msl-setlist">' + (g.setlist_name || '—') + nonShowLabel + '</div>' +
+                  '<div class="msl-setlist">' + escapeHtml(g.setlist_name || '—') + nonShowLabel + '</div>' +
                   '<div class="msl-date">' + meta + '</div>' +
                   '<div style="font-size:11px;color:#9ca3af;margin-top:2px;">' + memberNames + '</div>' +
                 '</div>' +
@@ -4857,7 +4887,7 @@ async function openDeleteShowModal() {
         });
 
     } catch(err) {
-        document.getElementById('dslList').innerHTML = '<div class="msl-empty" style="color:#ef4444;">Gagal memuat: ' + err.message + '</div>';
+        document.getElementById('dslList').innerHTML = '<div class="msl-empty" style="color:#ef4444;">Gagal memuat: ' + escapeHtml(err.message) + '</div>';
     }
 }
 
@@ -4874,7 +4904,7 @@ function confirmDslDelete(group) {
 
     // Isi chips member
     var chipsHtml = group.members.map(function(m){
-        return '<div class="dsl-member-chip">' + m.name + '</div>';
+        return '<div class="dsl-member-chip">' + escapeHtml(m.name) + '</div>';
     }).join('');
     document.getElementById('confirmDslMembers').innerHTML = chipsHtml;
 
@@ -5025,7 +5055,7 @@ async function openEditShowListModal() {
             var emptyLabel = isKosong ? '<span style="font-size:10px;background:#8b5cf6;color:#fff;border-radius:4px;padding:2px 7px;white-space:nowrap;">Belum Ada Member</span>' : '';
             var memberNames = isKosong
                 ? '<span style="color:#8b5cf6;font-style:italic;">Belum ada member — tambah lewat Edit</span>'
-                : g.members.map(function(m){ return m.name; }).join(', ');
+                : g.members.map(function(m){ return escapeHtml(m.name); }).join(', ');
 
             var item = document.createElement('div');
             item.className = 'msl-item';
@@ -5033,7 +5063,7 @@ async function openEditShowListModal() {
             if (isKosong) item.style.borderLeft = '3px solid #8b5cf6';
             item.innerHTML =
                 '<div style="flex:1;min-width:0;">' +
-                  '<div class="msl-setlist" style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">' + (g.setlist_name || '—') + ' ' + nonShowLabel + emptyLabel + '</div>' +
+                  '<div class="msl-setlist" style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">' + escapeHtml(g.setlist_name || '—') + ' ' + nonShowLabel + emptyLabel + '</div>' +
                   '<div class="msl-date">' + meta + '</div>' +
                   '<div style="font-size:11px;color:#9ca3af;margin-top:2px;">' + memberNames + '</div>' +
                 '</div>' +
@@ -5049,7 +5079,7 @@ async function openEditShowListModal() {
 
         });
     } catch(err) {
-        document.getElementById('eslList').innerHTML = '<div class="msl-empty" style="color:#ef4444;">Gagal memuat: ' + err.message + '</div>';
+        document.getElementById('eslList').innerHTML = '<div class="msl-empty" style="color:#ef4444;">Gagal memuat: ' + escapeHtml(err.message) + '</div>';
     }
 }
 
@@ -5288,7 +5318,7 @@ function eslPopulateMemberDropdown(id) {
     var prev = sel.value;
     sel.innerHTML = '<option value="">-- Pilih Member --</option>';
     (members || []).filter(function(m){ return !isMemberInactive(m); }).forEach(function(m){
-        sel.innerHTML += '<option value="' + m.name + '">' + m.name + '</option>';
+        sel.innerHTML += '<option value="' + escapeHtml(m.name) + '">' + escapeHtml(m.name) + '</option>';
     });
     sel.value = prev;
 }
@@ -5457,6 +5487,17 @@ document.addEventListener('DOMContentLoaded', async function() {
         passwordInput.addEventListener('keypress', function(e) {
             if (e.key === 'Enter') login();
         });
+    }
+
+    // SECURITY: session state now comes from Supabase Auth's server-verified session
+    // (db.auth.getSession()) instead of a locally-set localStorage flag anyone could fake.
+    var _sessionResult = await db.auth.getSession();
+    var _needLogin = !(_sessionResult && _sessionResult.data && _sessionResult.data.session);
+
+    if (!_needLogin) {
+        loginModal.style.display = 'none';
+        loadData();
+        loadActivityLog();
     }
 
     if (_needLogin) {

@@ -8,7 +8,7 @@
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.107.0"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
@@ -864,6 +864,32 @@ const MEMBER_NAME = urlParams.get('member');
 
 const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
+// Security: escape any DB- or URL-sourced string before inserting into innerHTML to prevent XSS
+function escapeHtml(str) {
+  if (str === null || str === undefined) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+// For values interpolated inside onclick="fn('VALUE')" — must survive both JS-string
+// parsing and HTML-attribute parsing, or a quote in the value could break out and run
+// arbitrary script (attribute-breakout XSS).
+function escapeForJsAttr(str) {
+  if (str === null || str === undefined) return '';
+  return String(str)
+    .replace(/\\/g, '\\\\')
+    .replace(/'/g, "\\'")
+    .replace(/\n/g, '\\n')
+    .replace(/\r/g, '\\r')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
 const GEN_COLORS = {
   3: '#ec4899', 6: '#22c55e', 7: '#15803d', 8: '#1e40af',
   9: '#06b6d4', 10: '#38bdf8', 11: '#f97316', 12: '#fde68a',
@@ -920,7 +946,7 @@ function getFilterButtonsHTML() {
   setlists.forEach(setlist => {
     const count = realShows.filter(s => s.setlist_name === setlist).length;
     const shortName = getSetlistShortName(setlist);
-    html += `<button class="filter-btn ${currentFilter === setlist ? 'active' : ''}" onclick="filterShows('${setlist.replace(/'/g, "\\'")}')" data-filter="${setlist}">${shortName} - ${count}</button>`;
+    html += `<button class="filter-btn ${currentFilter === setlist ? 'active' : ''}" onclick="filterShows('${escapeForJsAttr(setlist)}')" data-filter="${escapeHtml(setlist)}">${escapeHtml(shortName)} - ${count}</button>`;
   });
   
   if (eventShows.length > 0) {
@@ -999,13 +1025,13 @@ function renderPage() {
     <div class="member-info">
       <div class="photo-container">
         <img class="photo" 
-             src="img/${memberData.name.toLowerCase()}.jpg" 
+             src="img/${encodeURIComponent(memberData.name.toLowerCase())}.jpg" 
              loading="lazy"
              decoding="async"
-             onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\\'photo-error\\'>${memberData.name.charAt(0)}</div>';"
-             alt="${memberData.name}">
+             onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\\'photo-error\\'>${escapeHtml(memberData.name.charAt(0))}</div>';"
+             alt="${escapeHtml(memberData.name)}">
       </div>
-      <div class="member-name">${memberData.name}</div>
+      <div class="member-name">${escapeHtml(memberData.name)}</div>
       ${graduationInfo}
       <div class="member-stats">
         <div class="stat-item">
@@ -1071,7 +1097,7 @@ function renderShowList() {
         <div class="empty-desc">
           ${currentFilter === 'all' 
             ? 'Belum ada riwayat show yang tercatat untuk member ini' 
-            : `Belum ada show dengan setlist "${currentFilter}"`
+            : `Belum ada show dengan setlist "${escapeHtml(currentFilter)}"`
           }
         </div>
       </div>
@@ -1097,9 +1123,9 @@ function renderShowList() {
         
         return `
           <div class="${cardClass}" 
-               data-setlist="${show.setlist_name.replace(/"/g, '&quot;').replace(/'/g, '&#39;')}" 
-               data-date="${show.show_date}" 
-               data-time="${show.show_time || ''}"
+               data-setlist="${escapeHtml(show.setlist_name)}" 
+               data-date="${escapeHtml(show.show_date)}" 
+               data-time="${escapeHtml(show.show_time || '')}"
                onclick="openShowDetail(this.dataset.setlist, this.dataset.date, this.dataset.time)">
             <div class="show-header">
               <div>
@@ -1143,9 +1169,9 @@ function renderShowList() {
               </div>
             </div>
             <div class="show-setlist">
-              ${show.setlist_name}
-              ${show.is_birthday_show && show.birthday_member ? ` (STS ${show.birthday_member})` : ''}
-              ${show.is_graduation_show && show.graduation_member ? ` (Graduation ${show.graduation_member})` : ''}
+              ${escapeHtml(show.setlist_name)}
+              ${show.is_birthday_show && show.birthday_member ? ` (STS ${escapeHtml(show.birthday_member)})` : ''}
+              ${show.is_graduation_show && show.graduation_member ? ` (Graduation ${escapeHtml(show.graduation_member)})` : ''}
             </div>
             ${status === 'FINISHED' ? `<div class="end-badge">END</div>` : ''}
           </div>

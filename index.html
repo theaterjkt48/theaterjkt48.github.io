@@ -8,7 +8,7 @@
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.107.0"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:Arial,sans-serif;background:#f5f5f5;color:#333;min-height:100vh;padding-bottom:60px;transition:background 0.3s,color 0.3s}
@@ -359,6 +359,17 @@ const GEN_COLORS = {
     13: '#facc15', 14: '#e879f9'
 };
 
+// Security: escape any DB-sourced string before inserting into innerHTML to prevent stored XSS
+function escapeHtml(str) {
+    if (str === null || str === undefined) return '';
+    return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+}
+
 const SETLIST_DATA = {
     ramune: {id: 'ramune', title: 'Cara Meminum Ramune', members: {}},
     tte: {id: 'tte', title: 'Te Wo Tsunaginagara', members: {}},
@@ -634,7 +645,7 @@ async function loadData() {
         }
     } catch (err) {
         console.error('Error:', err);
-        document.getElementById('list').innerHTML = '<div class="msg" style="color:#ef4444">Error: ' + err.message + '</div>';
+        document.getElementById('list').innerHTML = '<div class="msg" style="color:#ef4444">Error: ' + escapeHtml(err.message) + '</div>';
         document.getElementById('lastUpdate').innerHTML = 'Error';
     }
 }
@@ -791,13 +802,13 @@ function renderMembers() {
         const footerColor = isGraduated ? '#6b7280' : color;
         card.innerHTML = `
             <div class="avatar-container">
-                <img class="avatar" src="img/${m.name.toLowerCase()}.jpg" alt="${m.name}" loading="lazy" onerror="this.onerror=null;this.style.display='none';this.parentNode.innerHTML='<div class=&quot;avatar-placeholder&quot;>${m.name.charAt(0)}</div>'">
+                <img class="avatar" src="img/${encodeURIComponent(m.name.toLowerCase())}.jpg" alt="${escapeHtml(m.name)}" loading="lazy" onerror="this.onerror=null;this.style.display='none';this.parentNode.innerHTML='<div class=&quot;avatar-placeholder&quot;>${escapeHtml(m.name.charAt(0))}</div>'">
                 ${graduationBadge}
             </div>
             <div class="card-footer" style="background-color:${footerColor}">
                 <div class="gen-badge">${genText}</div>
                 <div class="name-container">
-                    <div class="name">${m.name}</div>
+                    <div class="name">${escapeHtml(m.name)}</div>
                 </div>
                 <div class="show-info">${m.show} show</div>
                 <div class="bar-container">
@@ -851,7 +862,7 @@ function renderSetlistMembers() {
         const footerColor = isGraduated ? '#6b7280' : color;
         card.innerHTML = `
             <div class="avatar-container">
-                <img class="avatar" src="img/${m.name.toLowerCase()}.jpg" alt="${m.name}" loading="lazy" onerror="this.onerror=null;this.style.display='none';this.parentNode.innerHTML='<div class=&quot;avatar-placeholder&quot;>${m.name.charAt(0)}</div>'">
+                <img class="avatar" src="img/${encodeURIComponent(m.name.toLowerCase())}.jpg" alt="${escapeHtml(m.name)}" loading="lazy" onerror="this.onerror=null;this.style.display='none';this.parentNode.innerHTML='<div class=&quot;avatar-placeholder&quot;>${escapeHtml(m.name.charAt(0))}</div>'">
                 ${rankBadge}
                 ${graduationBadge}
                 <div class="photo-setlist-badge">${badge}</div>
@@ -859,7 +870,7 @@ function renderSetlistMembers() {
             <div class="card-footer" style="background-color:${footerColor}">
                 <div class="gen-badge">${genText}</div>
                 <div class="name-container">
-                    <div class="name">${m.name}</div>
+                    <div class="name">${escapeHtml(m.name)}</div>
                 </div>
                 <div class="show-info">${m.shows} show</div>
                 <div class="bar-container">

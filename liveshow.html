@@ -8,7 +8,7 @@
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.107.0"></script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
 *{margin:0;padding:0;box-sizing:border-box}
@@ -532,6 +532,17 @@ const { setlist: SETLIST_NAME, date: SHOW_DATE, time: SHOW_TIME } = getUrlParams
 const SOURCE_PAGE = new URLSearchParams(window.location.search).get('source') || '';
 const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
+// Security: escape any DB- or URL-sourced string before inserting into innerHTML to prevent XSS
+function escapeHtml(str) {
+    if (str === null || str === undefined) return '';
+    return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+}
+
 const GEN_COLORS = {
   3: '#ec4899', 6: '#22c55e', 7: '#15803d', 8: '#1e40af',
   9: '#06b6d4', 10: '#38bdf8', 11: '#f97316', 12: '#fde047',
@@ -683,7 +694,7 @@ function handleBannerError(img) {
   const container = img.parentElement;
   container.innerHTML = `
     <div class="banner-fallback">
-      ${SETLIST_NAME}
+      ${escapeHtml(SETLIST_NAME)}
     </div>
   `;
 }
@@ -839,7 +850,7 @@ function renderPage(showData, showTime, isBirthdayShow, birthdayMember, isGradua
   const bannerHTML = (bannerUrl && status !== 'FINISHED') ? `
     <div class="setlist-banner-container">
       <img src="${bannerUrl}" 
-           alt="Banner ${SETLIST_NAME}" 
+           alt="Banner ${escapeHtml(SETLIST_NAME)}" 
            class="setlist-banner" 
            onload="this.classList.add('loaded')"
            onerror="handleBannerError(this)">
@@ -851,7 +862,7 @@ function renderPage(showData, showTime, isBirthdayShow, birthdayMember, isGradua
         <div class="live-show-header ${headerClass}" style="background:${status === 'LIVE' ? 'linear-gradient(135deg, #e60012 0%, #a00010 100%)' : status === 'FINISHED' ? 'linear-gradient(135deg, #6b7280 0%, #4b5563 100%)' : (getSetlistGradient(SETLIST_NAME, isNonShow) || 'linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)')}">
           ${statusBadge}
           ${bannerHTML}
-          <h1>${displayTitle}</h1>
+          <h1>${escapeHtml(displayTitle)}</h1>
           ${specialBadges}
           <div class="live-show-date-time">
             <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>${formattedDate}</div>
@@ -904,35 +915,52 @@ function renderMembersGrid(membersData, birthdayMember, graduationMember) {
     if (isBirthdayStar) borderColor = '#f59e0b';
     if (isGraduationStar) borderColor = '#7c3aed';
     
-    const clickAttr = SOURCE_PAGE === 'show' ? '' : `onclick="openMemberPage('${member.name}')"`;
+    // Security: use a data-attribute instead of building an inline onclick string.
+    // Interpolating member.name directly into an onclick="...('...')" string let a member
+    // name containing a single quote break out of the JS string and inject arbitrary script.
+    const clickable = SOURCE_PAGE !== 'show';
     const cardStyle = SOURCE_PAGE === 'show' ? ' style="cursor:default"' : '';
-    
-    return `<div class="${cardClass}"${clickAttr}${cardStyle}>
+
+    return `<div class="${cardClass}"${clickable ? ` data-member-name="${escapeHtml(member.name)}" role="button" tabindex="0"` : ''}${cardStyle}>
               <div class="member-avatar">
                 <img src="${photoUrl}" 
-                     alt="Foto ${member.name} - Gen ${member.gen}" 
+                     alt="Foto ${escapeHtml(member.name)} - Gen ${escapeHtml(member.gen)}" 
                      loading="lazy" 
                      onload="this.classList.add('loaded')"
-                     onerror="this.onerror=null; this.style.display='none'; this.parentNode.style.background='linear-gradient(135deg, ${GEN_COLORS[member.gen] || '#6366f1'}, ${adjustColor(GEN_COLORS[member.gen] || '#6366f1', -20)})'; this.parentNode.innerHTML='<div style=width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:white;font-size:24px;font-weight:bold>${member.name.charAt(0)}</div>'">
+                     onerror="this.onerror=null; this.style.display='none'; this.parentNode.style.background='linear-gradient(135deg, ${GEN_COLORS[member.gen] || '#6366f1'}, ${adjustColor(GEN_COLORS[member.gen] || '#6366f1', -20)})'; this.parentNode.innerHTML='<div style=width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:white;font-size:24px;font-weight:bold>${escapeHtml(member.name.charAt(0))}</div>'">
               </div>
               <div class="member-info" style="border-top: 3px solid ${borderColor}">
-                <div class="member-name">${member.name}</div>
-                <div class="member-gen">Gen ${member.gen || '?'} • ${member.team || 'JKT48'}</div>
+                <div class="member-name">${escapeHtml(member.name)}</div>
+                <div class="member-gen">Gen ${escapeHtml(member.gen) || '?'} • ${escapeHtml(member.team) || 'JKT48'}</div>
               </div>
             </div>`;
   }).join('');
 }
+
+// Event delegation replaces inline onclick handlers for member cards (see renderMembersGrid).
+// Attached once; safe to call multiple times since {once:false} listeners on a stable ancestor.
+document.addEventListener('DOMContentLoaded', function () {
+  document.addEventListener('click', function (e) {
+    const card = e.target.closest('[data-member-name]');
+    if (card) openMemberPage(card.getAttribute('data-member-name'));
+  });
+  document.addEventListener('keypress', function (e) {
+    if (e.key !== 'Enter') return;
+    const card = e.target.closest('[data-member-name]');
+    if (card) openMemberPage(card.getAttribute('data-member-name'));
+  });
+});
 
 function openMemberPage(memberName) {
   window.location.href = 'riwayat.html?member=' + encodeURIComponent(memberName);
 }
 
 function showNoShowsMessage() {
-  document.getElementById('container').innerHTML = `<div class="no-shows-message"><div class="no-shows-icon"><svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div><div class="no-shows-title">Show Tidak Ditemukan</div><div class="no-shows-desc">Tidak ditemukan show untuk "${SETLIST_NAME}" pada tanggal ${SHOW_DATE}${SHOW_TIME ? ` jam ${SHOW_TIME}` : ''}.<br><br>Pastikan Anda memilih show dari halaman jadwal.</div><button onclick="goBack()" style="background:#e60012;color:#fff;border:none;border-radius:12px;padding:12px 24px;font-size:14px;font-weight:600;cursor:pointer;margin-top:20px">Kembali ke Jadwal</button></div>`;
+  document.getElementById('container').innerHTML = `<div class="no-shows-message"><div class="no-shows-icon"><svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div><div class="no-shows-title">Show Tidak Ditemukan</div><div class="no-shows-desc">Tidak ditemukan show untuk "${escapeHtml(SETLIST_NAME)}" pada tanggal ${escapeHtml(SHOW_DATE)}${SHOW_TIME ? ` jam ${escapeHtml(SHOW_TIME)}` : ''}.<br><br>Pastikan Anda memilih show dari halaman jadwal.</div><button onclick="goBack()" style="background:#e60012;color:#fff;border:none;border-radius:12px;padding:12px 24px;font-size:14px;font-weight:600;cursor:pointer;margin-top:20px">Kembali ke Jadwal</button></div>`;
 }
 
 function showError(message) {
-  document.getElementById('container').innerHTML = `<div class="no-shows-message"><div class="no-shows-icon"><svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div><div class="no-shows-title">Terjadi Kesalahan</div><div class="no-shows-desc">${message}</div><button onclick="goBack()" style="background:#e60012;color:#fff;border:none;border-radius:12px;padding:12px 24px;font-size:14px;font-weight:600;cursor:pointer;margin-top:20px">Kembali ke Jadwal</button></div>`;
+  document.getElementById('container').innerHTML = `<div class="no-shows-message"><div class="no-shows-icon"><svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div><div class="no-shows-title">Terjadi Kesalahan</div><div class="no-shows-desc">${escapeHtml(message)}</div><button onclick="goBack()" style="background:#e60012;color:#fff;border:none;border-radius:12px;padding:12px 24px;font-size:14px;font-weight:600;cursor:pointer;margin-top:20px">Kembali ke Jadwal</button></div>`;
 }
 
 function goBack() {
